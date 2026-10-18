@@ -4,75 +4,120 @@
              x:Class="LocatCam_mobile.Views.RegisterPage"
              Title="Inscription">
 
-    <VerticalStackLayout Padding="30,20" Spacing="15">
+    <ScrollView>
+        <VerticalStackLayout Padding="24,20" Spacing="16">
 
-        <Label Text="Créer un compte"
-               FontSize="24"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" />
+            <!-- Marque -->
+            <Label Text="Créer un compte"
+                   Style="{StaticResource Display}"
+                   HorizontalOptions="Center" />
+            <Label Text="Rejoignez LocatCam"
+                   Style="{StaticResource H2}"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
 
-        <Label Text="{Binding Message}"
-               HorizontalOptions="Center"
-               FontSize="14"
-               IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}" />
+            <!-- Message -->
+            <Label Text="{Binding Message}"
+                   HorizontalOptions="Center"
+                   FontSize="14"
+                   TextColor="{StaticResource Error}"
+                   IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}" />
 
-        <Entry x:Name="NomEntry"
-               Placeholder="Nom complet"
-               Text="{Binding Nom}"
-               HorizontalOptions="Fill" />
+            <!-- Nom -->
+            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,8">
+                <Entry x:Name="NomEntry"
+                       Placeholder="Nom complet"
+                       Text="{Binding Nom}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       HorizontalOptions="Fill" />
+            </Frame>
 
-        <Entry x:Name="EmailEntry"
-               Placeholder="Email"
-               Keyboard="Email"
-               Text="{Binding Email}"
-               HorizontalOptions="Fill" />
+            <!-- Email -->
+            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,8">
+                <Entry x:Name="EmailEntry"
+                       Placeholder="Email"
+                       Keyboard="Email"
+                       Text="{Binding Email}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       HorizontalOptions="Fill" />
+            </Frame>
 
-        <Entry x:Name="TelephoneEntry"
-               Placeholder="Téléphone (+237 6XX XXX XXX)"
-               Keyboard="Telephone"
-               Text="{Binding Telephone}"
-               HorizontalOptions="Fill" />
+            <!-- Téléphone -->
+            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,8">
+                <Entry x:Name="TelephoneEntry"
+                       Placeholder="+237 6XX XXX XXX"
+                       Keyboard="Telephone"
+                       Text="{Binding Telephone}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       HorizontalOptions="Fill" />
+            </Frame>
 
-        <Entry x:Name="MotDePasseEntry"
-               Placeholder="Mot de passe (min 6 car.)"
-               IsPassword="True"
-               Text="{Binding MotDePasse}"
-               HorizontalOptions="Fill" />
+            <!-- Mot de passe -->
+            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,8">
+                <Entry x:Name="MotDePasseEntry"
+                       Placeholder="Mot de passe (min 6 car.)"
+                       IsPassword="True"
+                       Text="{Binding MotDePasse}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       HorizontalOptions="Fill" />
+            </Frame>
 
-        <Entry x:Name="ConfirmationEntry"
-               Placeholder="Confirmer le mot de passe"
-               IsPassword="True"
-               Text="{Binding ConfirmationMotDePasse}"
-               HorizontalOptions="Fill" />
+            <!-- Confirmation -->
+            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,16">
+                <Entry x:Name="ConfirmationEntry"
+                       Placeholder="Confirmer le mot de passe"
+                       IsPassword="True"
+                       Text="{Binding ConfirmationMotDePasse}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       HorizontalOptions="Fill" />
+            </Frame>
 
-        <Label Text="Rôle"
-               FontSize="14"
-               FontAttributes="Bold" />
+            <!-- Rôle -->
+            <Label Text="Rôle"
+                   Style="{StaticResource Caption}"
+                   Margin="0,4,0,4" />
+            <Picker x:Name="RolePicker"
+                    Title="Sélectionner un rôle"
+                    SelectedItem="{Binding Role}"
+                    HorizontalOptions="Fill"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
+                    TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Etudiant</x:String>
+                        <x:String>Bailleur</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
 
-        <Picker x:Name="RolePicker"
-                Title="Sélectionner un rôle"
-                SelectedItem="{Binding Role}"
-                HorizontalOptions="Fill">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>Etudiant</x:String>
-                    <x:String>Bailleur</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
+            <!-- Bouton S'inscrire -->
+            <Button Text="S'inscrire"
+                    Command="{Binding RegisterCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,8,0,0" />
 
-        <Button Text="S'inscrire"
-                Command="{Binding RegisterCommand}"
-                HorizontalOptions="Fill" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" />
 
-        <ActivityIndicator IsRunning="{Binding IsBusy}"
-                           IsVisible="{Binding IsBusy}"
-                           HorizontalOptions="Center" />
+            <!-- Lien connexion -->
+            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="4" HorizontalOptions="Center">
+                <Label Text="Déjà un compte ?"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
+                <Button Grid.Column="1" Text="Connectez-vous"
+                        Command="{Binding GoToLoginCommand}"
+                        Style="{StaticResource TextButton}" />
+            </Grid>
 
-        <Button Text="Déjà un compte ? Connectez-vous"
-                Command="{Binding GoToLoginCommand}"
-                HorizontalOptions="Fill" />
-
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>

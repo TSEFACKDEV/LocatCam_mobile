@@ -63,6 +63,16 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
+[/home/klein/Documents/projects/LocatCam/LocatCam_mobile/Controls/BottomNavBar.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = LocatCam_mobile.Controls.BottomNavBar.xaml
+build_metadata.AdditionalFiles.TargetPath = Controls/BottomNavBar.xaml
+build_metadata.AdditionalFiles.RelativePath = Controls/BottomNavBar.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
 [/home/klein/Documents/projects/LocatCam/LocatCam_mobile/Controls/EmptyStateView.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = LocatCam_mobile.Controls.EmptyStateView.xaml
@@ -188,6 +198,16 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = LocatCam_mobile.Views.MessageriePage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views/MessageriePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views/MessageriePage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[/home/klein/Documents/projects/LocatCam/LocatCam_mobile/Views/OnboardingPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = LocatCam_mobile.Views.OnboardingPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/OnboardingPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/OnboardingPage.xaml
 build_metadata.AdditionalFiles.Inflator = SourceGen
 build_metadata.AdditionalFiles.NoWarn = 
 build_metadata.AdditionalFiles.EnableDiagnostics = 

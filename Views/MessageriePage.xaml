@@ -4,11 +4,6 @@
              x:Class="LocatCam_mobile.Views.MessageriePage"
              Title="Messagerie">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
     <Grid>
         <!-- ======================== LISTE DES CONVERSATIONS ======================== -->
         <StackLayout x:Name="ListeConversationsPanel"
@@ -17,64 +12,79 @@
 
             <StackLayout Margin="16, 16, 16, 8" Spacing="4">
                 <Label Text="Mes conversations"
-                       FontSize="22" FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                       Style="{StaticResource H1}" />
                 <Label Text="{Binding TotalNonLus, StringFormat='{0} message(s) non lu(s)'}"
                        FontSize="14"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                       TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
             </StackLayout>
 
             <ActivityIndicator IsRunning="{Binding IsLoadingConversations}"
                                IsVisible="{Binding IsLoadingConversations}"
                                HorizontalOptions="Center" />
 
-            <ListView ItemsSource="{Binding Conversations}"
-                      SelectedItem="{Binding ConversationSelectionnee, Mode=TwoWay}"
-                      RowHeight="72"
-                      CachingStrategy="RecycleElement"
-                      Margin="12, 0, 12, 0">
-                <ListView.ItemTemplate>
+            <CollectionView ItemsSource="{Binding Conversations}"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding ConversationSelectionnee, Mode=TwoWay}"
+                            Margin="12, 0, 12, 0">
+                <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell>
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" Padding="12, 8">
-                                <StackLayout Grid.Column="0" Spacing="2">
+                        <Frame Style="{StaticResource Card}"
+                               Padding="12"
+                               HasShadow="False">
+                            <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="12">
+                                <!-- Avatar -->
+                                <Frame Grid.Column="0"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                       CornerRadius="30"
+                                       Padding="0"
+                                       HasShadow="False"
+                                       WidthRequest="40" HeightRequest="40"
+                                       HorizontalOptions="Start"
+                                       VerticalOptions="Start">
+                                    <Label Text="U"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="White"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Frame>
+
+                                <!-- Infos -->
+                                <StackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                                     <Label Text="{Binding UtilisateurNom}"
                                            FontSize="16" FontAttributes="Bold"
-                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                                           LineBreakMode="TailTruncation" />
                                     <Label Text="{Binding DernierMessage, FallbackValue='Aucun message'}"
                                            FontSize="14"
-                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                           TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
                                            LineBreakMode="TailTruncation" />
-                                    <Label Text="{Binding AnnonceTitre}"
-                                           FontSize="12"
-                                           TextColor="{StaticResource Primary}"
-                                           FontAttributes="Italic" />
                                 </StackLayout>
-                                <StackLayout Grid.Column="1" HorizontalOptions="End" Spacing="4">
+
+                                <!-- Heure + badge non-lus -->
+                                <StackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Start" Spacing="4">
                                     <Label Text="{Binding DateDernierMessage, StringFormat='{0:dd/MM HH:mm}'}"
                                            FontSize="11"
-                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                    <Border WidthRequest="24" HeightRequest="24"
-                                            BackgroundColor="{StaticResource Error}"
-                                            IsVisible="{Binding MessagesNonLus, Converter={StaticResource StringToBoolConverter}}"
-                                            HorizontalOptions="Center" VerticalOptions="Center">
+                                           TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
+                                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                           CornerRadius="10"
+                                           Padding="4"
+                                           HasShadow="False"
+                                           IsVisible="{Binding MessagesNonLus, Converter={StaticResource StringToBoolConverter}}">
                                         <Label Text="{Binding MessagesNonLus}"
-                                               FontSize="11" FontAttributes="Bold"
+                                               FontSize="10" FontAttributes="Bold"
                                                TextColor="White"
-                                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                    </Border>
+                                               HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Frame>
                                 </StackLayout>
                             </Grid>
-                        </ViewCell>
+                        </Frame>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
             <Label Text="Aucune conversation pour le moment."
-                   IsVisible="False"
                    HorizontalOptions="Center"
                    VerticalOptions="CenterAndExpand"
-                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                   TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
         </StackLayout>
 
         <!-- ======================== DÉTAIL CONVERSATION ======================== -->
@@ -91,50 +101,58 @@
                         SemanticProperties.Description="Fermer la conversation"
                         SemanticProperties.Hint="Revenir à la liste des conversations" />
                 <Label Grid.Column="1" Text="{Binding ConversationSelectionnee.UtilisateurNom}"
-                       FontSize="18" FontAttributes="Bold"
-                       VerticalTextAlignment="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                       Style="{StaticResource H2}"
+                       VerticalTextAlignment="Center" />
             </Grid>
 
             <BoxView HeightRequest="1"
-                     BackgroundColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                     BackgroundColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
                      Opacity="0.3" />
 
+            <!-- Messages -->
             <ScrollView>
                 <StackLayout BindableLayout.ItemsSource="{Binding Messages}"
-                             Spacing="10" Padding="12, 10, 12, 0">
+                             Spacing="12" Padding="12, 10, 12, 0">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
-                            <StackLayout Spacing="0" HorizontalOptions="Fill">
-                                <Border Padding="10"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                            <Grid RowDefinitions="Auto,Auto">
+                                <!-- Bulle de chat (à gauche) -->
+                                <Frame Grid.Row="0"
+                                       Padding="12"
+                                       CornerRadius="16"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
+                                       HasShadow="False"
+                                       HorizontalOptions="Start"
+                                       WidthRequest="260">
                                     <Label Text="{Binding Contenu}"
                                            FontSize="14"
-                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
                                            LineBreakMode="WordWrap" />
-                                </Border>
-                                <Label Text="{Binding DateEnvoi, StringFormat='{0:HH:mm}'}"
+                                </Frame>
+                                <Label Grid.Row="1"
+                                       Text="{Binding DateEnvoi, StringFormat='{0:HH:mm}'}"
                                        FontSize="10"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
                                        HorizontalOptions="End"
-                                       Margin="8, 0, 0, 0" />
-                            </StackLayout>
+                                       Margin="12, 0, 0, 0" />
+                            </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </StackLayout>
             </ScrollView>
 
-            <Border Margin="12, 8, 12, 16"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                    StrokeThickness="1"
-                    Padding="8">
+            <!-- Zone de saisie -->
+            <Frame Margin="12, 8, 12, 16"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
+                   CornerRadius="24"
+                   Padding="8"
+                   HasShadow="False">
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                     <Entry Grid.Column="0" Text="{Binding ContenuNouveauMessage}"
                            Placeholder="Écrire un message..."
                            Keyboard="Text"
                            VerticalOptions="Center"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}" />
                     <Button Grid.Column="1" Text="Envoyer"
                             Command="{Binding EnvoyerMessageCommand}"
                             IsEnabled="{Binding ContenuNouveauMessage, Converter={StaticResource StringToBoolConverter}}"
@@ -145,7 +163,7 @@
                             SemanticProperties.Description="Envoyer le message"
                             SemanticProperties.Hint="Envoyer le message saisi dans la conversation" />
                 </Grid>
-            </Border>
+            </Frame>
 
             <ActivityIndicator IsRunning="{Binding IsLoadingMessages}"
                                IsVisible="{Binding IsLoadingMessages}"

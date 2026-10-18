@@ -4,51 +4,71 @@
              x:Class="LocatCam_mobile.Views.LoginPage"
              Title="Connexion">
 
-    <VerticalStackLayout Padding="30,20" Spacing="20">
+    <ScrollView>
+        <VerticalStackLayout Padding="24,20" Spacing="20">
 
-        <Label Text="LocatCam"
-               FontSize="32"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" />
+            <!-- Marque -->
+            <Label Text="LocatCam"
+                   Style="{StaticResource Display}"
+                   HorizontalOptions="Center" />
+            <Label Text="Connexion à votre compte"
+                   Style="{StaticResource H2}"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
 
-        <Label Text="Connexion à votre compte"
-               FontSize="18"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" />
+            <!-- Message d'erreur -->
+            <Label Text="{Binding Message}"
+                   HorizontalOptions="Center"
+                   FontSize="14"
+                   TextColor="{StaticResource Error}"
+                   IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}" />
 
-        <Label Text="{Binding Message}"
-               HorizontalOptions="Center"
-               FontSize="14"
-               IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}" />
+            <!-- Champ Email -->
+            <Frame Style="{StaticResource InputBorder}"
+                   Margin="0,0,0,8">
+                <Entry x:Name="EmailEntry"
+                       Placeholder="Email"
+                       Keyboard="Email"
+                       Text="{Binding Email}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       HorizontalOptions="Fill" />
+            </Frame>
 
-        <Entry x:Name="EmailEntry"
-               Placeholder="Email"
-               Keyboard="Email"
-               Text="{Binding Email}"
-               HorizontalOptions="Fill" />
+            <!-- Champ Mot de passe -->
+            <Frame Style="{StaticResource InputBorder}"
+                   Margin="0,0,0,16">
+                <Entry x:Name="MotDePasseEntry"
+                       Placeholder="Mot de passe"
+                       IsPassword="True"
+                       Text="{Binding MotDePasse}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       HorizontalOptions="Fill" />
+            </Frame>
 
-        <Entry x:Name="MotDePasseEntry"
-               Placeholder="Mot de passe"
-               IsPassword="True"
-               Text="{Binding MotDePasse}"
-               HorizontalOptions="Fill" />
+            <!-- Bouton Se connecter -->
+            <Button Text="Se connecter"
+                    Command="{Binding LoginCommand}"
+                    Style="{StaticResource PrimaryButton}" />
 
-        <Button Text="Se connecter"
-                Command="{Binding LoginCommand}"
-                HorizontalOptions="Fill" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" />
 
-        <ActivityIndicator IsRunning="{Binding IsBusy}"
-                           IsVisible="{Binding IsBusy}"
-                           HorizontalOptions="Center" />
+            <!-- Lien inscription -->
+            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="4" HorizontalOptions="Center">
+                <Label Text="Pas encore de compte ?"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
+                <Button Grid.Column="1" Text="Créer un compte"
+                        Command="{Binding GoToRegisterCommand}"
+                        Style="{StaticResource TextButton}" />
+            </Grid>
 
-        <Label Text="Pas encore de compte ?"
-               HorizontalOptions="Center"
-               FontSize="14" />
-
-        <Button Text="Créer un compte"
-                Command="{Binding GoToRegisterCommand}"
-                HorizontalOptions="Fill" />
-
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>

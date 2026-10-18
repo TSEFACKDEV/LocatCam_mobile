@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 
 namespace LocatCam_mobile;
 
@@ -13,6 +15,23 @@ public partial class App : Application
 
 	protected override Window CreateWindow(IActivationState? activationState)
 	{
-		return new Window(new AppShell());
+		var onboardingDone = Preferences.Get("OnboardingDone", false);
+		var token = SecureStorage.GetAsync("locatcam_access_token").Result;
+
+		Page startPage;
+		if (!onboardingDone)
+		{
+			startPage = new Views.OnboardingPage();
+		}
+		else if (!string.IsNullOrWhiteSpace(token))
+		{
+			startPage = new Views.HomePage();
+		}
+		else
+		{
+			startPage = new Views.LoginPage();
+		}
+
+		return new Window(startPage);
 	}
 }
