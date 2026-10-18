@@ -1,5 +1,6 @@
 using LocatCam_mobile.ViewModels;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 
 namespace LocatCam_mobile.Views;
 
@@ -23,7 +24,7 @@ public partial class ProfilPage : ContentPage
 			MettreAJourAvatar(vm.Nom);
 		}
 
-		// Synchroniser l'interrupteur avec le th\u00e8me actuel
+		// Synchroniser l'interrupteur avec le thème actuel
 		ThemeSwitch.IsToggled = Application.Current?.RequestedTheme == AppTheme.Dark;
 	}
 
@@ -35,10 +36,17 @@ public partial class ProfilPage : ContentPage
 			: nom.Trim()[0].ToString().ToUpperInvariant();
 	}
 
-	/// <summary>Bascule r\u00e9ellement le th\u00e8me clair / sombre de l'application.</summary>
+	/// <summary>Bascule réellement le thème clair / sombre de l'application.</summary>
 	private void OnThemeToggled(object sender, ToggledEventArgs e)
 	{
 		if (Application.Current != null)
 			Application.Current.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
+	}
+
+	/// <summary>Réaffiche l'onboarding (les 3 étapes restent passables).</summary>
+	private void OnRevoirOnboarding(object sender, TappedEventArgs e)
+	{
+		Preferences.Set("OnboardingDone", false);
+		Services.NavigationShell.AllerVers("OnboardingPage");
 	}
 }

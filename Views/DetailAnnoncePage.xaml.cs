@@ -1,3 +1,4 @@
+using LocatCam_mobile.Models;
 using LocatCam_mobile.Services;
 using LocatCam_mobile.ViewModels;
 using Microsoft.Maui.ApplicationModel;
@@ -19,22 +20,35 @@ public partial class DetailAnnoncePage : ContentPage
 	{
 		base.OnAppearing();
 
-		// Charger l'annonce s\u00e9lectionn\u00e9e depuis l'accueil, les favoris ou la carte
+		// Charger l'annonce sélectionnée depuis l'accueil, les favoris ou la carte
 		if (BindingContext is DetailAnnonceViewModel vm && AnnonceSelection.Annonce is { } annonce)
 		{
 			await vm.ChargerAsync(annonce.Id.ToString());
 		}
 	}
 
-	/// <summary>Bouton retour (revient \u00e0 la page d'origine).</summary>
+	/// <summary>Bouton retour (revient à la page d'origine).</summary>
 	private void OnRetourClicked(object sender, TappedEventArgs e)
 		=> NavigationShell.Revenir();
 
 	/// <summary>Ouvre la messagerie pour contacter le bailleur.</summary>
 	private void OnContacterClicked(object sender, EventArgs e)
-		=> NavigationShell.AllerVersAvecRetour("MessageriePage");
+	{
+		if (BindingContext is DetailAnnonceViewModel vm && vm.Annonce is { } annonce)
+		{
+			ConversationSelection.Conversation = new ConversationDto
+			{
+				UtilisateurId = annonce.UserId,
+				UtilisateurNom = string.IsNullOrWhiteSpace(annonce.NomBailleur) ? "Bailleur" : annonce.NomBailleur,
+				AnnonceId = annonce.Id,
+				AnnonceTitre = annonce.Titre
+			};
+		}
 
-	/// <summary>Appelle le bailleur (si son num\u00e9ro est disponible).</summary>
+		NavigationShell.AllerVersAvecRetour("MessageriePage", "DetailAnnoncePage");
+	}
+
+	/// <summary>Appelle le bailleur (si son numéro est disponible).</summary>
 	private void OnAppelerClicked(object sender, EventArgs e)
 	{
 		if (BindingContext is not DetailAnnonceViewModel vm)

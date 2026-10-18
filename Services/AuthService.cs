@@ -18,6 +18,9 @@ public class AuthService : IAuthService
     private const string AccessTokenKey = "locatcam_access_token";
     private const string RefreshTokenKey = "locatcam_refresh_token";
     private const string UserKey = "locatcam_user";
+    private const string SessionActiveKey = "locatcam_session_active";
+
+    public string? DerniereErreur { get; private set; }
 
     public AuthService(IApiClient apiClient, TokenHandler tokenHandler)
     {
@@ -30,6 +33,8 @@ public class AuthService : IAuthService
     /// </summary>
     public async Task<LoginResponse?> LoginAsync(string email, string motDePasse)
     {
+        DerniereErreur = null;
+
         try
         {
             var response = await _apiClient.Login(new LoginRequest
@@ -38,24 +43,36 @@ public class AuthService : IAuthService
                 MotDePasse = motDePasse
             });
 
-            if (!response.IsSuccess || response.Content == null)
-                return null;
+            if (response.IsSuccessStatusCode && response.Content != null)
+            {
+                // Stocker les tokens
+                await SecureStorage.SetAsync(AccessTokenKey, response.Content.AccessToken);
+                await SecureStorage.SetAsync(RefreshTokenKey, response.Content.RefreshToken);
+                Preferences.Set(SessionActiveKey, true);
 
-            // Stocker les tokens
-            await SecureStorage.SetAsync(AccessTokenKey, response.Content.AccessToken);
-            await SecureStorage.SetAsync(RefreshTokenKey, response.Content.RefreshToken);
+                // Injecter le token dans le handler
+                _tokenHandler.SetAccessToken(response.Content.AccessToken);
 
-            // Injecter le token dans le handler
-            _tokenHandler.SetAccessToken(response.Content.AccessToken);
+                // Stocker l'utilisateur sérialisé
+                var userJson = JsonSerializer.Serialize(response.Content.User);
+                await SecureStorage.SetAsync(UserKey, userJson);
 
-            // Stocker l'utilisateur sérialisé
-            var userJson = JsonSerializer.Serialize(response.Content.User);
-            await SecureStorage.SetAsync(UserKey, userJson);
+                return response.Content;
+            }
 
-            return response.Content;
+            DerniereErreur = (int)response.StatusCode switch
+            {
+                401 => "Email ou mot de passe incorrect.",
+                429 => "Trop de tentatives de connexion. Réessayez dans une minute.",
+                _ => $"Le serveur LocatCam est indisponible ({(int)response.StatusCode}). Réessayez plus tard."
+            };
+
+            return null;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"[AuthService] Login: {ex.Message}");
+            DerniereErreur = "Impossible de joindre le serveur LocatCam. Vérifiez votre connexion Internet.";
             return null;
         }
     }
@@ -76,7 +93,7 @@ public class AuthService : IAuthService
                 Role = role
             });
 
-            return response.IsSuccess;
+            return response.IsSuccessStatusCode;
         }
         catch (Exception)
         {
@@ -92,35 +109,59 @@ public class AuthService : IAuthService
         SecureStorage.Remove(AccessTokenKey);
         SecureStorage.Remove(RefreshTokenKey);
         SecureStorage.Remove(UserKey);
+        Preferences.Set(SessionActiveKey, false);
         _tokenHandler.SetAccessToken(null);
     }
 
     /// <summary>
     /// Indique si un utilisateur est actuellement connecté (token présent).
     /// </summary>
-    public Task<bool> IsLoggedInAsync()
+    public async Task<bool> IsLoggedInAsync()
     {
-        var token = SecureStorage.GetAsync(AccessTokenKey);
-        return Task.FromResult(!string.IsNullOrWhiteSpace(token.Result));
+        // Drapeau non sensible : évite d'interroger le keystore Android à chaque
+        // démarrage (SecureStorage peut être lent au premier accès).
+        if (!Preferences.Get(SessionActiveKey, false))
+            return false;
+
+        try
+        {
+            var token = await SecureStorage.GetAsync(AccessTokenKey);
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                Preferences.Set(SessionActiveKey, false);
+                return false;
+            }
+
+            // Restaurer le Bearer token dans le handler après un redémarrage :
+            // sinon les appels authentifiés (favoris, messages, profil) partent
+            // sans Authorization et l'API répond 401.
+            _tokenHandler.SetAccessToken(token);
+
+            return true;
+        }
+        catch
+        {
+            // SecureStorage peut être indisponible (keystore réinitialisé, etc.).
+            return false;
+        }
     }
 
     /// <summary>
     /// Récupère le profil de l'utilisateur connecté depuis le SecureStorage.
     /// </summary>
-    public Task<UserDto?> GetCurrentUserAsync()
+    public async Task<UserDto?> GetCurrentUserAsync()
     {
         try
         {
-            var userJson = SecureStorage.GetAsync(UserKey).Result;
+            var userJson = await SecureStorage.GetAsync(UserKey);
             if (string.IsNullOrWhiteSpace(userJson))
-                return Task.FromResult<UserDto?>(null);
+                return null;
 
-            var user = JsonSerializer.Deserialize<UserDto>(userJson);
-            return Task.FromResult(user);
+            return JsonSerializer.Deserialize<UserDto>(userJson);
         }
         catch
         {
-            return Task.FromResult<UserDto?>(null);
+            return null;
         }
     }
 
@@ -132,13 +173,13 @@ public class AuthService : IAuthService
     {
         try
         {
-            var refreshToken = SecureStorage.GetAsync(RefreshTokenKey).Result;
+            var refreshToken = await SecureStorage.GetAsync(RefreshTokenKey);
             if (string.IsNullOrWhiteSpace(refreshToken))
                 return false;
 
             var response = await _apiClient.Refresh(refreshToken);
 
-            if (!response.IsSuccess || response.Content == null)
+            if (!response.IsSuccessStatusCode || response.Content == null)
                 return false;
 
             // Mettre à jour les tokens

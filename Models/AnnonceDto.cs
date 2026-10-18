@@ -35,8 +35,8 @@ public class AnnonceDto
     public List<AnnoncePhotoDto> Photos { get; set; } = new();
 
     /// <summary>
-    /// URL de la photo principale (ou de la premi\u00e8re photo disponible).
-    /// Propri\u00e9t\u00e9 calcul\u00e9e, jamais s\u00e9rialis\u00e9e.
+    /// URL de la photo principale (ou de la première photo disponible).
+    /// Propriété calculée, jamais sérialisée.
     /// </summary>
     [JsonIgnore]
     public string PhotoPrincipaleUrl =>

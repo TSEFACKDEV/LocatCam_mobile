@@ -27,15 +27,20 @@ public class FavoriService : IFavoriService
         {
             var response = await _apiClient.GetFavoris();
 
-            if (!response.IsSuccess || response.Content == null)
+            if (!response.IsSuccessStatusCode || response.Content == null)
             {
                 // Hors-ligne ou erreur : retour du cache SQLite
                 var favorisLocaux = await _localDb.GetFavorisLocauxAsync();
                 return favorisLocaux.Select(f => new AnnonceDto { Id = Guid.Parse(f.AnnonceId) }).ToList();
             }
 
+            // L'API renvoie des favoris contenant chacun l'annonce complète.
+            var annonces = response.Content
+                .Where(f => f.Annonce != null)
+                .Select(f => f.Annonce!)
+                .ToList();
+
             // Mettre à jour le cache local avec les IDs de favoris serveur
-            var annonces = response.Content;
             foreach (var annonce in annonces)
             {
                 var estDejaLocal = await _localDb.IsFavoriLocalAsync(annonce.Id.ToString());
@@ -67,7 +72,7 @@ public class FavoriService : IFavoriService
         {
             var response = await _apiClient.AddFavori(annonceId);
 
-            if (response.IsSuccess)
+            if (response.IsSuccessStatusCode)
             {
                 // Mise à jour du cache local
                 var estDejaLocal = await _localDb.IsFavoriLocalAsync(annonceId);
@@ -102,7 +107,7 @@ public class FavoriService : IFavoriService
             var response = await _apiClient.RemoveFavori(annonceId);
 
             // Contournement anomalie M1 : accepter 200 et 204 comme succès
-            if (response.IsSuccess)
+            if (response.IsSuccessStatusCode)
             {
                 await _localDb.RetirerFavoriLocalAsync(annonceId);
                 return true;

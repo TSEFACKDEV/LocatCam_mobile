@@ -28,7 +28,7 @@ public class AnnonceService : IAnnonceService
             var response = await _apiClient.GetAnnonces(
                 prixMin, prixMax, quartier, ville, type, estMeuble, disponible, page, pageSize);
 
-            if (!response.IsSuccess || response.Content == null)
+            if (!response.IsSuccessStatusCode || response.Content == null)
                 return (new List<AnnonceDto>(), 0);
 
             var items = response.Content.Items?.ToList() ?? new List<AnnonceDto>();
@@ -53,7 +53,7 @@ public class AnnonceService : IAnnonceService
         {
             var response = await _apiClient.GetAnnonceById(id);
 
-            if (!response.IsSuccess || response.Content == null)
+            if (!response.IsSuccessStatusCode || response.Content == null)
                 return null;
 
             return response.Content;
@@ -76,7 +76,7 @@ public class AnnonceService : IAnnonceService
         {
             var response = await _apiClient.GetMesAnnonces();
 
-            if (!response.IsSuccess || response.Content == null)
+            if (!response.IsSuccessStatusCode || response.Content == null)
                 return new List<AnnonceDto>();
 
             return response.Content;
@@ -99,7 +99,7 @@ public class AnnonceService : IAnnonceService
         {
             var response = await _apiClient.CreateAnnonce(dto);
 
-            if (!response.IsSuccess || response.Content == null)
+            if (!response.IsSuccessStatusCode || response.Content == null)
                 return null;
 
             return response.Content;
@@ -122,7 +122,7 @@ public class AnnonceService : IAnnonceService
         {
             var response = await _apiClient.UpdateAnnonce(id, dto);
 
-            if (!response.IsSuccess || response.Content == null)
+            if (!response.IsSuccessStatusCode || response.Content == null)
                 return null;
 
             return response.Content;
@@ -144,7 +144,7 @@ public class AnnonceService : IAnnonceService
         try
         {
             var response = await _apiClient.DeleteAnnonce(id);
-            return response.IsSuccess;
+            return response.IsSuccessStatusCode;
         }
         catch (ApiException ex)
         {
@@ -165,7 +165,7 @@ public class AnnonceService : IAnnonceService
         {
             var response = await _apiClient.GetAnnoncesMap(minLat, maxLat, minLng, maxLng);
 
-            if (!response.IsSuccess || response.Content == null)
+            if (!response.IsSuccessStatusCode || response.Content == null)
                 return new List<AnnonceDto>();
 
             return response.Content;

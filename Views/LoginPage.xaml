@@ -2,117 +2,192 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LocatCam_mobile.Views.LoginPage"
+             Shell.NavBarIsVisible="False"
              Title="Connexion"
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24,48,24,32" Spacing="22">
+    <Grid>
 
-            <!-- ============ MARQUE ============ -->
-            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                   BorderColor="Transparent"
-                   CornerRadius="20"
-                   Padding="0"
-                   WidthRequest="76"
-                   HeightRequest="76"
-                   HasShadow="False"
-                   HorizontalOptions="Center">
-                <Frame.Shadow>
-                    <Shadow Brush="#1565C0" Offset="0,10" Radius="22" Opacity="0.30" />
-                </Frame.Shadow>
-                <Label Text="&#xf015;" FontFamily="FASolid" FontSize="32" TextColor="White"
-                       HorizontalOptions="Center" VerticalOptions="Center" />
-            </Frame>
+        <!-- ============ FOND DOUX ============ -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="{AppThemeBinding Light=#F4F7FF, Dark=#10131C}" Offset="0.0" />
+                <GradientStop Color="{AppThemeBinding Light=#FFFFFF, Dark=#0D0F15}" Offset="0.5" />
+                <GradientStop Color="{AppThemeBinding Light=#EDF2FF, Dark=#12172A}" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
 
-            <VerticalStackLayout Spacing="6" Margin="0,6,0,10">
-                <Label Text="LocatCam" Style="{StaticResource Display}" HorizontalOptions="Center" />
-                <Label Text="Connectez-vous pour trouver votre logement"
-                       Style="{StaticResource Caption}"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center" />
-            </VerticalStackLayout>
+        <Ellipse Fill="{AppThemeBinding Light=#E7EDFF, Dark=#1A2140}"
+                 WidthRequest="330" HeightRequest="330"
+                 Opacity="0.75"
+                 HorizontalOptions="End" VerticalOptions="Start"
+                 Margin="0,-150,-125,0"
+                 InputTransparent="True" />
 
-            <!-- ============ MESSAGE D'ERREUR ============ -->
-            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorLightDark}}"
-                   BorderColor="Transparent"
-                   CornerRadius="14"
-                   Padding="14,12"
-                   HasShadow="False"
-                   IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}">
-                <HorizontalStackLayout Spacing="10">
-                    <Label Text="&#xf071;" FontFamily="FASolid" FontSize="15"
-                           TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+        <Ellipse Fill="{AppThemeBinding Light=#F3ECFF, Dark=#221A38}"
+                 WidthRequest="230" HeightRequest="230"
+                 Opacity="0.55"
+                 HorizontalOptions="Start" VerticalOptions="End"
+                 Margin="-95,0,0,-70"
+                 InputTransparent="True" />
+
+        <ScrollView>
+            <VerticalStackLayout Padding="24,54,24,32"
+                                 Spacing="26"
+                                 MaximumWidthRequest="480"
+                                 HorizontalOptions="Center">
+
+                <!-- ============ MARQUE ============ -->
+                <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                    <Border WidthRequest="78" HeightRequest="78"
+                            Padding="0"
+                            StrokeThickness="0"
+                            HorizontalOptions="Center">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="24" />
+                        </Border.StrokeShape>
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="{StaticResource Accent}" Offset="0.0" />
+                                <GradientStop Color="{StaticResource AccentLight}" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Shadow>
+                            <Shadow Brush="{StaticResource Accent}" Offset="0,10" Radius="24" Opacity="0.30" />
+                        </Border.Shadow>
+                        <Label Text="&#xf015;" FontFamily="FASolid" FontSize="32" TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+
+                    <Label Text="LocatCam" Style="{StaticResource Display}" FontSize="31" HorizontalOptions="Center" />
+                    <Label Text="Votre logement, simplement."
+                           Style="{StaticResource Caption}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <!-- ============ CARTE DE CONNEXION ============ -->
+                <Border Style="{StaticResource ElevatedCard}" Padding="22,24">
+                    <VerticalStackLayout Spacing="18">
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Bon retour" Style="{StaticResource H1}" />
+                            <Label Text="Connectez-vous pour retrouver vos annonces et vos favoris."
+                                   Style="{StaticResource Caption}"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+
+                        <!-- Message d'état -->
+                        <HorizontalStackLayout Spacing="8"
+                                               IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}">
+                            <Label Text="&#xf05a;"
+                                   FontFamily="FASolid"
+                                   FontSize="14"
+                                   TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                   VerticalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding MessageIsError}" Value="True">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <Label Text="{Binding Message}"
+                                   FontFamily="PlusJakartaSans"
+                                   FontSize="13.5"
+                                   LineBreakMode="WordWrap"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding MessageIsError}" Value="True">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </HorizontalStackLayout>
+
+                        <!-- Email -->
+                        <VerticalStackLayout Spacing="7">
+                            <Label Text="Adresse email" Style="{StaticResource Micro}" Margin="2,0,0,0" />
+                            <Frame Style="{StaticResource InputBorder}" HeightRequest="58">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                    <Label Grid.Column="0" Text="&#xf0e0;" FontFamily="FASolid" FontSize="15"
+                                           TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                           VerticalOptions="Center" />
+                                    <Entry Grid.Column="1"
+                                           Placeholder="vous@exemple.cm"
+                                           Keyboard="Email"
+                                           Text="{Binding Email}"
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                                           FontFamily="PlusJakartaSans"
+                                           FontSize="15"
+                                           BackgroundColor="Transparent"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Mot de passe -->
+                        <VerticalStackLayout Spacing="7">
+                            <Label Text="Mot de passe" Style="{StaticResource Micro}" Margin="2,0,0,0" />
+                            <Frame Style="{StaticResource InputBorder}" HeightRequest="58">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <Label Grid.Column="0" Text="&#xf023;" FontFamily="FASolid" FontSize="15"
+                                           TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                           VerticalOptions="Center" />
+                                    <Entry Grid.Column="1"
+                                           x:Name="MotDePasseEntry"
+                                           Placeholder="Votre mot de passe"
+                                           IsPassword="True"
+                                           Text="{Binding MotDePasse}"
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                                           FontFamily="PlusJakartaSans"
+                                           FontSize="15"
+                                           BackgroundColor="Transparent"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="2"
+                                           x:Name="ToggleMotDePasse"
+                                           Text="&#xf06e;"
+                                           FontFamily="FASolid"
+                                           FontSize="15"
+                                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                                           VerticalOptions="Center"
+                                           Padding="4,10"
+                                           SemanticProperties.Description="Afficher ou masquer le mot de passe">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnToggleMotDePasse" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Connexion -->
+                        <Button Text="Se connecter"
+                                Command="{Binding LoginCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                Margin="0,4,0,0" />
+
+                        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                           IsVisible="{Binding IsBusy}"
+                                           Color="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                           HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ============ INSCRIPTION ============ -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="0">
+                    <Label Text="Nouveau sur LocatCam ?"
+                           Style="{StaticResource Caption}"
                            VerticalOptions="Center" />
-                    <Label Text="{Binding Message}"
-                           FontFamily="PlusJakartaSans"
-                           FontSize="13.5"
-                           TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
-                           LineBreakMode="WordWrap"
-                           VerticalOptions="Center" />
+                    <Button Text="Créer un compte"
+                            Command="{Binding GoToRegisterCommand}"
+                            Style="{StaticResource TextButton}" />
                 </HorizontalStackLayout>
-            </Frame>
 
-            <!-- ============ CHAMP EMAIL ============ -->
-            <Frame Style="{StaticResource InputBorder}" HeightRequest="56">
-                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                    <Label Grid.Column="0" Text="&#xf0e0;" FontFamily="FASolid" FontSize="15"
-                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                           VerticalOptions="Center" />
-                    <Entry Grid.Column="1"
-                           Placeholder="Adresse email"
-                           Keyboard="Email"
-                           Text="{Binding Email}"
-                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                           FontFamily="PlusJakartaSans"
-                           FontSize="15"
-                           BackgroundColor="Transparent"
-                           VerticalOptions="Center" />
-                </Grid>
-            </Frame>
-
-            <!-- ============ CHAMP MOT DE PASSE ============ -->
-            <Frame Style="{StaticResource InputBorder}" HeightRequest="56">
-                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                    <Label Grid.Column="0" Text="&#xf023;" FontFamily="FASolid" FontSize="15"
-                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                           VerticalOptions="Center" />
-                    <Entry Grid.Column="1"
-                           Placeholder="Mot de passe"
-                           IsPassword="True"
-                           Text="{Binding MotDePasse}"
-                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                           FontFamily="PlusJakartaSans"
-                           FontSize="15"
-                           BackgroundColor="Transparent"
-                           VerticalOptions="Center" />
-                </Grid>
-            </Frame>
-
-            <!-- ============ BOUTON CONNEXION ============ -->
-            <Button Text="Se connecter"
-                    Command="{Binding LoginCommand}"
-                    Style="{StaticResource PrimaryButton}"
-                    Margin="0,8,0,0" />
-
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
-                               IsVisible="{Binding IsBusy}"
-                               Color="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                               HorizontalOptions="Center" />
-
-            <!-- ============ LIEN INSCRIPTION ============ -->
-            <VerticalStackLayout Spacing="0" Margin="0,10,0,0">
-                <Label Text="Premi\u00e8re visite sur LocatCam ?"
-                       Style="{StaticResource Caption}"
-                       HorizontalOptions="Center" />
-                <Button Text="Cr\u00e9er un compte"
-                        Command="{Binding GoToRegisterCommand}"
-                        Style="{StaticResource TextButton}"
-                        HorizontalOptions="Center" />
             </VerticalStackLayout>
-
-        </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+    </Grid>
 
 </ContentPage>

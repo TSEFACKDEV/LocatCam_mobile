@@ -2,61 +2,83 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <!-- ==================================================================
+         PALETTE LOCATCAM — douce, élégante et moderne
+         Une encre bleu nuit, un indigo lumineux, des surfaces très claires.
+         ================================================================== -->
+
     <!-- ===================== ENCRE (texte) ===================== -->
-    <Color x:Key="InkPrimary">#1C1C1E</Color>
-    <Color x:Key="InkPrimaryDark">#F2F2F2</Color>
-    <Color x:Key="InkSecondary">#6E6E73</Color>
-    <Color x:Key="InkSecondaryDark">#AEAEB2</Color>
-    <Color x:Key="InkMuted">#9A9AA0</Color>
-    <Color x:Key="InkMutedDark">#7C7C82</Color>
+    <Color x:Key="InkPrimary">#191B24</Color>
+    <Color x:Key="InkPrimaryDark">#F3F4F8</Color>
+    <Color x:Key="InkSecondary">#5D6474</Color>
+    <Color x:Key="InkSecondaryDark">#A8AEBD</Color>
+    <Color x:Key="InkMuted">#949AA8</Color>
+    <Color x:Key="InkMutedDark">#6E7585</Color>
 
     <!-- ===================== SURFACES ===================== -->
-    <Color x:Key="Canvas">#FFFFFF</Color>
-    <Color x:Key="CanvasDark">#111114</Color>
+    <Color x:Key="Canvas">#F8F9FD</Color>
+    <Color x:Key="CanvasDark">#0E1017</Color>
     <Color x:Key="SurfaceCard">#FFFFFF</Color>
-    <Color x:Key="SurfaceCardDark">#1C1C1F</Color>
-    <Color x:Key="SurfaceSoft">#F4F5F7</Color>
-    <Color x:Key="SurfaceSoftDark">#242428</Color>
-    <Color x:Key="Hairline">#E9E9EE</Color>
-    <Color x:Key="HairlineDark">#2E2E33</Color>
+    <Color x:Key="SurfaceCardDark">#181B23</Color>
+    <Color x:Key="SurfaceSoft">#F2F4FA</Color>
+    <Color x:Key="SurfaceSoftDark">#232733</Color>
+    <Color x:Key="Hairline">#E7EAF3</Color>
+    <Color x:Key="HairlineDark">#2B3040</Color>
 
-    <!-- ===================== ACCENT LOCATCAM (BLEU) ===================== -->
-    <Color x:Key="Accent">#1565C0</Color>
-    <Color x:Key="AccentDark">#5B9BD5</Color>
-    <Color x:Key="AccentPressed">#0D47A1</Color>
-    <Color x:Key="AccentSoft">#E8F1FB</Color>
-    <Color x:Key="AccentSoftDark">#17293D</Color>
+    <!-- ===================== ACCENT LOCATCAM (INDIGO DOUX) ===================== -->
+    <Color x:Key="Accent">#4361EE</Color>
+    <Color x:Key="AccentLight">#7C93FF</Color>
+    <Color x:Key="AccentDark">#93A9FF</Color>
+    <Color x:Key="AccentPressed">#324BC4</Color>
+    <Color x:Key="AccentSoft">#EEF2FF</Color>
+    <Color x:Key="AccentSoftDark">#1A2240</Color>
+
+    <!-- Touche chaleureuse, réservée aux distinctions (badges « vérifié ») -->
+    <Color x:Key="Gold">#C8A96A</Color>
+    <Color x:Key="GoldSoft">#F8F2E6</Color>
 
     <!-- ===================== STATUTS ===================== -->
-    <Color x:Key="Success">#2E7D32</Color>
-    <Color x:Key="SuccessDark">#66BB6A</Color>
-    <Color x:Key="SuccessLight">#E8F5E9</Color>
-    <Color x:Key="SuccessLightDark">#14251A</Color>
-    <Color x:Key="Warning">#F57C00</Color>
-    <Color x:Key="WarningDark">#FFB74D</Color>
-    <Color x:Key="Error">#C13515</Color>
-    <Color x:Key="ErrorDark">#E57373</Color>
-    <Color x:Key="ErrorLight">#FDECEA</Color>
-    <Color x:Key="ErrorLightDark">#3A1A15</Color>
+    <Color x:Key="Success">#2F9E6E</Color>
+    <Color x:Key="SuccessDark">#6FD3A5</Color>
+    <Color x:Key="SuccessLight">#E9F7F1</Color>
+    <Color x:Key="SuccessLightDark">#12261D</Color>
+    <Color x:Key="Warning">#DE9A3F</Color>
+    <Color x:Key="WarningDark">#F0BC72</Color>
+    <Color x:Key="Error">#D95858</Color>
+    <Color x:Key="ErrorDark">#F08A8A</Color>
+    <Color x:Key="ErrorLight">#FCEDED</Color>
+    <Color x:Key="ErrorLightDark">#2E1719</Color>
 
     <!-- ===================== OVERLAYS ===================== -->
     <Color x:Key="Scrim">#33000000</Color>
     <Color x:Key="BadgeGlass">#99000000</Color>
-    <Color x:Key="CarteGlow">#D6E6FA</Color>
+    <Color x:Key="CarteGlow">#DCE5FF</Color>
+
+    <!-- ===================== DÉGRADÉS ===================== -->
+    <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#4361EE" Offset="0.0" />
+        <GradientStop Color="#7C93FF" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="SoftGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#F4F7FF" Offset="0.0" />
+        <GradientStop Color="#FFFFFF" Offset="0.55" />
+        <GradientStop Color="#EDF2FF" Offset="1.0" />
+    </LinearGradientBrush>
 
     <!-- ===================== ALIAS (compatibilité écrans existants) ===================== -->
-    <Color x:Key="Primary">#1565C0</Color>
-    <Color x:Key="PrimaryLight">#5B9BD5</Color>
-    <Color x:Key="PrimaryDark">#0D47A1</Color>
-    <Color x:Key="Secondary">#2E7D32</Color>
-    <Color x:Key="SecondaryLight">#66BB6A</Color>
+    <Color x:Key="Primary">#4361EE</Color>
+    <Color x:Key="PrimaryLight">#7C93FF</Color>
+    <Color x:Key="PrimaryDark">#324BC4</Color>
+    <Color x:Key="Secondary">#2F9E6E</Color>
+    <Color x:Key="SecondaryLight">#6FD3A5</Color>
     <Color x:Key="Surface">#FFFFFF</Color>
-    <Color x:Key="SurfaceDark">#1C1C1F</Color>
-    <Color x:Key="TextPrimary">#1C1C1E</Color>
-    <Color x:Key="TextPrimaryDark">#F2F2F2</Color>
-    <Color x:Key="TextSecondary">#6E6E73</Color>
-    <Color x:Key="TextSecondaryDark">#AEAEB2</Color>
-    <Color x:Key="Background">#FFFFFF</Color>
-    <Color x:Key="BackgroundDark">#111114</Color>
+    <Color x:Key="SurfaceDark">#181B23</Color>
+    <Color x:Key="TextPrimary">#191B24</Color>
+    <Color x:Key="TextPrimaryDark">#F3F4F8</Color>
+    <Color x:Key="TextSecondary">#5D6474</Color>
+    <Color x:Key="TextSecondaryDark">#A8AEBD</Color>
+    <Color x:Key="Background">#F8F9FD</Color>
+    <Color x:Key="BackgroundDark">#0E1017</Color>
 
 </ResourceDictionary>

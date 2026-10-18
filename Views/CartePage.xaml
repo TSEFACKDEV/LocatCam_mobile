@@ -4,6 +4,7 @@
              xmlns:ctrl="clr-namespace:LocatCam_mobile.Controls"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.CartePage"
+             Shell.NavBarIsVisible="False"
              Title="Carte"
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}"
              x:DataType="vm:MapViewModel">

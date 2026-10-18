@@ -5,6 +5,7 @@
              x:DataType="vm:DetailAnnonceViewModel"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.DetailAnnoncePage"
+             Shell.NavBarIsVisible="False"
              Title="Détail de l'annonce"
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
@@ -71,16 +72,18 @@
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding ToggleFavoriCommand}" />
                         </Frame.GestureRecognizers>
-                        <!-- Cœur vide (pas encore favori) -->
-                        <Label Text="&#xf004;" FontFamily="FARegular" FontSize="19"
-                               TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                               IsVisible="{Binding EstFavori, Converter={StaticResource InverseBoolConverter}}"
-                               HorizontalOptions="Center" VerticalOptions="Center" />
-                        <!-- Cœur plein (favori) -->
-                        <Label Text="&#xf004;" FontFamily="FASolid" FontSize="19"
-                               TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
-                               IsVisible="{Binding EstFavori}"
-                               HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Grid>
+                            <!-- Cœur vide (pas encore favori) -->
+                            <Label Text="&#xf004;" FontFamily="FASolid" FontSize="19"
+                                   TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                                   IsVisible="{Binding EstFavori, Converter={StaticResource InverseBoolConverter}}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                            <!-- Cœur plein (favori) -->
+                            <Label Text="&#xf004;" FontFamily="FASolid" FontSize="19"
+                                   TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                                   IsVisible="{Binding EstFavori}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Grid>
                     </Frame>
 
                     <!-- Badge Vérifié -->
@@ -95,7 +98,7 @@
                            IsVisible="{Binding Annonce.EstVerifie}">
                         <HorizontalStackLayout Spacing="5">
                             <Label Text="&#xf058;" FontFamily="FASolid" FontSize="12" TextColor="White" VerticalOptions="Center" />
-                            <Label Text="Vérifié" FontFamily="PlusJakartaSans" FontSize="11" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" />
+                            <Label Text="Vérifié" FontFamily="PlusJakartaSansBold" FontSize="11" FontAttributes="None" TextColor="White" VerticalOptions="Center" />
                         </HorizontalStackLayout>
                     </Frame>
                 </Grid>
@@ -122,7 +125,7 @@
                     <!-- Prix -->
                     <HorizontalStackLayout Spacing="6">
                         <Label Text="{Binding Annonce.Prix, Converter={StaticResource PrixFcfaConverter}}"
-                               FontFamily="PlusJakartaSans" FontSize="27" FontAttributes="Bold"
+                               FontFamily="PlusJakartaSansBold" FontSize="27" FontAttributes="None"
                                TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
                         <Label Text="/ mois" Style="{StaticResource Caption}" VerticalOptions="End" Margin="0,0,0,5" />
                     </HorizontalStackLayout>
@@ -146,7 +149,7 @@
                             <Frame Style="{StaticResource PastilleIcone}">
                                 <Label Text="&#xf236;" Style="{StaticResource IconeFa}" />
                             </Frame>
-                            <Label Text="Pi\u00e8ces" Style="{StaticResource Micro}" HorizontalOptions="Center" />
+                            <Label Text="Pièces" Style="{StaticResource Micro}" HorizontalOptions="Center" />
                             <Label Text="{Binding Annonce.NombrePieces}" Style="{StaticResource Caption}"
                                    HorizontalOptions="Center" />
                         </VerticalStackLayout>
@@ -155,7 +158,7 @@
                             <Frame Style="{StaticResource PastilleIcone}">
                                 <Label Text="&#xf4b8;" Style="{StaticResource IconeFa}" />
                             </Frame>
-                            <Label Text="Meubl\u00e9" Style="{StaticResource Micro}" HorizontalOptions="Center" />
+                            <Label Text="Meublé" Style="{StaticResource Micro}" HorizontalOptions="Center" />
                             <Label Text="Oui" Style="{StaticResource Caption}" HorizontalOptions="Center"
                                    IsVisible="{Binding Annonce.EstMeuble}" />
                             <Label Text="Non" Style="{StaticResource Caption}" HorizontalOptions="Center"
@@ -190,7 +193,7 @@
                                        HorizontalOptions="Center" VerticalOptions="Center" />
                             </Frame>
                             <VerticalStackLayout Spacing="2" VerticalOptions="Center">
-                                <Label Text="Propos\u00e9 par" Style="{StaticResource Micro}" />
+                                <Label Text="Proposé par" Style="{StaticResource Micro}" />
                                 <Label Text="{Binding Annonce.NomBailleur}" Style="{StaticResource BodyFort}" />
                             </VerticalStackLayout>
                         </HorizontalStackLayout>

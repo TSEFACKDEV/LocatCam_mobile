@@ -71,7 +71,7 @@ public interface IApiClient
     // ========================================================================
 
     [Get("/api/favoris")]
-    Task<ApiResponse<List<AnnonceDto>>> GetFavoris();
+    Task<ApiResponse<List<FavoriDto>>> GetFavoris();
 
     [Post("/api/favoris/{annonceId}")]
     Task<ApiResponse<string>> AddFavori(string annonceId);
@@ -87,7 +87,7 @@ public interface IApiClient
     Task<ApiResponse<MessageDto>> SendMessage([Body] MessageCreateDto dto);
 
     [Get("/api/messages/conversations")]
-    Task<ApiResponse<List<ConversationDto>>> GetConversations();
+    Task<ApiResponse<List<MessageDto>>> GetConversations();
 
     [Get("/api/messages/conversation/{autreUserId}")]
     Task<ApiResponse<List<MessageDto>>> GetConversation(string autreUserId);
@@ -118,17 +118,4 @@ public interface IApiClient
 
     [Put("/api/admin/users/{id}/bannir")]
     Task<ApiResponse<string>> BannirUser(string id, [Query] bool bannir);
-}
-
-/// <summary>
-/// Réponse enveloppée Refit contenant le statut HTTP et le contenu désérialisé.
-/// </summary>
-/// <typeparam name="T">Type du contenu.</typeparam>
-public class ApiResponse<T>
-{
-    public bool IsSuccess { get; set; }
-    public int StatusCode { get; set; }
-    public T? Content { get; set; }
-    public string? ErrorMessage { get; set; }
-    public IDictionary<string, string[]>? Errors { get; set; }
 }

@@ -1,16 +1,21 @@
 using LocatCam_mobile.Services;
+using LocatCam_mobile.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 
 namespace LocatCam_mobile.Views;
 
 /// <summary>
-/// Donn\u00e9es d'un slide d'onboarding.
+/// Données d'une étape d'onboarding.
 /// </summary>
 public class OnboardingSlide
 {
-    /// <summary>Glyphe Font Awesome affich\u00e9 dans la pastille.</summary>
-    public string Icone { get; set; } = string.Empty;
+    /// <summary>Illustration unDraw (fichier de Resources/Images).</summary>
+    public string Illustration { get; set; } = string.Empty;
+
+    /// <summary>Petite étiquette affichée au-dessus du titre.</summary>
+    public string Etiquette { get; set; } = string.Empty;
 
     public string Titre { get; set; } = string.Empty;
     public string SousTitre { get; set; } = string.Empty;
@@ -25,6 +30,9 @@ public partial class OnboardingPage : ContentPage
         get => _position;
         set
         {
+            if (_position == value)
+                return;
+
             _position = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(EstPremierSlide));
@@ -39,21 +47,24 @@ public partial class OnboardingPage : ContentPage
     {
         new OnboardingSlide
         {
-            Icone = "\uf015", // house
-            Titre = "Trouvez votre logement \u00e9tudiant",
-            SousTitre = "Cherchez une chambre, un studio ou un appartement pr\u00e8s de votre universit\u00e9 au Cameroun."
+            Illustration = "onboarding_house.svg",
+            Etiquette = "Recherche",
+            Titre = "Trouvez\u00A0votre chez-vous",
+            SousTitre = "Des chambres, studios et appartements proches de votre université, à Douala et à Yaoundé."
         },
         new OnboardingSlide
         {
-            Icone = "\uf1de", // sliders
-            Titre = "Filtrez par budget, quartier et type",
-            SousTitre = "Affinez votre recherche par prix, meubl\u00e9, nombre de pi\u00e8ces et disponibilit\u00e9."
+            Illustration = "onboarding_rent.svg",
+            Etiquette = "Filtres",
+            Titre = "Le bon logement, au bon prix",
+            SousTitre = "Affinez par budget, quartier, type et équipements. Gardez vos favoris pour comparer sereinement."
         },
         new OnboardingSlide
         {
-            Icone = "\uf4ad", // comment-dots
-            Titre = "Contactez directement le bailleur",
-            SousTitre = "Discutez avec le propri\u00e9taire via la messagerie in-app ou appelez-le en un clic."
+            Illustration = "onboarding_chat.svg",
+            Etiquette = "Contact",
+            Titre = "Discutez avec le bailleur",
+            SousTitre = "Posez vos questions et planifiez une visite directement depuis l'application, en toute simplicité."
         }
     };
 
@@ -86,24 +97,24 @@ public partial class OnboardingPage : ContentPage
     private void OnCommencerClicked(object sender, EventArgs e) => TerminerOnboarding();
 
     /// <summary>
-    /// Marque l'onboarding comme termin\u00e9 puis ouvre l'accueil (si connect\u00e9)
+    /// Marque l'onboarding comme terminé puis ouvre l'accueil (si connecté)
     /// ou la page de connexion.
     /// </summary>
     private async void TerminerOnboarding()
     {
         Preferences.Set("OnboardingDone", true);
 
-        string route;
+        bool connecte;
         try
         {
-            var token = await SecureStorage.GetAsync("locatcam_access_token");
-            route = string.IsNullOrWhiteSpace(token) ? "LoginPage" : "HomePage";
+            var authService = App.ServiceProvider?.GetService<IAuthService>();
+            connecte = authService != null && await authService.IsLoggedInAsync();
         }
         catch
         {
-            route = "LoginPage";
+            connecte = false;
         }
 
-        NavigationShell.AllerVers(route);
+        NavigationShell.AllerVers(connecte ? "HomePage" : "LoginPage");
     }
 }

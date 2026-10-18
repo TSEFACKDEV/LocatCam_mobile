@@ -17,8 +17,11 @@ public static class MauiProgram
 			.UseMauiCommunityToolkit()
 			.ConfigureFonts(fonts =>
 			{
-				// Plus Jakarta Sans (variable font) — police principale du design system
+				// Plus Jakarta Sans (poids statiques) — police principale du design system
 				fonts.AddFont("PlusJakartaSans-Regular.ttf", "PlusJakartaSans");
+				fonts.AddFont("PlusJakartaSans-Medium.ttf", "PlusJakartaSansMedium");
+				fonts.AddFont("PlusJakartaSans-SemiBold.ttf", "PlusJakartaSansSemiBold");
+				fonts.AddFont("PlusJakartaSans-Bold.ttf", "PlusJakartaSansBold");
 				// Font Awesome — icônes vectorielles (solid + regular)
 				fonts.AddFont("fa-solid-900.ttf", "FASolid");
 				fonts.AddFont("fa-regular-400.ttf", "FARegular");
@@ -26,6 +29,26 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
+
+#if ANDROID
+		// Les champs de saisie LocatCam sont déjà encadrés par une carte arrondie :
+		// on retire le soulignement Material par défaut des Entry/Picker/Editor.
+		Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("SansSoulignement", (handler, view) =>
+		{
+			handler.PlatformView.BackgroundTintList =
+				Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+		});
+		Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping("SansSoulignement", (handler, view) =>
+		{
+			handler.PlatformView.BackgroundTintList =
+				Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+		});
+		Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping("SansSoulignement", (handler, view) =>
+		{
+			handler.PlatformView.BackgroundTintList =
+				Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+		});
+#endif
 
 #if DEBUG
 		builder.Logging.AddDebug();

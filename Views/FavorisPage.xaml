@@ -7,6 +7,7 @@
              x:DataType="vm:FavorisViewModel"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.FavorisPage"
+             Shell.NavBarIsVisible="False"
              Title="Mes favoris"
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
@@ -36,8 +37,7 @@
                      RefreshColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}">
             <CollectionView x:Name="ListeFavoris"
                             ItemsSource="{Binding Favoris}"
-                            SelectionMode="Single"
-                            SelectionChanged="OnFavoriSelectionne"
+                            SelectionMode="None"
                             ItemSizingStrategy="MeasureFirstItem">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="18" />
@@ -54,7 +54,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:AnnonceDto">
                         <Grid Padding="20,0,20,0">
-                            <ctrl:AnnonceCard
+                            <ctrl:AnnonceCard Tapped="OnFavoriTapped"
                                 Titre="{Binding Titre}"
                                 Prix="{Binding Prix}"
                                 Ville="{Binding Ville}"

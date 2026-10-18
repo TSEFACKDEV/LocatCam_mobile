@@ -4,6 +4,7 @@
              xmlns:ctrl="clr-namespace:LocatCam_mobile.Controls"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.PublierPage"
+             Shell.NavBarIsVisible="False"
              Title="Publier une annonce"
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}"
              x:DataType="vm:PublierViewModel">

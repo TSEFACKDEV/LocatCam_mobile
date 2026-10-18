@@ -23,16 +23,13 @@ public partial class FavorisPage : ContentPage
 		}
 	}
 
-	/// <summary>Ouvre le d\u00e9tail de l'annonce favorite s\u00e9lectionn\u00e9e.</summary>
-	private void OnFavoriSelectionne(object sender, SelectionChangedEventArgs e)
+	/// <summary>Ouvre le détail de l'annonce favorite sélectionnée.</summary>
+	private void OnFavoriTapped(object sender, EventArgs e)
 	{
-		if (e.CurrentSelection.FirstOrDefault() is AnnonceDto annonce)
+		if (sender is Controls.AnnonceCard card && card.BindingContext is AnnonceDto annonce)
 		{
 			AnnonceSelection.Annonce = annonce;
-			NavigationShell.AllerVersAvecRetour("DetailAnnoncePage");
-
-			if (sender is CollectionView collection)
-				collection.SelectedItem = null;
+			NavigationShell.AllerVersAvecRetour("DetailAnnoncePage", "FavorisPage");
 		}
 	}
 }

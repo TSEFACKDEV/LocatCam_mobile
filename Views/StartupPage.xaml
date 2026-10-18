@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocatCam_mobile.Views.StartupPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
+
+    <Grid>
+
+        <!-- Fond doux : dégradé + halos décoratifs -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="{AppThemeBinding Light=#F4F7FF, Dark=#10131C}" Offset="0.0" />
+                <GradientStop Color="{AppThemeBinding Light=#FFFFFF, Dark=#0D0F15}" Offset="0.55" />
+                <GradientStop Color="{AppThemeBinding Light=#EDF2FF, Dark=#12172A}" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Ellipse Fill="{AppThemeBinding Light=#E7EDFF, Dark=#1A2140}"
+                 WidthRequest="340" HeightRequest="340"
+                 Opacity="0.75"
+                 HorizontalOptions="End" VerticalOptions="Start"
+                 Margin="0,-150,-130,0"
+                 InputTransparent="True" />
+
+        <Ellipse Fill="{AppThemeBinding Light=#F3ECFF, Dark=#221A38}"
+                 WidthRequest="260" HeightRequest="260"
+                 Opacity="0.6"
+                 HorizontalOptions="Start" VerticalOptions="End"
+                 Margin="-110,0,0,-90"
+                 InputTransparent="True" />
+
+        <VerticalStackLayout HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Spacing="16">
+
+            <Border WidthRequest="96" HeightRequest="96"
+                    Padding="0"
+                    StrokeThickness="0"
+                    HorizontalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="30" />
+                </Border.StrokeShape>
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource Accent}" Offset="0.0" />
+                        <GradientStop Color="{StaticResource AccentLight}" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Border.Shadow>
+                    <Shadow Brush="{StaticResource Accent}" Offset="0,12" Radius="26" Opacity="0.30" />
+                </Border.Shadow>
+                <Label Text="&#xf015;"
+                       FontFamily="FASolid"
+                       FontSize="40"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <Label Text="LocatCam"
+                   Style="{StaticResource Display}"
+                   FontSize="34"
+                   HorizontalOptions="Center" />
+
+            <Label Text="Votre logement, simplement."
+                   Style="{StaticResource Body}"
+                   TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                   HorizontalOptions="Center" />
+
+            <ActivityIndicator IsRunning="True"
+                               WidthRequest="24"
+                               HeightRequest="24"
+                               Margin="0,22,0,0"
+                               Color="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                               HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <Label Text="Logement étudiant · Douala &amp; Yaoundé"
+               Style="{StaticResource Micro}"
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,38" />
+
+    </Grid>
+
+</ContentPage>

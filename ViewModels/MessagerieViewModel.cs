@@ -74,6 +74,22 @@ public partial class MessagerieViewModel : ObservableObject
             var liste = await _messageService.GetConversationsAsync();
             Conversations = new ObservableCollection<ConversationDto>(liste ?? new List<ConversationDto>());
             OnPropertyChanged(nameof(TotalNonLus));
+
+            // Conversation demandée depuis « Contacter le bailleur ».
+            var demandee = Services.ConversationSelection.Conversation;
+            if (demandee != null)
+            {
+                Services.ConversationSelection.Conversation = null;
+
+                var existante = Conversations.FirstOrDefault(c => c.UtilisateurId == demandee.UtilisateurId);
+                if (existante == null)
+                {
+                    Conversations.Insert(0, demandee);
+                    existante = demandee;
+                }
+
+                ConversationSelectionnee = existante;
+            }
         }
         catch (Exception ex)
         {

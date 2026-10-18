@@ -7,6 +7,7 @@
              x:DataType="vm:HomeViewModel"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.HomePage"
+             Shell.NavBarIsVisible="False"
              Title="Accueil">
 
     <ContentPage.Resources>
@@ -92,61 +93,68 @@
                     Orientation="Horizontal"
                     HorizontalScrollBarVisibility="Never"
                     VerticalOptions="Start"
-                    HeightRequest="58">
-            <HorizontalStackLayout Padding="20,10,20,6" Spacing="8">
+                    HeightRequest="56">
+            <HorizontalStackLayout Padding="20,7,20,7" Spacing="8">
 
-                <Frame Style="{StaticResource Pill}"
-                       BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                       Padding="14,7">
-                    <HorizontalStackLayout Spacing="6">
-                        <Label Text="&#xf00c;" FontFamily="FASolid" FontSize="11" TextColor="White" VerticalOptions="Center" />
-                        <Label Text="Tous" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
+                <Button Text="Tous"
+                        Style="{StaticResource FilterButton}"
+                        Command="{Binding FiltrerCommand}"
+                        CommandParameter="Tous">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding FiltreActif}" Value="Tous">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
-                <Frame Style="{StaticResource Pill}">
-                    <HorizontalStackLayout Spacing="6">
-                        <Label Text="&#xf1ad;" FontFamily="FASolid" FontSize="11"
-                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                               VerticalOptions="Center" />
-                        <Label Text="Appartement" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                               VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
+                <Button Text="Appartement"
+                        Style="{StaticResource FilterButton}"
+                        Command="{Binding FiltrerCommand}"
+                        CommandParameter="Appartement">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding FiltreActif}" Value="Appartement">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
-                <Frame Style="{StaticResource Pill}">
-                    <HorizontalStackLayout Spacing="6">
-                        <Label Text="&#xf015;" FontFamily="FASolid" FontSize="11"
-                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                               VerticalOptions="Center" />
-                        <Label Text="Maison" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                               VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
+                <Button Text="Maison"
+                        Style="{StaticResource FilterButton}"
+                        Command="{Binding FiltrerCommand}"
+                        CommandParameter="Maison">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding FiltreActif}" Value="Maison">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
-                <Frame Style="{StaticResource Pill}">
-                    <HorizontalStackLayout Spacing="6">
-                        <Label Text="&#xf81d;" FontFamily="FASolid" FontSize="11"
-                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                               VerticalOptions="Center" />
-                        <Label Text="Studio" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                               VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
+                <Button Text="Studio"
+                        Style="{StaticResource FilterButton}"
+                        Command="{Binding FiltrerCommand}"
+                        CommandParameter="Studio">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding FiltreActif}" Value="Studio">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
-                <Frame Style="{StaticResource Pill}">
-                    <HorizontalStackLayout Spacing="6">
-                        <Label Text="&#xf4b8;" FontFamily="FASolid" FontSize="11"
-                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                               VerticalOptions="Center" />
-                        <Label Text="Meublé" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                               VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
+                <Button Text="Meublé"
+                        Style="{StaticResource FilterButton}"
+                        Command="{Binding FiltrerCommand}"
+                        CommandParameter="Meublé">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding FiltreActif}" Value="Meublé">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
             </HorizontalStackLayout>
         </ScrollView>
@@ -158,8 +166,7 @@
                      RefreshColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}">
             <CollectionView x:Name="ListeAnnonces"
                             ItemsSource="{Binding Annonces}"
-                            SelectionMode="Single"
-                            SelectionChanged="OnAnnonceSelectionnee"
+                            SelectionMode="None"
                             ItemSizingStrategy="MeasureFirstItem"
                             RemainingItemsThreshold="5"
                             RemainingItemsThresholdReachedCommand="{Binding ChargerPlusCommand}">
@@ -190,7 +197,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:AnnonceDto">
                         <Grid Padding="20,0,20,0">
-                            <ctrl:AnnonceCard
+                            <ctrl:AnnonceCard Tapped="OnAnnonceTapped"
                                 Titre="{Binding Titre}"
                                 Prix="{Binding Prix}"
                                 Ville="{Binding Ville}"

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LocatCam_mobile.Models;
 using LocatCam_mobile.Services.Interfaces;
+using Microsoft.Maui.Networking;
 
 namespace LocatCam_mobile.ViewModels;
 
@@ -42,6 +43,13 @@ public partial class LoginViewModel : ObservableObject
             return;
         }
 
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        {
+            Message = "Aucune connexion Internet. Vérifiez votre réseau puis réessayez.";
+            MessageIsError = true;
+            return;
+        }
+
         IsBusy = true;
         Message = string.Empty;
 
@@ -51,7 +59,9 @@ public partial class LoginViewModel : ObservableObject
 
             if (result == null)
             {
-                Message = "Email ou mot de passe incorrect.";
+                Message = string.IsNullOrWhiteSpace(_authService.DerniereErreur)
+                    ? "Email ou mot de passe incorrect."
+                    : _authService.DerniereErreur;
                 MessageIsError = true;
                 return;
             }

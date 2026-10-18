@@ -18,9 +18,9 @@
                 <Setter Property="HorizontalOptions" Value="Center" />
             </Style>
             <Style x:Key="NavLabel" TargetType="Label">
-                <Setter Property="FontFamily" Value="PlusJakartaSans" />
+                <Setter Property="FontFamily" Value="PlusJakartaSansSemiBold" />
                 <Setter Property="FontSize" Value="10" />
-                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontAttributes" Value="None" />
                 <Setter Property="HorizontalOptions" Value="Center" />
             </Style>
             <Style x:Key="NavIcone" TargetType="Label">
@@ -49,7 +49,7 @@
             <!-- ============ ACCUEIL ============ -->
             <VerticalStackLayout Grid.Column="0" AutomationId="HomePage" Spacing="3" HorizontalOptions="Fill">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                    <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="HomePage" />
                 </VerticalStackLayout.GestureRecognizers>
                 <Frame x:Name="PillAccueil" Style="{StaticResource NavPill}">
                     <Label x:Name="IconeAccueil" Text="&#xf015;" Style="{StaticResource NavIcone}" />
@@ -60,7 +60,7 @@
             <!-- ============ CARTE ============ -->
             <VerticalStackLayout Grid.Column="1" AutomationId="CartePage" Spacing="3" HorizontalOptions="Fill">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                    <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="CartePage" />
                 </VerticalStackLayout.GestureRecognizers>
                 <Frame x:Name="PillCarte" Style="{StaticResource NavPill}">
                     <Label x:Name="IconeCarte" Text="&#xf279;" Style="{StaticResource NavIcone}" />
@@ -71,7 +71,7 @@
             <!-- ============ FAVORIS ============ -->
             <VerticalStackLayout Grid.Column="2" AutomationId="FavorisPage" Spacing="3" HorizontalOptions="Fill">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                    <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="FavorisPage" />
                 </VerticalStackLayout.GestureRecognizers>
                 <Frame x:Name="PillFavoris" Style="{StaticResource NavPill}">
                     <Label x:Name="IconeFavoris" Text="&#xf004;" Style="{StaticResource NavIcone}" />
@@ -82,7 +82,7 @@
             <!-- ============ PUBLIER ============ -->
             <VerticalStackLayout Grid.Column="3" AutomationId="PublierPage" Spacing="3" HorizontalOptions="Fill">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                    <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="PublierPage" />
                 </VerticalStackLayout.GestureRecognizers>
                 <Frame x:Name="PillPublier" Style="{StaticResource NavPill}">
                     <Label x:Name="IconePublier" Text="&#xf067;" Style="{StaticResource NavIcone}" />
@@ -93,7 +93,7 @@
             <!-- ============ PROFIL ============ -->
             <VerticalStackLayout Grid.Column="4" AutomationId="ProfilPage" Spacing="3" HorizontalOptions="Fill">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                    <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="ProfilPage" />
                 </VerticalStackLayout.GestureRecognizers>
                 <Frame x:Name="PillProfil" Style="{StaticResource NavPill}">
                     <Label x:Name="IconeProfil" Text="&#xf007;" Style="{StaticResource NavIcone}" />

@@ -2,49 +2,97 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LocatCam_mobile.Views.OnboardingPage"
-             Title="Bienvenue">
+             Shell.NavBarIsVisible="False"
+             Title="Bienvenue"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
-    <Grid RowDefinitions="*,Auto"
-          BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- ============ CARROUSEL DES 3 SLIDES ============ -->
-        <CarouselView Grid.Row="0"
+        <!-- ============ HALOS DÉCORATIFS (fond doux) ============ -->
+        <Grid Grid.RowSpan="3" InputTransparent="True">
+            <Ellipse Fill="{AppThemeBinding Light=#E9EEFF, Dark=#1A2140}"
+                     WidthRequest="320" HeightRequest="320"
+                     Opacity="0.8"
+                     HorizontalOptions="End" VerticalOptions="Start"
+                     Margin="0,-140,-120,0" />
+            <Ellipse Fill="{AppThemeBinding Light=#F4EDFF, Dark=#221A38}"
+                     WidthRequest="240" HeightRequest="240"
+                     Opacity="0.55"
+                     HorizontalOptions="Start" VerticalOptions="End"
+                     Margin="-100,0,0,-80" />
+        </Grid>
+
+        <!-- ============ PASSER (barre du haut) ============ -->
+        <Button Grid.Row="0"
+                Text="Passer"
+                Clicked="OnPasserClicked"
+                HorizontalOptions="End"
+                VerticalOptions="Center"
+                Margin="0,6,14,0"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                FontFamily="PlusJakartaSansBold"
+                FontAttributes="None"
+                FontSize="14" />
+
+        <!-- ============ CARROUSEL DES 3 ÉTAPES ============ -->
+        <CarouselView Grid.Row="1"
                       x:Name="OnboardingCarousel"
                       Position="{Binding Position, Mode=TwoWay}"
                       IndicatorView="OnboardingIndicator"
                       ItemsSource="{Binding Slides}"
                       Loop="False"
+                      IsBounceEnabled="True"
                       VerticalOptions="Fill">
             <CarouselView.ItemTemplate>
                 <DataTemplate>
-                    <Grid RowDefinitions="*,Auto" Padding="32,0,32,12" RowSpacing="28">
+                    <Grid RowDefinitions="*,Auto"
+                          Padding="24,4,24,8"
+                          RowSpacing="26">
 
-                        <!-- Illustration : pastille bleue avec icône blanche -->
-                        <Frame Grid.Row="0"
-                               WidthRequest="210" HeightRequest="210"
-                               CornerRadius="105"
-                               BorderColor="Transparent"
-                               HasShadow="False"
-                               BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center">
-                            <Frame.Shadow>
-                                <Shadow Brush="#1565C0" Offset="0,14" Radius="30" Opacity="0.30" />
-                            </Frame.Shadow>
-                            <Label Text="{Binding Icone}"
-                                   FontFamily="FASolid"
-                                   FontSize="78"
-                                   TextColor="White"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                        </Frame>
+                        <!-- Illustration unDraw dans une carte douce -->
+                        <Border Grid.Row="0"
+                                Padding="12"
+                                MinimumHeightRequest="250"
+                                VerticalOptions="Fill"
+                                HorizontalOptions="Fill">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="30" />
+                            </Border.StrokeShape>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="{AppThemeBinding Light=#FFFFFF, Dark=#1B1F2A}" Offset="0.0" />
+                                    <GradientStop Color="{AppThemeBinding Light=#F3F6FF, Dark=#161A24}" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Shadow>
+                                <Shadow Brush="#1B2559" Offset="0,16" Radius="36" Opacity="0.10" />
+                            </Border.Shadow>
 
-                        <!-- Texte -->
-                        <VerticalStackLayout Grid.Row="1" Spacing="12">
+                            <Image Source="{Binding Illustration}"
+                                   Aspect="AspectFit"
+                                   HorizontalOptions="Fill"
+                                   VerticalOptions="Fill"
+                                   Margin="6" />
+                        </Border>
+
+                        <!-- Texte de l'étape -->
+                        <VerticalStackLayout Grid.Row="1" Spacing="12" Padding="4,0">
+                            <Frame Style="{StaticResource Pill}"
+                                   Padding="13,6"
+                                   HorizontalOptions="Center">
+                                <Label Text="{Binding Etiquette}"
+                                       Style="{StaticResource Micro}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+                            </Frame>
+
                             <Label Text="{Binding Titre}"
-                                   Style="{StaticResource H1}"
+                                   Style="{StaticResource Display}"
+                                   FontSize="27"
+                                   CharacterSpacing="0"
                                    HorizontalTextAlignment="Center"
                                    LineBreakMode="WordWrap" />
+
                             <Label Text="{Binding SousTitre}"
                                    Style="{StaticResource Body}"
                                    TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
@@ -56,21 +104,8 @@
             </CarouselView.ItemTemplate>
         </CarouselView>
 
-        <!-- ============ PASSER (haut droite) ============ -->
-        <Button Grid.Row="0"
-                Text="Passer"
-                Clicked="OnPasserClicked"
-                HorizontalOptions="End"
-                VerticalOptions="Start"
-                Margin="0,44,12,0"
-                BackgroundColor="Transparent"
-                TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                FontFamily="PlusJakartaSans"
-                FontAttributes="Bold"
-                FontSize="14" />
-
         <!-- ============ BAS : PAGINATION + ACTIONS ============ -->
-        <VerticalStackLayout Grid.Row="1" Spacing="22" Padding="24,0,24,36">
+        <VerticalStackLayout Grid.Row="2" Spacing="20" Padding="24,0,24,34">
 
             <IndicatorView x:Name="OnboardingIndicator"
                            HorizontalOptions="Center"
@@ -91,14 +126,14 @@
                         Clicked="OnSuivantClicked"
                         IsVisible="{Binding EstDernierSlide, Converter={StaticResource InverseBoolConverter}}"
                         Style="{StaticResource PrimaryButton}"
-                        WidthRequest="170" />
+                        WidthRequest="164" />
 
                 <Button Grid.Column="2"
                         Text="Commencer"
                         Clicked="OnCommencerClicked"
                         IsVisible="{Binding EstDernierSlide}"
                         Style="{StaticResource PrimaryButton}"
-                        WidthRequest="170" />
+                        WidthRequest="184" />
             </Grid>
         </VerticalStackLayout>
 

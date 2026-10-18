@@ -4,8 +4,8 @@ using Microsoft.Maui.Controls;
 namespace LocatCam_mobile.Controls;
 
 /// <summary>
-/// Barre de navigation basse personnalis\u00e9e (5 onglets).
-/// L'onglet actif est mis en valeur par une pastille bleu clair + ic\u00f4ne bleue.
+/// Barre de navigation basse personnalisée (5 onglets).
+/// L'onglet actif est mis en valeur par une pastille bleu clair + icône bleue.
 /// </summary>
 public partial class BottomNavBar : ContentView
 {
@@ -74,7 +74,7 @@ public partial class BottomNavBar : ContentView
         }
         catch
         {
-            // Ignorer : couleur par d\u00e9faut ci-dessous
+            // Ignorer : couleur par défaut ci-dessous
         }
 
         return Colors.Gray;
@@ -82,17 +82,20 @@ public partial class BottomNavBar : ContentView
 
     private async void OnOngletTapped(object sender, TappedEventArgs e)
     {
-        if (sender is not TapGestureRecognizer tgr || tgr.Parent is not VisualElement element)
-            return;
+        // Selon la plateforme, sender peut être la vue ou le geste : le paramètre
+        // porté par le TapGestureRecognizer est la source fiable de la route.
+        var route = e.Parameter as string;
 
-        var route = element.AutomationId;
+        if (string.IsNullOrWhiteSpace(route))
+            route = (sender as VisualElement)?.AutomationId;
+
         if (string.IsNullOrWhiteSpace(route))
             return;
 
-        // Animation scale (80 ms aller/retour) puis navigation
-        EstActif = route;
-
-        var view = element as View;
+        // L'état actif est porté par la barre de la page de destination :
+        // on ne modifie pas celui de la page courante (sinon, en revenant
+        // sur une page mise en cache, l'onglet actif restait faux).
+        var view = sender as View;
         if (view != null)
         {
             await view.ScaleTo(0.94, 70, Easing.CubicOut);

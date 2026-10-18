@@ -31,12 +31,42 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty]
     private string _recherche = string.Empty;
 
+    /// <summary>Type d'annonce actif (null = tous).</summary>
+    [ObservableProperty]
+    private string? _typeFiltre;
+
+    /// <summary>Filtre « meublé » (null = indifférent).</summary>
+    [ObservableProperty]
+    private bool? _meubleFiltre;
+
+    /// <summary>Libellé du filtre actif, pour l'état visuel des puces.</summary>
+    [ObservableProperty]
+    private string _filtreActif = "Tous";
+
     private int _page = 1;
     private const int PageSize = 10;
 
     public HomeViewModel(IAnnonceService annonceService)
     {
         _annonceService = annonceService;
+    }
+
+    [RelayCommand]
+    public async Task FiltrerAsync(string? filtre)
+    {
+        FiltreActif = string.IsNullOrWhiteSpace(filtre) ? "Tous" : filtre;
+
+        TypeFiltre = FiltreActif switch
+        {
+            "Appartement" => "Appartement",
+            "Maison" => "Maison",
+            "Studio" => "Studio",
+            _ => null
+        };
+
+        MeubleFiltre = FiltreActif == "Meublé" ? true : null;
+
+        await ChargerAnnoncesAsync(reset: true);
     }
 
     [RelayCommand]
@@ -56,10 +86,26 @@ public partial class HomeViewModel : ObservableObject
 
         try
         {
+            var recherche = (Recherche ?? string.Empty).Trim();
+
             var (items, totalCount) = await _annonceService.GetAnnoncesAsync(
                 page: _page,
                 pageSize: PageSize,
-                ville: string.IsNullOrWhiteSpace(Recherche) ? null : Recherche);
+                ville: string.IsNullOrWhiteSpace(recherche) ? null : recherche,
+                type: TypeFiltre,
+                estMeuble: MeubleFiltre);
+
+            // La recherche peut porter sur un quartier : second essai si la
+            // ville ne donne aucun résultat.
+            if (reset && items.Count == 0 && !string.IsNullOrWhiteSpace(recherche))
+            {
+                (items, totalCount) = await _annonceService.GetAnnoncesAsync(
+                    page: _page,
+                    pageSize: PageSize,
+                    quartier: recherche,
+                    type: TypeFiltre,
+                    estMeuble: MeubleFiltre);
+            }
 
             TotalCount = totalCount;
 

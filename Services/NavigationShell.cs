@@ -77,18 +77,36 @@ public static class NavigationShell
     }
 
     /// <summary>Va vers une page en mémorisant la page courante (bouton Retour).</summary>
-    public static void AllerVersAvecRetour(string route)
+    public static void AllerVersAvecRetour(string route, string? origine = null)
     {
-        var courante = RouteCourante;
-        if (!string.IsNullOrEmpty(courante) &&
-            !string.Equals(courante, route, StringComparison.OrdinalIgnoreCase))
+        if (!string.IsNullOrWhiteSpace(origine))
         {
-            _retour = courante;
+            _retour = origine;
+        }
+        else
+        {
+            var courante = RouteCourante;
+            if (!string.IsNullOrEmpty(courante) &&
+                !string.Equals(courante, route, StringComparison.OrdinalIgnoreCase))
+            {
+                _retour = courante;
+            }
         }
 
         AllerVers(route);
     }
 
     /// <summary>Revient à la page précédente mémorisée (accueil par défaut).</summary>
-    public static void Revenir() => AllerVers(_retour);
+    public static void Revenir()
+    {
+        // StartupPage ne doit jamais être une destination « retour » : elle ne
+        // rejoue pas sa logique quand on revient dessus.
+        if (string.IsNullOrWhiteSpace(_retour) ||
+            string.Equals(_retour, "StartupPage", StringComparison.OrdinalIgnoreCase))
+        {
+            _retour = "HomePage";
+        }
+
+        AllerVers(_retour);
+    }
 }

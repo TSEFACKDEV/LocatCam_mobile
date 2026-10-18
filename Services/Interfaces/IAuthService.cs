@@ -10,6 +10,9 @@ namespace LocatCam_mobile.Services.Interfaces;
 /// </summary>
 public interface IAuthService
 {
+    /// <summary>Dernier message d'erreur lisible (connexion, serveur, identifiants).</summary>
+    string? DerniereErreur { get; }
+
     /// <summary>Connecte un utilisateur et retourne les tokens + profil.</summary>
     Task<LoginResponse?> LoginAsync(string email, string motDePasse);
 

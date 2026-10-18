@@ -5,6 +5,7 @@
              x:DataType="vm:ProfilViewModel"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.ProfilPage"
+             Shell.NavBarIsVisible="False"
              Title="Mon profil"
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
@@ -30,9 +31,9 @@
                         </Frame.Shadow>
                         <Label x:Name="AvatarInitiale"
                                Text="U"
-                               FontFamily="PlusJakartaSans"
+                               FontFamily="PlusJakartaSansBold"
                                FontSize="34"
-                               FontAttributes="Bold"
+                               FontAttributes="None"
                                TextColor="White"
                                HorizontalOptions="Center"
                                VerticalOptions="Center" />
@@ -57,7 +58,7 @@
                                    TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
                                    VerticalOptions="Center" />
                             <Label Text="{Binding Role}"
-                                   FontFamily="PlusJakartaSans" FontSize="12" FontAttributes="Bold"
+                                   FontFamily="PlusJakartaSansBold" FontSize="12" FontAttributes="None"
                                    TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
                                    VerticalOptions="Center" />
                         </HorizontalStackLayout>
@@ -131,13 +132,34 @@
                             </Frame>
                             <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
                                 <Label Text="Mode sombre" Style="{StaticResource BodyFort}" />
-                                <Label Text="Basculer le th\u00e8me de l'application" Style="{StaticResource Caption}" />
+                                <Label Text="Basculer le thème de l'application" Style="{StaticResource Caption}" />
                             </VerticalStackLayout>
                             <Switch Grid.Column="2"
                                     x:Name="ThemeSwitch"
                                     Toggled="OnThemeToggled"
                                     OnColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
                                     VerticalOptions="Center" />
+                        </Grid>
+
+                        <BoxView Style="{StaticResource Separateur}" Margin="54,0,0,0" />
+
+                        <!-- Revoir l'introduction -->
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14" Padding="0,10">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRevoirOnboarding" />
+                            </Grid.GestureRecognizers>
+                            <Frame Style="{StaticResource PastilleIcone}" WidthRequest="40" HeightRequest="40" CornerRadius="20">
+                                <Label Text="&#xf0eb;" FontFamily="FASolid" FontSize="15"
+                                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                <Label Text="Revoir l'introduction" Style="{StaticResource BodyFort}" />
+                                <Label Text="Redécouvrir les fonctionnalités de LocatCam" Style="{StaticResource Caption}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="&#xf054;" FontFamily="FASolid" FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                                   VerticalOptions="Center" />
                         </Grid>
 
                         <BoxView Style="{StaticResource Separateur}" Margin="54,0,0,0" />
@@ -150,7 +172,7 @@
                                        HorizontalOptions="Center" VerticalOptions="Center" />
                             </Frame>
                             <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
-                                <Label Text="\u00c0 propos" Style="{StaticResource BodyFort}" />
+                                <Label Text="À propos" Style="{StaticResource BodyFort}" />
                                 <Label Text="LocatCam Mobile" Style="{StaticResource Caption}" />
                             </VerticalStackLayout>
                             <Label Grid.Column="2" Text="v1.0" Style="{StaticResource Caption}" VerticalOptions="Center" />
@@ -172,7 +194,7 @@
                                TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                VerticalOptions="Center" />
                         <Label Text="Se déconnecter"
-                               FontFamily="PlusJakartaSans" FontSize="15" FontAttributes="Bold"
+                               FontFamily="PlusJakartaSansBold" FontSize="15" FontAttributes="None"
                                TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                VerticalOptions="Center" />
                     </HorizontalStackLayout>

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LocatCam_mobile.Views.RegisterPage"
+             Shell.NavBarIsVisible="False"
              Title="Inscription"
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
@@ -10,7 +11,7 @@
 
             <!-- ============ TITRE ============ -->
             <VerticalStackLayout Spacing="6" Margin="0,0,0,6">
-                <Label Text="Cr\u00e9er un compte" Style="{StaticResource Display}" HorizontalOptions="Center" />
+                <Label Text="Créer un compte" Style="{StaticResource Display}" HorizontalOptions="Center" />
                 <Label Text="Rejoignez LocatCam en quelques secondes"
                        Style="{StaticResource Caption}"
                        HorizontalOptions="Center"
@@ -94,7 +95,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
                            VerticalOptions="Center" />
                     <Entry Grid.Column="1"
-                           Placeholder="Mot de passe (min. 6 caract\u00e8res)"
+                           Placeholder="Mot de passe (min. 6 caractères)"
                            IsPassword="True"
                            Text="{Binding MotDePasse}"
                            PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
@@ -129,7 +130,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
                            VerticalOptions="Center" />
                     <Picker Grid.Column="1"
-                            Title="Choisir un r\u00f4le"
+                            Title="Choisir un rôle"
                             SelectedItem="{Binding Role}"
                             TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
                             FontFamily="PlusJakartaSans"
@@ -159,7 +160,7 @@
 
             <!-- ============ LIEN CONNEXION ============ -->
             <VerticalStackLayout Spacing="0" Margin="0,6,0,0">
-                <Label Text="D\u00e9j\u00e0 un compte ?"
+                <Label Text="Déjà un compte ?"
                        Style="{StaticResource Caption}"
                        HorizontalOptions="Center" />
                 <Button Text="Se connecter"

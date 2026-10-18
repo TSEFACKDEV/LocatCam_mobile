@@ -82,4 +82,10 @@ public partial class AnnonceCard : ContentView, INotifyPropertyChanged
     {
         InitializeComponent();
     }
+
+    /// <summary>Événement levé lorsqu'une carte est touchée (le BindingContext porte l'annonce).</summary>
+    public event EventHandler? Tapped;
+
+    private void OnCardTapped(object sender, TappedEventArgs e)
+        => Tapped?.Invoke(this, EventArgs.Empty);
 }

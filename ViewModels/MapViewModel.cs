@@ -106,7 +106,7 @@ public partial class MapViewModel : ObservableObject
 
         await Task.CompletedTask;
         Services.AnnonceSelection.Annonce = SelectedAnnonce;
-        Services.NavigationShell.AllerVersAvecRetour("DetailAnnoncePage");
+        Services.NavigationShell.AllerVersAvecRetour("DetailAnnoncePage", "CartePage");
         CloseBottomSheet();
     }
 

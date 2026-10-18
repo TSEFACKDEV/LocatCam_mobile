@@ -14,14 +14,14 @@ public partial class MessageriePage : ContentPage
         InitializeComponent();
 
         _vm = App.ServiceProvider?.GetRequiredService<MessagerieViewModel>()
-            ?? throw new InvalidOperationException("MessagerieViewModel n'est pas enregistr\u00e9 dans le DI.");
+            ?? throw new InvalidOperationException("MessagerieViewModel n'est pas enregistré dans le DI.");
 
         BindingContext = _vm;
 
-        // Charger les conversations \u00e0 l'apparition de la page
+        // Charger les conversations à l'apparition de la page
         _ = _vm.ChargerConversationsAsync();
 
-        // Faire d\u00e9filer automatiquement vers le dernier message
+        // Faire défiler automatiquement vers le dernier message
         _vm.Messages.CollectionChanged += OnMessagesChanged;
     }
 
@@ -38,12 +38,12 @@ public partial class MessageriePage : ContentPage
             }
             catch
             {
-                // D\u00e9filement non critique
+                // Défilement non critique
             }
         });
     }
 
-    /// <summary>Bouton retour de la liste : revient \u00e0 la page d'origine.</summary>
+    /// <summary>Bouton retour de la liste : revient à la page d'origine.</summary>
     private void OnRetourClicked(object sender, TappedEventArgs e)
         => NavigationShell.Revenir();
 }
