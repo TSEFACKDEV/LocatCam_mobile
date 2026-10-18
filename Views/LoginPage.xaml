@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocatCam_mobile.Views.LoginPage"
+             Title="Connexion">
+
+    <VerticalStackLayout Padding="30,20" Spacing="20">
+
+        <Label Text="LocatCam"
+               FontSize="32"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <Label Text="Connexion à votre compte"
+               FontSize="18"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <Label Text="{Binding Message}"
+               HorizontalOptions="Center"
+               FontSize="14"
+               IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}" />
+
+        <Entry x:Name="EmailEntry"
+               Placeholder="Email"
+               Keyboard="Email"
+               Text="{Binding Email}"
+               HorizontalOptions="Fill" />
+
+        <Entry x:Name="MotDePasseEntry"
+               Placeholder="Mot de passe"
+               IsPassword="True"
+               Text="{Binding MotDePasse}"
+               HorizontalOptions="Fill" />
+
+        <Button Text="Se connecter"
+                Command="{Binding LoginCommand}"
+                HorizontalOptions="Fill" />
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" />
+
+        <Label Text="Pas encore de compte ?"
+               HorizontalOptions="Center"
+               FontSize="14" />
+
+        <Button Text="Créer un compte"
+                Command="{Binding GoToRegisterCommand}"
+                HorizontalOptions="Fill" />
+
+    </VerticalStackLayout>
+
+</ContentPage>
