@@ -193,6 +193,16 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
+[/home/klein/Documents/projects/LocatCam/LocatCam_mobile/Views/PublierPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = LocatCam_mobile.Views.PublierPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/PublierPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/PublierPage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
 [/home/klein/Documents/projects/LocatCam/LocatCam_mobile/Views/RegisterPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = LocatCam_mobile.Views.RegisterPage.xaml

@@ -30,6 +30,12 @@
         ContentTemplate="{DataTemplate views:MessageriePage}"
         Route="MessageriePage" />
 
+    <!-- Publication d'annonce (accédé via navigation, pas d'onglet) -->
+    <ShellContent
+        Title="Publier"
+        ContentTemplate="{DataTemplate views:PublierPage}"
+        Route="PublierPage" />
+
     <!-- Onglet 5 : Profil -->
     <ShellContent
         Title="Profil"

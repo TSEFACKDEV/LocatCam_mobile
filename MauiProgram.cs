@@ -66,6 +66,8 @@ public static class MauiProgram
 		builder.Services.AddTransient<ViewModels.FavorisViewModel>();
 		builder.Services.AddTransient<ViewModels.ProfilViewModel>();
 		builder.Services.AddTransient<ViewModels.MapViewModel>();
+		builder.Services.AddTransient<ViewModels.PublierViewModel>();
+		builder.Services.AddTransient<ViewModels.MessagerieViewModel>();
 
 		var app = builder.Build();
 		App.ServiceProvider = app.Services;
