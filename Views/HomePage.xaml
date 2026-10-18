@@ -67,18 +67,9 @@
             <ctrl:SkeletonCard />
         </StackLayout>
 
-        <!-- FAB Publier (affiché seulement si connecté bailleur) -->
-        <Button Grid.Row="3"
-                Text="+ Publier"
-                HorizontalOptions="End"
-                VerticalOptions="End"
-                Margin="20"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
-                TextColor="White"
-                CornerRadius="28"
-                WidthRequest="56"
-                HeightRequest="56"
-                IsVisible="False" />
+        <!-- Bottom navigation custom (animée) -->
+        <ctrl:BottomNavBar Grid.Row="3"
+                           EstActif="HomePage" />
 
     </Grid>
 

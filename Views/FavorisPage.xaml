@@ -66,6 +66,9 @@
             <ctrl:SkeletonCard />
         </StackLayout>
 
+        <!-- Bottom navigation custom (animée) -->
+        <ctrl:BottomNavBar Grid.Row="3" EstActif="FavorisPage" />
+
     </Grid>
 
 </ContentPage>

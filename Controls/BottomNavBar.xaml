@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocatCam_mobile.Controls.BottomNavBar"
+             x:Name="Root">
+
+    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}"
+            BorderColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+            HasShadow="False"
+            HorizontalOptions="Fill"
+            VerticalOptions="End"
+            CornerRadius="24,24,0,0"
+            Padding="0, 8, 0, 0">
+
+        <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto">
+            <!-- Onglet 1 : Accueil -->
+            <Grid Grid.Column="0" AutomationId="HomePage">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Text="🏠"
+                       FontSize="24"
+                       HorizontalOptions="Center"
+                       x:Name="IconeAccueil" />
+                <Label Grid.Row="1" Text="Accueil"
+                       FontSize="10"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       x:Name="LabelAccueil" />
+                <BoxView Grid.Row="1" VerticalOptions="End" HeightRequest="3" WidthRequest="24"
+                         HorizontalOptions="Center"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                         IsVisible="{Binding EstActif, Source={x:Reference Root}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=HomePage}"
+                         x:Name="IndicateurAccueil" />
+            </Grid>
+
+            <!-- Onglet 2 : Carte -->
+            <Grid Grid.Column="1" AutomationId="CartePage">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Text="🗺️"
+                       FontSize="24"
+                       HorizontalOptions="Center"
+                       x:Name="IconeCarte" />
+                <Label Grid.Row="1" Text="Carte"
+                       FontSize="10"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       x:Name="LabelCarte" />
+                <BoxView Grid.Row="1" VerticalOptions="End" HeightRequest="3" WidthRequest="24"
+                         HorizontalOptions="Center"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                         IsVisible="{Binding EstActif, Source={x:Reference Root}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=CartePage}"
+                         x:Name="IndicateurCarte" />
+            </Grid>
+
+            <!-- Onglet 3 : Favoris -->
+            <Grid Grid.Column="2" AutomationId="FavorisPage">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Text="❤️"
+                       FontSize="24"
+                       HorizontalOptions="Center"
+                       x:Name="IconeFavoris" />
+                <Label Grid.Row="1" Text="Favoris"
+                       FontSize="10"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       x:Name="LabelFavoris" />
+                <BoxView Grid.Row="1" VerticalOptions="End" HeightRequest="3" WidthRequest="24"
+                         HorizontalOptions="Center"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                         IsVisible="{Binding EstActif, Source={x:Reference Root}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=FavorisPage}"
+                         x:Name="IndicateurFavoris" />
+            </Grid>
+
+            <!-- Onglet 4 : Publier -->
+            <Grid Grid.Column="3" AutomationId="PublierPage">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Text="✚"
+                       FontSize="24"
+                       HorizontalOptions="Center"
+                       x:Name="IconePublier" />
+                <Label Grid.Row="1" Text="Publier"
+                       FontSize="10"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       x:Name="LabelPublier" />
+                <BoxView Grid.Row="1" VerticalOptions="End" HeightRequest="3" WidthRequest="24"
+                         HorizontalOptions="Center"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                         IsVisible="{Binding EstActif, Source={x:Reference Root}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=PublierPage}"
+                         x:Name="IndicateurPublier" />
+            </Grid>
+
+            <!-- Onglet 5 : Profil -->
+            <Grid Grid.Column="4" AutomationId="ProfilPage">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOngletTapped" />
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Text="👤"
+                       FontSize="24"
+                       HorizontalOptions="Center"
+                       x:Name="IconeProfil" />
+                <Label Grid.Row="1" Text="Profil"
+                       FontSize="10"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       x:Name="LabelProfil" />
+                <BoxView Grid.Row="1" VerticalOptions="End" HeightRequest="3" WidthRequest="24"
+                         HorizontalOptions="Center"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                         IsVisible="{Binding EstActif, Source={x:Reference Root}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=ProfilPage}"
+                         x:Name="IndicateurProfil" />
+            </Grid>
+        </Grid>
+    </Frame>
+
+</ContentView>
