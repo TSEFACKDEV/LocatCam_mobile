@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cv="clr-namespace:LocatCam_mobile.Converters"
+             xmlns:ctrl="clr-namespace:LocatCam_mobile.Controls"
+             xmlns:models="clr-namespace:LocatCam_mobile.Models"
+             x:DataType="vm:HomeViewModel"
+             xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
+             x:Class="LocatCam_mobile.Views.HomePage"
+             Title="Accueil">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <cv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Barre de recherche -->
+        <SearchBar Grid.Row="0"
+                   Placeholder="Rechercher une ville ou un quartier..."
+                   Text="{Binding Recherche}" />
+
+        <!-- Liste des annonces -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RafraichirCommand}">
+            <CollectionView ItemsSource="{Binding Annonces}"
+                            ItemSizingStrategy="MeasureFirstItem"
+                            RemainingItemsThreshold="5"
+                            RemainingItemsThresholdReachedCommand="{Binding ChargerPlusCommand}">
+                <CollectionView.EmptyView>
+                    <ctrl:EmptyStateView
+                        Icone="🏠"
+                        Titre="Aucune annonce"
+                        Message="Aucune annonce trouvée pour votre recherche."
+                        BoutonTexte="Réessayer"
+                        BoutonCommande="{Binding RafraichirCommand}"
+                        AfficherBouton="True" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:AnnonceDto">
+                        <ctrl:AnnonceCard
+                            Titre="{Binding Titre}"
+                            Prix="{Binding Prix}"
+                            Ville="{Binding Ville}"
+                            Quartier="{Binding Quartier}"
+                            Type="{Binding Type}"
+                            Statut="{Binding Statut}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Skeleton loading -->
+        <StackLayout Grid.Row="1"
+                     IsVisible="{Binding IsLoading}"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center"
+                     Spacing="10">
+            <ctrl:SkeletonCard />
+            <ctrl:SkeletonCard />
+            <ctrl:SkeletonCard />
+        </StackLayout>
+
+        <!-- FAB Publier (affiché seulement si connecté bailleur) -->
+        <Button Grid.Row="2"
+                Text="+ Publier"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="20"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
+                TextColor="White"
+                CornerRadius="28"
+                WidthRequest="56"
+                HeightRequest="56"
+                IsVisible="False" />
+
+    </Grid>
+
+</ContentPage>

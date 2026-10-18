@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cv="clr-namespace:LocatCam_mobile.Converters"
+             x:Class="LocatCam_mobile.Controls.AnnonceCard">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <cv:PrixFcfaConverter x:Key="PrixFcfaConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Frame Style="{StaticResource Card}"
+           HasShadow="True"
+           Padding="0"
+           HeightRequest="240">
+
+        <Grid RowDefinitions="140,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+
+            <!-- Photo principale (placeholder) -->
+            <Border Background="{AppThemeBinding Light={StaticResource SurfaceDark}, Dark={StaticResource Surface}}"
+                    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                    VerticalOptions="Fill"
+                    HorizontalOptions="Fill">
+                <Label Text="📷"
+                       FontSize="40"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+            </Border>
+
+            <!-- Badge statut -->
+            <Label Text="{Binding Statut}"
+                   Grid.Row="0" Grid.Column="1"
+                   HorizontalOptions="End"
+                   VerticalOptions="Start"
+                   Margin="8"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
+                   TextColor="White"
+                   FontSize="10"
+                   FontAttributes="Bold"
+                   Padding="4,2" />
+
+            <!-- Titre -->
+            <Label Text="{Binding Titre}"
+                   Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                   Margin="12,8,12,4"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   LineBreakMode="TailTruncation"
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+
+            <!-- Prix + Ville -->
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                  ColumnDefinitions="Auto,*" Margin="12,4,12,0">
+                <Label Text="{Binding Prix, Converter={StaticResource PrixFcfaConverter}}"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+                <Label Text="{Binding Ville}"
+                       Grid.Column="1"
+                       FontSize="14"
+                       HorizontalOptions="End"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+            </Grid>
+
+            <!-- Quartier + Type -->
+            <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                  ColumnDefinitions="*,Auto" Margin="12,2,12,8">
+                <Label Text="{Binding Quartier}"
+                       FontSize="12"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       LineBreakMode="TailTruncation" />
+                <Label Text="{Binding Type}"
+                       Grid.Column="1"
+                       FontSize="12"
+                       HorizontalOptions="End"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+            </Grid>
+
+        </Grid>
+
+    </Frame>
+
+</ContentView>

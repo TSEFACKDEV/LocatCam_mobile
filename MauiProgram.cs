@@ -3,6 +3,7 @@ using LocatCam_mobile.Services;
 using LocatCam_mobile.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using SQLite;
+using System.Threading.Tasks;
 
 namespace LocatCam_mobile;
 
@@ -59,19 +60,29 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IFavoriService, FavoriService>();
 		builder.Services.AddSingleton<IMessageService, MessageService>();
 
+		// ViewModels (transient pour avoir une instance fraîche par page)
+		builder.Services.AddTransient<ViewModels.HomeViewModel>();
+		builder.Services.AddTransient<ViewModels.DetailAnnonceViewModel>();
+		builder.Services.AddTransient<ViewModels.FavorisViewModel>();
+		builder.Services.AddTransient<ViewModels.ProfilViewModel>();
+
 		var app = builder.Build();
 		App.ServiceProvider = app.Services;
 
 		// Initialisation de la base SQLite locale au démarrage (mode hors-ligne)
-		try
+		// Appel non bloquant pour éviter tout deadlock sur le thread UI Android
+		_ = Task.Run(async () =>
 		{
-		 var dbService = app.Services.GetRequiredService<ILocalDbService>();
-			dbService.InitializeAsync().GetAwaiter().GetResult();
-		}
-		catch (Exception ex)
-		{
-			System.Diagnostics.Debug.WriteLine($"[MauiProgram] Erreur initialisation base SQLite: {ex.Message}");
-		}
+			try
+			{
+				var dbService = app.Services.GetRequiredService<ILocalDbService>();
+				await dbService.InitializeAsync();
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"[MauiProgram] Erreur initialisation base SQLite: {ex.Message}");
+			}
+		});
 
 		return app;
 	}

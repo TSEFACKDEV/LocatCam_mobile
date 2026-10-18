@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cv="clr-namespace:LocatCam_mobile.Converters"
+             x:DataType="vm:DetailAnnonceViewModel"
+             xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
+             x:Class="LocatCam_mobile.Views.DetailAnnoncePage"
+             Title="Détail de l'annonce">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <cv:PrixFcfaConverter x:Key="PrixFcfaConverter" />
+            <cv:DateTimeToRelativeConverter x:Key="DateTimeToRelativeConverter" />
+            <cv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+
+        <VerticalStackLayout Spacing="0">
+
+            <!-- Photo principale (placeholder) -->
+            <Border Background="{AppThemeBinding Light={StaticResource SurfaceDark}, Dark={StaticResource Surface}}"
+                    HeightRequest="300"
+                    VerticalOptions="Fill"
+                    HorizontalOptions="Fill">
+                <Label Text="📷 Photo principale"
+                       FontSize="40"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+            </Border>
+
+            <!-- En-tête -->
+            <Grid Padding="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="{Binding Annonce.Titre}"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       LineBreakMode="TailTruncation"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+
+                <Button Grid.Row="0" Grid.Column="1"
+                        Text="{Binding EstFavori, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}"
+                        Command="{Binding ToggleFavoriCommand}"
+                        WidthRequest="40" HeightRequest="40"
+                        CornerRadius="20"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
+                        TextColor="White"
+                        FontSize="14" />
+
+                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                       Text="{Binding Annonce.Ville, StringFormat='{0} • {1}', ConverterParameter={Binding Annonce.Quartier}}"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       Margin="0,4,0,0" />
+            </Grid>
+
+            <!-- Prix -->
+            <Grid Padding="16">
+                <Label Text="{Binding Annonce.Prix, Converter={StaticResource PrixFcfaConverter}}"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+                <Label Text="/ mois"
+                       FontSize="14"
+                       VerticalOptions="End"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+            </Grid>
+
+            <!-- Informations -->
+            <Frame Padding="16" Margin="12" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="16">
+                    <Label Grid.Row="0" Grid.Column="0"
+                           Text="Type"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               />
+                    <Label Grid.Row="0" Grid.Column="1"
+                           Text="{Binding Annonce.Type}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+
+                    <Label Grid.Row="1" Grid.Column="0"
+                           Text="Pièces"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Label Grid.Row="1" Grid.Column="1"
+                           Text="{Binding Annonce.NombrePieces}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+
+                    <Label Grid.Row="2" Grid.Column="0"
+                           Text="Meublé"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Label Grid.Row="2" Grid.Column="1"
+                           Text="{Binding Annonce.EstMeuble, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                </Grid>
+            </Frame>
+
+            <!-- Description -->
+            <Frame Padding="16" Margin="12" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                <Label Text="Description"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                <Label Text="{Binding Annonce.Description}"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       Margin="0,8,0,0" />
+            </Frame>
+
+            <!-- Boutons d'action -->
+            <Grid Padding="16" ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0"
+                        Text="Contacter le bailleur"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
+                        TextColor="White"
+                        CornerRadius="8"
+                        HeightRequest="50" />
+
+                <Button Grid.Column="1"
+                        Text="Signaler"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource Error}}"
+                        TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorLight}}"
+                        CornerRadius="8"
+                        HeightRequest="50" />
+            </Grid>
+
+            <BoxView HeightRequest="20" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>
