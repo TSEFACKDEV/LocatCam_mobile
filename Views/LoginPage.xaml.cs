@@ -1,13 +1,13 @@
-using LocatCam_mobile.ViewModels;
-
 namespace LocatCam_mobile.Views;
+
+using LocatCam_mobile.ViewModels;
 
 public partial class LoginPage : ContentPage
 {
 	public LoginPage()
 	{
 		InitializeComponent();
-		var services = Application.Current?.Handler?.MauiContext?.Services;
+		var services = App.ServiceProvider;
 		var authService = services?.GetRequiredService<LocatCam_mobile.Services.Interfaces.IAuthService>();
 		BindingContext = new LoginViewModel(authService!);
 	}
