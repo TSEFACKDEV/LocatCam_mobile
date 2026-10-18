@@ -1,27 +1,95 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.CartePage"
-             Title="Carte">
+             Title="Carte"
+             x:DataType="vm:MapViewModel">
 
-    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+    <Grid>
+        <!-- Carte WebView (Leaflet + OpenStreetMap) -->
+        <WebView x:Name="MapWebView"
+                 VerticalOptions="FillAndExpand"
+                 HorizontalOptions="FillAndExpand" />
 
-        <Label Text="🗺️"
-               FontSize="64"
-               HorizontalOptions="Center" />
+        <!-- Bouton me localiser -->
+        <Button Text="📍 Me localiser"
+                Clicked="OnLocateClicked"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                Margin="10, 50, 0, 0"
+                BackgroundColor="{StaticResource Primary}"
+                TextColor="White"
+                WidthRequest="140"
+                HeightRequest="40" />
 
-        <Label Text="Carte interactive"
-               FontSize="22"
-               FontAttributes="Bold"
+        <!-- Bandeau d'erreur (ex: carte indisponible hors-ligne) -->
+        <Label Text="{Binding ErrorMessage}"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"
                HorizontalOptions="Center"
-               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+               VerticalOptions="Start"
+               Margin="0, 50, 0, 0"
+               Padding="10"
+               TextColor="{StaticResource Error}"
+               BackgroundColor="{StaticResource ErrorLight}" />
 
-        <Label Text="La carte Leaflet + OpenStreetMap sera disponible dans la prochaine phase."
-               FontSize="14"
-               HorizontalOptions="Center"
-               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-               HorizontalTextAlignment="Center" />
+        <!-- Bottom sheet (overlay) — s'affiche quand une annonce est sélectionnée -->
+        <Grid x:Name="BottomSheet"
+              IsVisible="{Binding IsBottomSheetOpen}"
+              VerticalOptions="End"
+              HorizontalOptions="Fill"
+              HeightRequest="360"
+              Margin="12, 0, 12, 12"
+              RowDefinitions="*,Auto">
+            <Border Grid.Row="0" Grid.RowSpan="2"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                    StrokeThickness="1"
+                    Padding="0">
+                <StackLayout Spacing="0" Padding="12">
+                    <!-- Poignée de préhension -->
+                    <BoxView HeightRequest="4" WidthRequest="40" HorizontalOptions="Center"
+                             BackgroundColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                             Margin="0, 8, 0, 6" />
 
-    </VerticalStackLayout>
+                    <!-- Photo -->
+                    <Image Source="{Binding MainPhotoUrl}"
+                           HeightRequest="140"
+                           HorizontalOptions="Fill"
+                           Aspect="AspectFill" />
+
+                    <!-- Infos -->
+                    <StackLayout Margin="12, 10, 12, 0" Spacing="6">
+                        <Label Text="{Binding SelectedAnnonce.Titre}"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               LineBreakMode="TailTruncation" />
+                        <Label Text="{Binding SelectedAnnonce.Prix, Converter={StaticResource PrixFcfaConverter}}"
+                               FontSize="16" FontAttributes="Bold"
+                               TextColor="{StaticResource Secondary}" />
+                        <Label Text="{Binding SelectedAnnonce.Adresse}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               LineBreakMode="TailTruncation" />
+                        <Label Text="{Binding SelectedAnnonce.Quartier}, {Binding SelectedAnnonce.Ville}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    </StackLayout>
+
+                    <!-- Actions -->
+                    <Grid Margin="12, 14, 12, 0" ColumnDefinitions="*,*">
+                        <Button Grid.Column="0" Text="Voir les détails"
+                                Command="{Binding ViewDetailsCommand}"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White" />
+                        <Button Grid.Column="1" Text="Fermer"
+                                Command="{Binding CloseBottomSheetCommand}"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource Primary}" />
+                    </Grid>
+                </StackLayout>
+            </Border>
+        </Grid>
+    </Grid>
 
 </ContentPage>
