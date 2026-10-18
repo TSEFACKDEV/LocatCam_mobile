@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:LocatCam_mobile.Models"
+             x:Class="LocatCam_mobile.TestApiPage"
+             Title="Test API LocatCam">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label Text="Test de l'API LocatCam"
+               FontSize="20"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <!-- Section Connexion -->
+        <Frame BorderColor="Gray" CornerRadius="5" Padding="10">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Authentification" FontSize="16" FontAttributes="Bold" />
+                <Entry x:Name="EmailEntry"
+                       Placeholder="etudiant1@locatcam.cm"
+                       Keyboard="Email" />
+                <Entry x:Name="PasswordEntry"
+                       Placeholder="Mot de passe"
+                       IsPassword="True" />
+                <Button x:Name="LoginButton"
+                        Text="Tester la connexion"
+                        Clicked="OnLoginClicked"
+                        HorizontalOptions="Fill" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Section Annonces -->
+        <Frame BorderColor="Gray" CornerRadius="5" Padding="10">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Annonces" FontSize="16" FontAttributes="Bold" />
+                <Button x:Name="LoadAnnoncesButton"
+                        Text="Charger les annonces"
+                        Clicked="OnLoadAnnoncesClicked"
+                        HorizontalOptions="Fill" />
+                <Label x:Name="ResultLabel"
+                       Text="Aucun test exécuté."
+                       TextColor="Gray" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Liste des annonces -->
+        <Label Text="Aperçu des annonces"
+               FontSize="16"
+               FontAttributes="Bold" />
+        <CollectionView x:Name="AnnoncesCollection"
+                        ItemsSource="{Binding Annonces}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:AnnonceDto">
+                    <Grid ColumnDefinitions="*,Auto" Padding="5">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="{Binding Titre}"
+                                   FontAttributes="Bold"
+                                   LineBreakMode="TailTruncation" />
+                            <Label Text="{Binding Ville, StringFormat='{0} - {1} €/mois', ConverterParameter={Binding Prix}}"
+                                   FontSize="12"
+                                   TextColor="Gray" />
+                        </VerticalStackLayout>
+                        <Label Text="{Binding Prix, StringFormat='{0:F0} FCFA'}"
+                               FontAttributes="Bold"
+                               Grid.Column="1"
+                               HorizontalOptions="End" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator x:Name="LoadingIndicator"
+                           IsRunning="False"
+                           IsVisible="False"
+                           HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
+
+</ContentPage>
