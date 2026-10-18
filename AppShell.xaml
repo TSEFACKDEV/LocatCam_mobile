@@ -9,35 +9,30 @@
     <!-- Onglet 1 : Accueil -->
     <ShellContent
         Title="Accueil"
-        Icon="home.png"
         ContentTemplate="{DataTemplate views:HomePage}"
         Route="HomePage" />
 
     <!-- Onglet 2 : Carte -->
     <ShellContent
         Title="Carte"
-        Icon="map.png"
         ContentTemplate="{DataTemplate views:CartePage}"
         Route="CartePage" />
 
     <!-- Onglet 3 : Favoris -->
     <ShellContent
         Title="Favoris"
-        Icon="favorite.png"
         ContentTemplate="{DataTemplate views:FavorisPage}"
         Route="FavorisPage" />
 
     <!-- Onglet 4 : Messagerie -->
     <ShellContent
         Title="Messages"
-        Icon="message.png"
         ContentTemplate="{DataTemplate views:MessageriePage}"
         Route="MessageriePage" />
 
     <!-- Onglet 5 : Profil -->
     <ShellContent
         Title="Profil"
-        Icon="person.png"
         ContentTemplate="{DataTemplate views:ProfilPage}"
         Route="ProfilPage" />
 
