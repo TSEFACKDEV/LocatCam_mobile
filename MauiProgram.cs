@@ -69,6 +69,9 @@ public static class MauiProgram
 		builder.Services.AddTransient<ViewModels.PublierViewModel>();
 		builder.Services.AddTransient<ViewModels.MessagerieViewModel>();
 
+		// ConnectivityService (singleton) — détection réseau pour le mode hors-ligne
+		builder.Services.AddSingleton<ConnectivityService>();
+
 		var app = builder.Build();
 		App.ServiceProvider = app.Services;
 

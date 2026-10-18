@@ -87,7 +87,9 @@
                         Command="{Binding FermerConversationCommand}"
                         BackgroundColor="Transparent"
                         TextColor="{StaticResource Primary}"
-                        HeightRequest="40" />
+                        HeightRequest="40"
+                        SemanticProperties.Description="Fermer la conversation"
+                        SemanticProperties.Hint="Revenir à la liste des conversations" />
                 <Label Grid.Column="1" Text="{Binding ConversationSelectionnee.UtilisateurNom}"
                        FontSize="18" FontAttributes="Bold"
                        VerticalTextAlignment="Center"
@@ -139,7 +141,9 @@
                             BackgroundColor="{StaticResource Primary}"
                             TextColor="White"
                             HeightRequest="40"
-                            WidthRequest="80" />
+                            WidthRequest="80"
+                            SemanticProperties.Description="Envoyer le message"
+                            SemanticProperties.Hint="Envoyer le message saisi dans la conversation" />
                 </Grid>
             </Border>
 

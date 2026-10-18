@@ -13,7 +13,9 @@
     <Frame Style="{StaticResource Card}"
            HasShadow="True"
            Padding="0"
-           HeightRequest="240">
+           HeightRequest="240"
+           SemanticProperties.Description="{Binding Titre}"
+           SemanticProperties.Hint="Annonce immobilière. Double-cliquez pour voir les détails">
 
         <Grid RowDefinitions="140,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
 
@@ -23,6 +25,8 @@
                     VerticalOptions="Fill"
                     HorizontalOptions="Fill">
                 <Label Text="📷"
+                       SemanticProperties.Description="Photo de l'annonce (placeholder)"
+                       SemanticProperties.Hint="Image représentant le logement à louer"
                        FontSize="40"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"

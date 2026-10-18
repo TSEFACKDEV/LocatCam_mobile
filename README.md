@@ -8,12 +8,12 @@ l'API .NET hébergée sur `http://169.58.69.36:5206/`.
 | Phase | Branche | Statut | Description |
 |-------|---------|--------|-------------|
 | A | `phase/a-setup` | ✅ Terminé | Refit, HttpClient, DI, SecureStorage, IApiClient, TokenHandler squelette |
-| B | — | ⏳ En attente | Authentification JWT + TokenHandler avec refresh auto |
-| C | — | ⏳ En attente | DTOs, services métier, base SQLite hors-ligne |
-| D | — | ⏳ En attente | Design system + écrans Accueil, Détail, Favoris, Profil |
-| E | — | ⏳ En attente | Carte Leaflet + OSM |
-| F | — | ⏳ En attente | Publication annonces + messagerie in-app |
-| G | — | ⏳ En attente | Mode sombre, hors-ligne, accessibilité, empty states |
+| B | `phase/b-auth` | ✅ Terminé | Authentification JWT + TokenHandler avec refresh auto |
+| C | `phase/c-services` | ✅ Terminé | DTOs, services métier, base SQLite hors-ligne |
+| D | `phase/d-screens` | ✅ Terminé | Design system + écrans Accueil, Détail, Favoris, Profil, Carte, Messagerie |
+| E | `phase/e-map` | ✅ Terminé | Carte Leaflet + OSM avec bottom sheet annonces |
+| F | `phase/f-publish-messaging` | ✅ Terminé | Publication annonces + messagerie in-app |
+| G | `phase/g-polish` | ✅ Terminé | Mode sombre, hors-ligne, accessibilité, empty states |
 | H | — | ⏳ En attente | Tests finaux, documentation, build Release |
 
 ## Stack technique
@@ -64,3 +64,25 @@ puis mergée dans `main` avec `--no-ff` après validation.
 
 Voir `AUDIT_01_OPENAPI.md` à `AUDIT_04_STARTER_KIT.md` à la racine du dépôt parent
 pour les rapports d'audit complets de l'API.
+
+## Accessibilité & UX (Phase G)
+
+### Mode sombre
+Tous les écrans utilisent `AppThemeBinding` sur les couleurs (`Primary`, `Surface`, `TextPrimary`, etc.) pour basculer automatiquement entre le mode clair et le mode sombre selon le thème système Android.
+
+### Détection réseau & mode hors-ligne
+- `ConnectivityService` surveille la connectivité (`Connectivity.Current.NetworkAccess`) et notifie les abonnés des changements en ligne/hors-ligne.
+- Un **bandeau "Hors-ligne"** (`Controls/OfflineBanner`) s'affiche en haut de chaque écran principal quand le réseau est indisponible.
+- Les favoris et les dernières recherches sont disponibles depuis la base SQLite locale (`LocalDbService`).
+
+### Accessibilité
+- `SemanticProperties.Description` et `SemanticProperties.Hint` sur les boutons d'action et images (cartes d'annonce, boutons Publier/Envoyer/Retour).
+- Zones tactiles ≥ 48dp sur les boutons principaux.
+- Contraste AA vérifié sur les couleurs du design system.
+- Support du texte agrandi (les layouts s'adaptent).
+
+### États de chargement et vides
+- `SkeletonCard` sur toutes les pages en chargement.
+- `EmptyStateView` illustré sur chaque liste vide (accueil, favoris, messagerie).
+- Pull-to-refresh (`RefreshView`) sur toutes les listes.
+- Badge de messages non lus (`TotalNonLus`) exposé par `MessagerieViewModel`.

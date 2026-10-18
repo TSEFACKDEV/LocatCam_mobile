@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocatCam_mobile.Controls.OfflineBanner"
+             x:Name="Root">
+
+    <Border BackgroundColor="{StaticResource Error}"
+            Padding="10"
+            IsVisible="{Binding IsOffline, Source={x:Reference Root}}">
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+            <Label Text="⚠️"
+                   FontSize="18"
+                   VerticalOptions="Center" />
+            <Label Grid.Column="1"
+                   Text="Vous êtes hors-ligne. Certaines fonctionnalités sont indisponibles."
+                   FontSize="14"
+                   TextColor="White"
+                   VerticalOptions="Center" />
+        </Grid>
+    </Border>
+
+</ContentView>
