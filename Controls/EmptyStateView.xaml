@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocatCam_mobile.Controls.EmptyStateView"
+             x:Name="This">
+
+    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+
+        <Label Text="{Binding Source={x:Reference This}, Path=Icone}"
+               FontSize="64"
+               HorizontalOptions="Center" />
+
+        <Label Text="{Binding Source={x:Reference This}, Path=Titre}"
+               FontSize="20"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+
+        <Label Text="{Binding Source={x:Reference This}, Path=Message}"
+               FontSize="14"
+               HorizontalOptions="Center"
+               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+               HorizontalTextAlignment="Center" />
+
+        <Button Text="{Binding Source={x:Reference This}, Path=BoutonTexte}"
+                Command="{Binding Source={x:Reference This}, Path=BoutonCommande}"
+                IsVisible="{Binding Source={x:Reference This}, Path=AfficherBouton}"
+                HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
+
+</ContentView>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocatCam_mobile.Controls.SkeletonCard"
+             HeightRequest="240">
+
+    <Frame Style="{StaticResource Card}"
+           HasShadow="False"
+           Padding="0">
+
+        <Grid RowDefinitions="140,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+
+            <!-- Skeleton photo -->
+            <Border BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                    VerticalOptions="Fill"
+                    HorizontalOptions="Fill">
+                <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                         WidthRequest="40" HeightRequest="40"
+                         HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+
+            <!-- Skeleton titre -->
+            <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                     HeightRequest="20" WidthRequest="200"
+                     Margin="12,8,12,4"
+                     HorizontalOptions="Start" />
+
+            <!-- Skeleton prix -->
+            <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                     Grid.Row="2" Grid.Column="0"
+                     HeightRequest="18" WidthRequest="100"
+                     Margin="12,4,12,0"
+                     HorizontalOptions="Start" />
+
+            <!-- Skeleton ville -->
+            <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                     Grid.Row="2" Grid.Column="1"
+                     HeightRequest="16" WidthRequest="80"
+                     Margin="0,4,12,0"
+                     HorizontalOptions="End" />
+
+            <!-- Skeleton quartier -->
+            <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                     Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                     HeightRequest="14" WidthRequest="120"
+                     Margin="12,2,12,8"
+                     HorizontalOptions="Start" />
+
+        </Grid>
+
+    </Frame>
+
+</ContentView>

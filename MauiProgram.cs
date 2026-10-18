@@ -59,6 +59,12 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IFavoriService, FavoriService>();
 		builder.Services.AddSingleton<IMessageService, MessageService>();
 
+		// ViewModels (transient pour avoir une instance fraîche par page)
+		builder.Services.AddTransient<ViewModels.HomeViewModel>();
+		builder.Services.AddTransient<ViewModels.DetailAnnonceViewModel>();
+		builder.Services.AddTransient<ViewModels.FavorisViewModel>();
+		builder.Services.AddTransient<ViewModels.ProfilViewModel>();
+
 		var app = builder.Build();
 		App.ServiceProvider = app.Services;
 

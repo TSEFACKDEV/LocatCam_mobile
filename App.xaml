@@ -15,6 +15,9 @@
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:PrixFcfaConverter x:Key="PrixFcfaConverter" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:DateTimeToRelativeConverter x:Key="DateTimeToRelativeConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

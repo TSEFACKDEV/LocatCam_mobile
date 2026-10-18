@@ -3,11 +3,45 @@
     x:Class="LocatCam_mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:LocatCam_mobile"
     xmlns:views="clr-namespace:LocatCam_mobile.Views"
     Title="LocatCam">
 
-    <!-- Page de connexion (point d'entrée si non connecté) -->
+    <!-- Onglet 1 : Accueil -->
+    <ShellContent
+        Title="Accueil"
+        Icon="home.png"
+        ContentTemplate="{DataTemplate views:HomePage}"
+        Route="HomePage" />
+
+    <!-- Onglet 2 : Carte -->
+    <ShellContent
+        Title="Carte"
+        Icon="map.png"
+        ContentTemplate="{DataTemplate views:CartePage}"
+        Route="CartePage" />
+
+    <!-- Onglet 3 : Favoris -->
+    <ShellContent
+        Title="Favoris"
+        Icon="favorite.png"
+        ContentTemplate="{DataTemplate views:FavorisPage}"
+        Route="FavorisPage" />
+
+    <!-- Onglet 4 : Messagerie -->
+    <ShellContent
+        Title="Messages"
+        Icon="message.png"
+        ContentTemplate="{DataTemplate views:MessageriePage}"
+        Route="MessageriePage" />
+
+    <!-- Onglet 5 : Profil -->
+    <ShellContent
+        Title="Profil"
+        Icon="person.png"
+        ContentTemplate="{DataTemplate views:ProfilPage}"
+        Route="ProfilPage" />
+
+    <!-- Pages de connexion (pas d'onglet, accessibles via navigation) -->
     <ShellContent
         Title="Connexion"
         ContentTemplate="{DataTemplate views:LoginPage}"
@@ -19,16 +53,10 @@
         ContentTemplate="{DataTemplate views:RegisterPage}"
         Route="RegisterPage" />
 
-    <!-- Page d'accueil (accessible après connexion) -->
+    <!-- Détail annonce (accédé via navigation paramétrée) -->
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
-    <!-- Page de test API (à remplacer par HomePage en Phase D) -->
-    <ShellContent
-        Title="Test API"
-        ContentTemplate="{DataTemplate local:TestApiPage}"
-        Route="TestApiPage" />
+        Title="Détail annonce"
+        ContentTemplate="{DataTemplate views:DetailAnnoncePage}"
+        Route="DetailAnnoncePage" />
 
 </Shell>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocatCam_mobile.Views.CartePage"
+             Title="Carte">
+
+    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+
+        <Label Text="🗺️"
+               FontSize="64"
+               HorizontalOptions="Center" />
+
+        <Label Text="Carte interactive"
+               FontSize="22"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+
+        <Label Text="La carte Leaflet + OpenStreetMap sera disponible dans la prochaine phase."
+               FontSize="14"
+               HorizontalOptions="Center"
+               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+               HorizontalTextAlignment="Center" />
+
+    </VerticalStackLayout>
+
+</ContentPage>

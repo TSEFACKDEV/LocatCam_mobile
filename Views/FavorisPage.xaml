@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cv="clr-namespace:LocatCam_mobile.Converters"
+             xmlns:ctrl="clr-namespace:LocatCam_mobile.Controls"
+             xmlns:models="clr-namespace:LocatCam_mobile.Models"
+             x:DataType="vm:FavorisViewModel"
+             xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
+             x:Class="LocatCam_mobile.Views.FavorisPage"
+             Title="Mes favoris">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <cv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Barre de recherche (masquée pour les favoris) -->
+        <SearchBar Grid.Row="0"
+                   Placeholder="Rechercher dans vos favoris..."
+                   IsVisible="False" />
+
+        <!-- Liste des favoris -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding ChargerFavorisCommand}">
+            <CollectionView ItemsSource="{Binding Favoris}"
+                            ItemSizingStrategy="MeasureFirstItem">
+                <CollectionView.EmptyView>
+                    <ctrl:EmptyStateView
+                        Icone="❤️"
+                        Titre="Aucun favori"
+                        Message="Vous n'avez pas encore ajouté d'annonce à vos favoris."
+                        BoutonTexte="Découvrir les annonces"
+                        BoutonCommande="{Binding ChargerFavorisCommand}"
+                        AfficherBouton="False" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:AnnonceDto">
+                        <ctrl:AnnonceCard
+                            Titre="{Binding Titre}"
+                            Prix="{Binding Prix}"
+                            Ville="{Binding Ville}"
+                            Quartier="{Binding Quartier}"
+                            Type="{Binding Type}"
+                            Statut="{Binding Statut}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Skeleton loading -->
+        <StackLayout Grid.Row="1"
+                     IsVisible="{Binding IsLoading}"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center"
+                     Spacing="10">
+            <ctrl:SkeletonCard />
+            <ctrl:SkeletonCard />
+            <ctrl:SkeletonCard />
+        </StackLayout>
+
+    </Grid>
+
+</ContentPage>

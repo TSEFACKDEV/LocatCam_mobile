@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LocatCam_mobile")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+af360c36cd431ba85d4ec3436a4345855fa53bf4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+f6ce0c1e4e61a3c55a19c20e4c1e1fe861181a3f")]
 [assembly: System.Reflection.AssemblyProductAttribute("LocatCam_mobile")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LocatCam_mobile")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
