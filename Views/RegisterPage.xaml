@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocatCam_mobile.Views.RegisterPage"
+             Title="Inscription">
+
+    <VerticalStackLayout Padding="30,20" Spacing="15">
+
+        <Label Text="Créer un compte"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <Label Text="{Binding Message}"
+               HorizontalOptions="Center"
+               FontSize="14"
+               IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}" />
+
+        <Entry x:Name="NomEntry"
+               Placeholder="Nom complet"
+               Text="{Binding Nom}"
+               HorizontalOptions="Fill" />
+
+        <Entry x:Name="EmailEntry"
+               Placeholder="Email"
+               Keyboard="Email"
+               Text="{Binding Email}"
+               HorizontalOptions="Fill" />
+
+        <Entry x:Name="TelephoneEntry"
+               Placeholder="Téléphone (+237 6XX XXX XXX)"
+               Keyboard="Telephone"
+               Text="{Binding Telephone}"
+               HorizontalOptions="Fill" />
+
+        <Entry x:Name="MotDePasseEntry"
+               Placeholder="Mot de passe (min 6 car.)"
+               IsPassword="True"
+               Text="{Binding MotDePasse}"
+               HorizontalOptions="Fill" />
+
+        <Entry x:Name="ConfirmationEntry"
+               Placeholder="Confirmer le mot de passe"
+               IsPassword="True"
+               Text="{Binding ConfirmationMotDePasse}"
+               HorizontalOptions="Fill" />
+
+        <Label Text="Rôle"
+               FontSize="14"
+               FontAttributes="Bold" />
+
+        <Picker x:Name="RolePicker"
+                Title="Sélectionner un rôle"
+                SelectedItem="{Binding Role}"
+                HorizontalOptions="Fill">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Etudiant</x:String>
+                    <x:String>Bailleur</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+
+        <Button Text="S'inscrire"
+                Command="{Binding RegisterCommand}"
+                HorizontalOptions="Fill" />
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" />
+
+        <Button Text="Déjà un compte ? Connectez-vous"
+                Command="{Binding GoToLoginCommand}"
+                HorizontalOptions="Fill" />
+
+    </VerticalStackLayout>
+
+</ContentPage>

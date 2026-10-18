@@ -1,6 +1,6 @@
-﻿using LocatCam_mobile.Services;
+﻿using CommunityToolkit.Maui;
+using LocatCam_mobile.Services;
 using LocatCam_mobile.Services.Interfaces;
-using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 
 namespace LocatCam_mobile;
@@ -24,22 +24,29 @@ public static class MauiProgram
 #endif
 
 		// ====================================================================
-		// Phase A — Injection de dépendances (infrastructure de base)
+		// Phase A & B — Injection de dépendances
 		// ====================================================================
 
-		// Client API Refit configuré sur http://169.58.69.36:5206/
-		builder.Services.AddSingleton<ApiClient>();
+		// 1. TokenHandler (singleton) — gère le Bearer token et le refresh
+		var tokenHandler = new TokenHandler();
+		builder.Services.AddSingleton<TokenHandler>(tokenHandler);
 
-		// Instance typée IApiClient (sans TokenHandler encore — ajouté en Phase B)
-		builder.Services.AddSingleton<IApiClient>(sp =>
-		{
-			var apiClient = sp.GetRequiredService<ApiClient>();
-			return apiClient.Create();
-		});
+		// 2. ApiClient (singleton) — fabrique Refit
+		var apiClient = new ApiClient();
+		builder.Services.AddSingleton<ApiClient>(apiClient);
 
-		// AuthService (implémentation Phase B — enregistrement préparatoire)
-		builder.Services.AddSingleton<IAuthService, AuthService>();
+		// 3. IApiClient (singleton) — instance typée Refit avec TokenHandler
+		var apiClientInstance = apiClient.Create(tokenHandler);
+		builder.Services.AddSingleton<IApiClient>(apiClientInstance);
 
-		return builder.Build();
+		// 4. AuthService (singleton) — reçoit IApiClient et TokenHandler
+		var authService = new AuthService(apiClientInstance, tokenHandler);
+		// Casser la dépendance circulaire : TokenHandler appelle AuthService pour le refresh
+		tokenHandler.RefreshTokenFunc = authService.RefreshTokenAsync;
+		builder.Services.AddSingleton<IAuthService>(authService);
+
+		var app = builder.Build();
+		App.ServiceProvider = app.Services;
+		return app;
 	}
 }
