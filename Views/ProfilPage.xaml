@@ -7,100 +7,146 @@
              x:Class="LocatCam_mobile.Views.ProfilPage"
              Title="Mon profil">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="MenuItem" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}" />
+                <Setter Property="CornerRadius" Value="14" />
+                <Setter Property="Padding" Value="16,12" />
+                <Setter Property="Margin" Value="16,6" />
+                <Setter Property="HasShadow" Value="False" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+        <VerticalStackLayout Padding="0" Spacing="0">
 
             <!-- Bandeau hors-ligne -->
             <ctrl:OfflineBanner />
 
             <!-- En-tête profil -->
-            <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
-                <Border Background="{AppThemeBinding Light={StaticResource SurfaceDark}, Dark={StaticResource Surface}}"
-                        WidthRequest="100" HeightRequest="100"
-                        HorizontalOptions="Center"
-                        StrokeShape="RoundRectangle 50">
-                    <Label Text="👤"
-                           FontSize="40"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center" />
-                </Border>
+            <StackLayout Padding="24, 20, 24, 16" Spacing="12" HorizontalOptions="Center">
+                <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                       CornerRadius="40"
+                       Padding="0"
+                       HasShadow="False"
+                       WidthRequest="80" HeightRequest="80"
+                       HorizontalOptions="Center">
+                    <Label Text="U"
+                           FontSize="24" FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                </Frame>
                 <Label Text="{Binding Nom}"
-                       FontSize="22"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                       Style="{StaticResource H1}"
+                       HorizontalOptions="Center" />
                 <Label Text="{Binding Email}"
-                       FontSize="14"
-                       HorizontalOptions="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                <Label Text="{Binding Role}"
-                       FontSize="12"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
-            </VerticalStackLayout>
+                       Style="{StaticResource Caption}"
+                       HorizontalOptions="Center" />
+            </StackLayout>
 
-            <BoxView HeightRequest="1" BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" />
+            <BoxView HeightRequest="1"
+                     BackgroundColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                     Opacity="0.4" />
 
             <!-- Informations -->
-            <Label Text="Informations du compte"
-                   FontSize="16"
-                   FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+            <StackLayout Padding="20, 16" Spacing="4">
+                <Label Text="Informations du compte"
+                       Style="{StaticResource Micro}" />
 
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto">
-                <Label Grid.Row="0" Grid.Column="0"
-                       Text="Nom"
-                       FontSize="14"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                <Label Grid.Row="0" Grid.Column="1"
-                       Text="{Binding Nom}"
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                <Frame Style="{StaticResource MenuItem}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Text="👤" FontSize="18" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="Nom complet"
+                               FontSize="15"
+                               TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                               VerticalOptions="Center" />
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding Nom}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                        <Grid Grid.Column="2" Grid.RowSpan="2" ColumnDefinitions="*" HorizontalOptions="End">
+                            <Label Text="›" FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                                   VerticalOptions="Center" HorizontalOptions="End" />
+                        </Grid>
+                    </Grid>
+                </Frame>
 
-                <Label Grid.Row="1" Grid.Column="0"
-                       Text="Email"
-                       FontSize="14"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                <Label Grid.Row="1" Grid.Column="1"
-                       Text="{Binding Email}"
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                <Frame Style="{StaticResource MenuItem}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Text="✉️" FontSize="18" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="Email"
+                               FontSize="15"
+                               TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                               VerticalOptions="Center" />
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding Email}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
 
-                <Label Grid.Row="2" Grid.Column="0"
-                       Text="Téléphone"
-                       FontSize="14"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                <Label Grid.Row="2" Grid.Column="1"
-                       Text="{Binding Telephone}"
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-            </Grid>
+                <Frame Style="{StaticResource MenuItem}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Text="📱" FontSize="18" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="Téléphone"
+                               FontSize="15"
+                               TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                               VerticalOptions="Center" />
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding Telephone}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+            </StackLayout>
 
-            <BoxView HeightRequest="1" BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" Margin="0,12,0,0" />
+            <BoxView HeightRequest="1"
+                     BackgroundColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                     Opacity="0.4" />
 
             <!-- Paramètres -->
-            <Label Text="Paramètres"
-                   FontSize="16"
-                   FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+            <StackLayout Padding="20, 16" Spacing="4">
+                <Label Text="Paramètres"
+                       Style="{StaticResource Micro}" />
 
-            <Button Text="Mode sombre / clair"
-                    HorizontalOptions="Fill" />
+                <Frame Style="{StaticResource MenuItem}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Text="🌙" FontSize="18" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="Mode sombre"
+                               FontSize="15"
+                               TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Column="2" HorizontalOptions="End"
+                                OnColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+                    </Grid>
+                </Frame>
 
-            <Button Text="Mes annonces"
-                    HorizontalOptions="Fill" />
+                <Frame Style="{StaticResource MenuItem}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="📄 Mes annonces"
+                               FontSize="15"
+                               TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="›" FontSize="18"
+                               TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                               VerticalOptions="Center" HorizontalOptions="End" />
+                    </Grid>
+                </Frame>
+            </StackLayout>
 
+            <BoxView HeightRequest="20" />
+
+            <!-- Déconnexion -->
             <Button Text="Déconnexion"
                     Command="{Binding DeconnexionCommand}"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource Error}}"
-                    TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorLight}}"
-                    HorizontalOptions="Fill" />
-
-            <BoxView HeightRequest="40" />
+                    TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                    FontSize="16" FontAttributes="Bold"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Center"
+                    Margin="0, 0, 0, 30" />
 
         </VerticalStackLayout>
     </ScrollView>

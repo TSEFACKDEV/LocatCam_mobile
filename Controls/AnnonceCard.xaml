@@ -10,80 +10,93 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
+    <!-- Carte d'annonce : style Airbnb (pas d'ombre, coins arrondis, séparateur Hairline entre cartes) -->
     <Frame Style="{StaticResource Card}"
-           HasShadow="True"
            Padding="0"
-           HeightRequest="240"
+           HeightRequest="270"
            SemanticProperties.Description="{Binding Titre}"
-           SemanticProperties.Hint="Annonce immobilière. Double-cliquez pour voir les détails">
+           SemanticProperties.Hint="Annonce immobilière. Appuyez pour voir les détails">
 
-        <Grid RowDefinitions="140,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+        <Grid RowDefinitions="120,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
 
-            <!-- Photo principale (placeholder) -->
-            <Border Background="{AppThemeBinding Light={StaticResource SurfaceDark}, Dark={StaticResource Surface}}"
-                    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                    VerticalOptions="Fill"
-                    HorizontalOptions="Fill">
+            <!-- Photo principale (placeholder) : ratio 4:3 -->
+            <Frame Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
+                   CornerRadius="0"
+                   Padding="0"
+                   HasShadow="False"
+                   VerticalOptions="Fill"
+                   HorizontalOptions="Fill">
                 <Label Text="📷"
                        SemanticProperties.Description="Photo de l'annonce (placeholder)"
                        SemanticProperties.Hint="Image représentant le logement à louer"
-                       FontSize="40"
+                       FontSize="36"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-            </Border>
+                       TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}" />
+            </Frame>
 
-            <!-- Badge statut -->
-            <Label Text="{Binding Statut}"
-                   Grid.Row="0" Grid.Column="1"
-                   HorizontalOptions="End"
+            <!-- Badge "Vérifié" (bas gauche de la photo) -->
+            <Frame Grid.Row="0" Grid.ColumnSpan="2"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
+                   CornerRadius="0"
+                   Padding="6,3"
+                   HasShadow="False"
+                   VerticalOptions="End"
+                   HorizontalOptions="Start"
+                   Margin="8,0,0,8">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
+                    <Label Text="✔" FontSize="10" TextColor="White" VerticalOptions="Center" />
+                    <Label Text="Vérifié" FontSize="9" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+
+            <!-- Cœur favori (haut droit) -->
+            <Frame Grid.Row="0" Grid.Column="1"
+                   BackgroundColor="White"
+                   Opacity="0.9"
+                   CornerRadius="20"
+                   Padding="0"
+                   HasShadow="False"
                    VerticalOptions="Start"
-                   Margin="8"
-                   BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
-                   TextColor="White"
-                   FontSize="10"
-                   FontAttributes="Bold"
-                   Padding="4,2" />
+                   HorizontalOptions="End"
+                   Margin="0,8,8,0"
+                   WidthRequest="36" HeightRequest="36">
+                <Label Text="❤️" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Frame>
 
-            <!-- Titre -->
-            <Label Text="{Binding Titre}"
-                   Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12,8,12,4"
-                   FontSize="16"
-                   FontAttributes="Bold"
+            <!-- Titre : 1 ligne max, ellipsis -->
+            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="{Binding Titre}"
+                   Style="{StaticResource Body}"
+                   Margin="12,10,12,4"
                    LineBreakMode="TailTruncation"
-                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                   MaxLines="1" />
 
-            <!-- Prix + Ville -->
+            <!-- Sous-titre : Quartier · Ville + pilule Type à droite -->
             <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                  ColumnDefinitions="Auto,*" Margin="12,4,12,0">
-                <Label Text="{Binding Prix, Converter={StaticResource PrixFcfaConverter}}"
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
-                <Label Text="{Binding Ville}"
-                       Grid.Column="1"
-                       FontSize="14"
-                       HorizontalOptions="End"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                  ColumnDefinitions="Auto,Auto,*,Auto" Margin="12,2,12,0" ColumnSpacing="4">
+                <Label Grid.Column="0" Text="{Binding Quartier}" Style="{StaticResource Caption}" LineBreakMode="TailTruncation" />
+                <Label Grid.Column="1" Text="•" Style="{StaticResource Caption}" />
+                <Label Grid.Column="2" Text="{Binding Ville}" Style="{StaticResource Caption}" LineBreakMode="TailTruncation" />
+                <Frame Grid.Column="3"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
+                       CornerRadius="12"
+                       Padding="6,2"
+                       HasShadow="False"
+                       VerticalOptions="Center"
+                       HorizontalOptions="End">
+                    <Label Text="{Binding Type}" Style="{StaticResource Micro}" />
+                </Frame>
             </Grid>
 
-            <!-- Quartier + Type -->
-            <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                  ColumnDefinitions="*,Auto" Margin="12,2,12,8">
-                <Label Text="{Binding Quartier}"
-                       FontSize="12"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                       LineBreakMode="TailTruncation" />
-                <Label Text="{Binding Type}"
-                       Grid.Column="1"
-                       FontSize="12"
-                       HorizontalOptions="End"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-            </Grid>
-
+            <!-- Prix : H2 gras, aligné à droite -->
+            <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="{Binding Prix, Converter={StaticResource PrixFcfaConverter}}"
+                   Style="{StaticResource H2}"
+                   Margin="12,4,12,10"
+                   HorizontalOptions="End" />
         </Grid>
-
     </Frame>
 
 </ContentView>

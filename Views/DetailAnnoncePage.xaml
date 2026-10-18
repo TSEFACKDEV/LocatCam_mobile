@@ -16,138 +16,147 @@
     </ContentPage.Resources>
 
     <ScrollView>
-
         <VerticalStackLayout Spacing="0">
 
-            <!-- Photo principale (placeholder) -->
-            <Border Background="{AppThemeBinding Light={StaticResource SurfaceDark}, Dark={StaticResource Surface}}"
-                    HeightRequest="300"
-                    VerticalOptions="Fill"
-                    HorizontalOptions="Fill">
-                <Label Text="📷 Photo principale"
-                       FontSize="40"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-            </Border>
+            <!-- ================= EN-TÊTE PHOTO (plein écran, ratio 4:3) ================= -->
+            <Frame HeightRequest="340"
+                   Padding="0"
+                   HasShadow="False"
+                   VerticalOptions="Fill"
+                   HorizontalOptions="Fill"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}">
+                <Grid>
+                    <!-- Photo placeholder -->
+                    <Label Text="📷"
+                           FontSize="48"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}" />
 
-            <!-- En-tête -->
-            <Grid Padding="16">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                    <!-- Bouton retour (en haut à gauche) -->
+                    <Frame VerticalOptions="Start" HorizontalOptions="Start"
+                           Margin="12"
+                           BackgroundColor="White"
+                           Opacity="0.85"
+                           CornerRadius="22"
+                           Padding="0"
+                           HasShadow="False"
+                           WidthRequest="44" HeightRequest="44">
+                        <Label Text="←" FontSize="20" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Frame>
 
-                <Label Grid.Row="0" Grid.Column="0"
-                       Text="{Binding Annonce.Titre}"
-                       FontSize="22"
-                       FontAttributes="Bold"
-                       LineBreakMode="TailTruncation"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-
-                <Button Grid.Row="0" Grid.Column="1"
-                        Text="{Binding EstFavori, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}"
-                        Command="{Binding ToggleFavoriCommand}"
-                        WidthRequest="40" HeightRequest="40"
-                        CornerRadius="20"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
-                        TextColor="White"
-                        FontSize="14" />
-
-                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                       Text="{Binding Annonce.Ville, StringFormat='{0} • {1}', ConverterParameter={Binding Annonce.Quartier}}"
-                       FontSize="14"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                       Margin="0,4,0,0" />
-            </Grid>
-
-            <!-- Prix -->
-            <Grid Padding="16">
-                <Label Text="{Binding Annonce.Prix, Converter={StaticResource PrixFcfaConverter}}"
-                       FontSize="28"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
-                <Label Text="/ mois"
-                       FontSize="14"
-                       VerticalOptions="End"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-            </Grid>
-
-            <!-- Informations -->
-            <Frame Padding="16" Margin="12" CornerRadius="12"
-                   BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="16">
-                    <Label Grid.Row="0" Grid.Column="0"
-                           Text="Type"
-                           FontSize="12"
-                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                               />
-                    <Label Grid.Row="0" Grid.Column="1"
-                           Text="{Binding Annonce.Type}"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-
-                    <Label Grid.Row="1" Grid.Column="0"
-                           Text="Pièces"
-                           FontSize="12"
-                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                    <Label Grid.Row="1" Grid.Column="1"
-                           Text="{Binding Annonce.NombrePieces}"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-
-                    <Label Grid.Row="2" Grid.Column="0"
-                           Text="Meublé"
-                           FontSize="12"
-                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                    <Label Grid.Row="2" Grid.Column="1"
-                           Text="{Binding Annonce.EstMeuble, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                    <!-- Cœur favori (en haut à droite) -->
+                    <Frame VerticalOptions="Start" HorizontalOptions="End"
+                           Margin="12"
+                           BackgroundColor="{Binding EstFavori, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}"
+                           Opacity="0.9"
+                           CornerRadius="22"
+                           Padding="0"
+                           HasShadow="False"
+                           WidthRequest="44" HeightRequest="44">
+                        <Label Text="❤️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Frame>
                 </Grid>
             </Frame>
 
-            <!-- Description -->
-            <Frame Padding="16" Margin="12" CornerRadius="12"
-                   BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
-                <Label Text="Description"
-                       FontSize="16"
+            <!-- ================= CONTENU (marges 24px) ================= -->
+            <StackLayout Padding="24,20,24,0" Spacing="16">
+
+                <!-- Titre -->
+                <Label Text="{Binding Annonce.Titre}"
+                       Style="{StaticResource H1}"
+                       LineBreakMode="WordWrap" />
+
+                <!-- Ligne localisation + badge vérifié -->
+                <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="4">
+                    <Label Grid.Column="0" Text="{Binding Annonce.Quartier}"
+                           Style="{StaticResource Caption}" LineBreakMode="TailTruncation"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="•" Style="{StaticResource Caption}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="2" Text="{Binding Annonce.Ville}"
+                           Style="{StaticResource Caption}" LineBreakMode="TailTruncation"
+                           VerticalOptions="Center" />
+                    <Frame Grid.Column="3"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
+                           CornerRadius="10"
+                           Padding="5,2"
+                           HasShadow="False"
+                           IsVisible="{Binding Annonce.EstVerifie}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="End">
+                        <Label Text="Vérifié" FontSize="9" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" />
+                    </Frame>
+                </Grid>
+
+                <!-- Prix -->
+                <Label Text="{Binding Annonce.Prix, Converter={StaticResource PrixFcfaConverter}}"
+                       FontSize="30"
                        FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}" />
+
+                <!-- Boutons d'action -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <!-- Contacter le bailleur : pilule pleine Accent -->
+                    <Frame Grid.Column="0"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                           CornerRadius="14"
+                           Padding="0"
+                           HasShadow="False">
+                        <Label Text="Contacter le bailleur"
+                               FontSize="16" FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Frame>
+                    <!-- Signaler : texte Error -->
+                    <Frame Grid.Column="1"
+                           BackgroundColor="Transparent"
+                           BorderColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                           CornerRadius="14"
+                           Padding="0"
+                           HasShadow="False">
+                        <Label Text="Signaler"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Frame>
+                </Grid>
+
+                <!-- Séparateur Hairline -->
+                <BoxView HeightRequest="1"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                         Margin="0,16,0,16" />
+
+                <!-- Informations (Type • Pièces) -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="0">
+                    <StackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                        <Label Text="TYPE" Style="{StaticResource Micro}" />
+                        <Label Text="{Binding Annonce.Type}" Style="{StaticResource Caption}" />
+                    </StackLayout>
+                    <StackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                        <Label Text="PIÈCES" Style="{StaticResource Micro}" />
+                        <Label Text="{Binding Annonce.NombrePieces}" Style="{StaticResource Caption}" />
+                    </StackLayout>
+                </Grid>
+
+                <!-- Séparateur Hairline -->
+                <BoxView HeightRequest="1"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                         Margin="0,16,0,16" />
+
+                <!-- Description -->
+                <Label Text="Description"
+                       Style="{StaticResource Caption}" />
                 <Label Text="{Binding Annonce.Description}"
-                       FontSize="14"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                       Margin="0,8,0,0" />
-            </Frame>
+                       Style="{StaticResource Body}"
+                       LineBreakMode="WordWrap" />
 
-            <!-- Boutons d'action -->
-            <Grid Padding="16" ColumnDefinitions="*,*" ColumnSpacing="12">
-                <Button Grid.Column="0"
-                        Text="Contacter le bailleur"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}"
-                        TextColor="White"
-                        CornerRadius="8"
-                        HeightRequest="50" />
+                <BoxView HeightRequest="30" />
 
-                <Button Grid.Column="1"
-                        Text="Signaler"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource Error}}"
-                        TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorLight}}"
-                        CornerRadius="8"
-                        HeightRequest="50" />
-            </Grid>
-
-            <BoxView HeightRequest="20" />
-
+            </StackLayout>
         </VerticalStackLayout>
-
     </ScrollView>
 
 </ContentPage>
