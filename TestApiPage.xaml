@@ -13,7 +13,7 @@
                HorizontalOptions="Center" />
 
         <!-- Section Connexion -->
-        <Frame BorderColor="Gray" CornerRadius="5" Padding="10">
+        <Frame BorderColor="Gray" CornerRadius="5" Padding="10" BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
             <VerticalStackLayout Spacing="10">
                 <Label Text="Authentification" FontSize="16" FontAttributes="Bold" />
                 <Entry x:Name="EmailEntry"
@@ -30,7 +30,7 @@
         </Frame>
 
         <!-- Section Annonces -->
-        <Frame BorderColor="Gray" CornerRadius="5" Padding="10">
+        <Frame BorderColor="Gray" CornerRadius="5" Padding="10" BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
             <VerticalStackLayout Spacing="10">
                 <Label Text="Annonces" FontSize="16" FontAttributes="Bold" />
                 <Button x:Name="LoadAnnoncesButton"

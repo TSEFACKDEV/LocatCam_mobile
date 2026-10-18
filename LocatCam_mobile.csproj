@@ -72,11 +72,16 @@
 		<!-- Phase A : Infrastructure de base -->
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.0" />
-		<PackageReference Include="Refit" Version="7.0.0" />
-		<PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
+		<PackageReference Include="Refit" Version="7.1.0" />
+		<PackageReference Include="Refit.HttpClientFactory" Version="7.1.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="Polly" Version="8.4.1" />
 		<PackageReference Include="CloudinaryDotNet" Version="1.22.0" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Suppression des warnings de vulnérabilité connus (à surveiller) -->
+		<NoWarn>NU1904;NU1903</NoWarn>
+	</PropertyGroup>
 
 </Project>

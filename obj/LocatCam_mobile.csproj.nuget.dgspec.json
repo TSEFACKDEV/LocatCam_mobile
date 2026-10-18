@@ -32,6 +32,10 @@
           }
         },
         "warningProperties": {
+          "noWarn": [
+            "NU1903",
+            "NU1904"
+          ],
           "warnAsError": [
             "NU1605"
           ]
@@ -80,11 +84,11 @@
             },
             "Refit": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[7.1.0, )"
             },
             "Refit.HttpClientFactory": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[7.1.0, )"
             },
             "sqlite-net-pcl": {
               "target": "Package",

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "e8x4V/gGIXc=",
+  "dgSpecHash": "N9JqCC0Tn7Q=",
   "success": true,
   "projectFilePath": "/home/klein/Documents/projects/LocatCam/LocatCam_mobile/LocatCam_mobile.csproj",
   "expectedPackageFiles": [
@@ -14,16 +14,19 @@
     "/home/klein/.nuget/packages/microsoft.aspnetcore.http.features/2.2.0/microsoft.aspnetcore.http.features.2.2.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.configuration/10.0.0/microsoft.extensions.configuration.10.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.configuration.abstractions/10.0.0/microsoft.extensions.configuration.abstractions.10.0.0.nupkg.sha512",
+    "/home/klein/.nuget/packages/microsoft.extensions.configuration.binder/8.0.0/microsoft.extensions.configuration.binder.8.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.dependencyinjection/10.0.0/microsoft.extensions.dependencyinjection.10.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.0/microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512",
+    "/home/klein/.nuget/packages/microsoft.extensions.diagnostics/8.0.0/microsoft.extensions.diagnostics.8.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.diagnostics.abstractions/10.0.0/microsoft.extensions.diagnostics.abstractions.10.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.fileproviders.abstractions/10.0.0/microsoft.extensions.fileproviders.abstractions.10.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.hosting.abstractions/10.0.0/microsoft.extensions.hosting.abstractions.10.0.0.nupkg.sha512",
-    "/home/klein/.nuget/packages/microsoft.extensions.http/7.0.0/microsoft.extensions.http.7.0.0.nupkg.sha512",
+    "/home/klein/.nuget/packages/microsoft.extensions.http/8.0.0/microsoft.extensions.http.8.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.logging/10.0.0/microsoft.extensions.logging.10.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.0/microsoft.extensions.logging.abstractions.10.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.logging.debug/10.0.0/microsoft.extensions.logging.debug.10.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.options/10.0.0/microsoft.extensions.options.10.0.0.nupkg.sha512",
+    "/home/klein/.nuget/packages/microsoft.extensions.options.configurationextensions/8.0.0/microsoft.extensions.options.configurationextensions.8.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.extensions.primitives/10.0.0/microsoft.extensions.primitives.10.0.0.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.maui.controls/10.0.20/microsoft.maui.controls.10.0.20.nupkg.sha512",
     "/home/klein/.nuget/packages/microsoft.maui.controls.build.tasks/10.0.20/microsoft.maui.controls.build.tasks.10.0.20.nupkg.sha512",
@@ -38,8 +41,8 @@
     "/home/klein/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/home/klein/.nuget/packages/polly/8.4.1/polly.8.4.1.nupkg.sha512",
     "/home/klein/.nuget/packages/polly.core/8.4.1/polly.core.8.4.1.nupkg.sha512",
-    "/home/klein/.nuget/packages/refit/7.0.0/refit.7.0.0.nupkg.sha512",
-    "/home/klein/.nuget/packages/refit.httpclientfactory/7.0.0/refit.httpclientfactory.7.0.0.nupkg.sha512",
+    "/home/klein/.nuget/packages/refit/7.1.0/refit.7.1.0.nupkg.sha512",
+    "/home/klein/.nuget/packages/refit.httpclientfactory/7.1.0/refit.httpclientfactory.7.1.0.nupkg.sha512",
     "/home/klein/.nuget/packages/sqlite-net-pcl/1.9.172/sqlite-net-pcl.1.9.172.nupkg.sha512",
     "/home/klein/.nuget/packages/sqlitepclraw.bundle_green/2.1.2/sqlitepclraw.bundle_green.2.1.2.nupkg.sha512",
     "/home/klein/.nuget/packages/sqlitepclraw.core/2.1.2/sqlitepclraw.core.2.1.2.nupkg.sha512",
@@ -138,34 +141,5 @@
     "/home/klein/.nuget/packages/xamarin.kotlinx.serialization.core/1.9.0.1/xamarin.kotlinx.serialization.core.1.9.0.1.nupkg.sha512",
     "/home/klein/.nuget/packages/xamarin.kotlinx.serialization.core.jvm/1.9.0.1/xamarin.kotlinx.serialization.core.jvm.1.9.0.1.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1904",
-      "level": "Warning",
-      "message": "Package 'Refit' 7.0.0 has a known critical severity vulnerability, https://github.com/advisories/GHSA-3hxg-fxwm-8gf7",
-      "projectPath": "/home/klein/Documents/projects/LocatCam/LocatCam_mobile/LocatCam_mobile.csproj",
-      "warningLevel": 1,
-      "filePath": "/home/klein/Documents/projects/LocatCam/LocatCam_mobile/LocatCam_mobile.csproj",
-      "libraryId": "Refit",
-      "targetGraphs": [
-        "net10.0-android",
-        "net10.0-android/android-arm64",
-        "net10.0-android/android-x64"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "message": "Package 'SQLitePCLRaw.lib.e_sqlite3.android' 2.1.2 has a known high severity vulnerability, https://github.com/advisories/GHSA-2m69-gcr7-jv3q",
-      "projectPath": "/home/klein/Documents/projects/LocatCam/LocatCam_mobile/LocatCam_mobile.csproj",
-      "warningLevel": 1,
-      "filePath": "/home/klein/Documents/projects/LocatCam/LocatCam_mobile/LocatCam_mobile.csproj",
-      "libraryId": "SQLitePCLRaw.lib.e_sqlite3.android",
-      "targetGraphs": [
-        "net10.0-android",
-        "net10.0-android/android-arm64",
-        "net10.0-android/android-x64"
-      ]
-    }
-  ]
+  "logs": []
 }
