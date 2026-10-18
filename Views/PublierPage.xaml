@@ -276,19 +276,25 @@
                             IsEnabled="{Binding EstEtapeInfos, Converter={StaticResource InverseBoolConverter}}"
                             BackgroundColor="Transparent"
                             TextColor="{StaticResource Primary}"
-                            HeightRequest="48" />
+                            HeightRequest="48"
+                            SemanticProperties.Description="Étape précédente"
+                            SemanticProperties.Hint="Revenir à l'étape précédente du formulaire de publication" />
                     <Button Grid.Column="1" Text="Suivant"
                             Command="{Binding SuivantCommand}"
                             IsVisible="{Binding EstEtapeTermine, Converter={StaticResource InverseBoolConverter}}"
                             BackgroundColor="{StaticResource Primary}"
                             TextColor="White"
-                            HeightRequest="48" />
+                            HeightRequest="48"
+                            SemanticProperties.Description="Étape suivante"
+                            SemanticProperties.Hint="Passer à l'étape suivante du formulaire de publication" />
                     <Button Grid.Column="2" Text="Publier"
                             Command="{Binding PublierCommand}"
                             IsVisible="{Binding EstEtapeApercu}"
                             BackgroundColor="{StaticResource Secondary}"
                             TextColor="White"
-                            HeightRequest="48" />
+                            HeightRequest="48"
+                            SemanticProperties.Description="Publier l'annonce"
+                            SemanticProperties.Hint="Publier l'annonce créée et la mettre en ligne" />
                 </Grid>
             </Border>
         </Grid>

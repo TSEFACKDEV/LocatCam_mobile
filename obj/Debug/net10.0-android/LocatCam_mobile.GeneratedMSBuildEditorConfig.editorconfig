@@ -73,6 +73,16 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
+[/home/klein/Documents/projects/LocatCam/LocatCam_mobile/Controls/OfflineBanner.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = LocatCam_mobile.Controls.OfflineBanner.xaml
+build_metadata.AdditionalFiles.TargetPath = Controls/OfflineBanner.xaml
+build_metadata.AdditionalFiles.RelativePath = Controls/OfflineBanner.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
 [/home/klein/Documents/projects/LocatCam/LocatCam_mobile/Controls/SkeletonCard.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = LocatCam_mobile.Controls.SkeletonCard.xaml
