@@ -2,28 +2,61 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- Couleurs principales LocatCam -->
+    <Color x:Key="Canvas">#FFFFFF</Color>
+    <Color x:Key="CanvasDark">#121212</Color>
+
+    <Color x:Key="SurfaceSoft">#F7F7F7</Color>
+    <Color x:Key="SurfaceSoftDark">#1E1E1E</Color>
+
+    <Color x:Key="SurfaceCard">#FFFFFF</Color>
+    <Color x:Key="SurfaceCardDark">#1E1E1E</Color>
+
+    <Color x:Key="InkPrimary">#222222</Color>
+    <Color x:Key="InkPrimaryDark">#E8E8E8</Color>
+
+    <Color x:Key="InkSecondary">#6A6A6A</Color>
+    <Color x:Key="InkSecondaryDark">#B0B0B0</Color>
+
+    <Color x:Key="InkMuted">#929292</Color>
+    <Color x:Key="InkMutedDark">#7A7A7A</Color>
+
+    <Color x:Key="Hairline">#DDDDDD</Color>
+    <Color x:Key="HairlineDark">#2C2C2C</Color>
+
+    <Color x:Key="Accent">#1565C0</Color>
+    <Color x:Key="AccentDark">#5B9BD5</Color>
+
+    <Color x:Key="AccentPressed">#0D47A1</Color>
+    <Color x:Key="AccentPressedDark">#4A8AC4</Color>
+
+    <Color x:Key="Success">#2E7D32</Color>
+    <Color x:Key="SuccessDark">#66BB6A</Color>
+
+    <Color x:Key="Warning">#F57C00</Color>
+    <Color x:Key="WarningDark">#FFB74D</Color>
+
+    <Color x:Key="Error">#C13515</Color>
+    <Color x:Key="ErrorDark">#E57373</Color>
+
+    <Color x:Key="ErrorLight">#FDECEA</Color>
+    <Color x:Key="ErrorLightDark">#3A1A15</Color>
+
     <Color x:Key="Primary">#1565C0</Color>
-    <Color x:Key="PrimaryLight">#64B5F6</Color>
+    <Color x:Key="PrimaryLight">#5B9BD5</Color>
     <Color x:Key="PrimaryDark">#0D47A1</Color>
-    
+
     <Color x:Key="Secondary">#2E7D32</Color>
-    <Color x:Key="SecondaryLight">#81C784</Color>
-    
-    <Color x:Key="Surface">#FAFAFA</Color>
-    <Color x:Key="SurfaceDark">#212121</Color>
-    
-    <Color x:Key="Error">#D32F2F</Color>
-    <Color x:Key="ErrorLight">#FFCDD2</Color>
-    
-    <Color x:Key="Success">#388E3C</Color>
-    <Color x:Key="SuccessLight">#C8E6C9</Color>
-    
-    <Color x:Key="TextPrimary">#212121</Color>
-    <Color x:Key="TextPrimaryDark">#FAFAFA</Color>
-    <Color x:Key="TextSecondary">#757575</Color>
-    <Color x:Key="TextSecondaryDark">#BDBDBD</Color>
-    
+    <Color x:Key="SecondaryLight">#66BB6A</Color>
+
+    <Color x:Key="Surface">#FFFFFF</Color>
+    <Color x:Key="SurfaceDark">#1E1E1E</Color>
+
+    <Color x:Key="TextPrimary">#222222</Color>
+    <Color x:Key="TextPrimaryDark">#E8E8E8</Color>
+
+    <Color x:Key="TextSecondary">#6A6A6A</Color>
+    <Color x:Key="TextSecondaryDark">#B0B0B0</Color>
+
     <Color x:Key="Background">#FFFFFF</Color>
     <Color x:Key="BackgroundDark">#121212</Color>
 

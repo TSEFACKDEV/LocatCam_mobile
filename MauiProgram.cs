@@ -17,6 +17,9 @@ public static class MauiProgram
 			.UseMauiCommunityToolkit()
 			.ConfigureFonts(fonts =>
 			{
+				// Plus Jakarta Sans (variable font) — police principale du design system
+				fonts.AddFont("PlusJakartaSans-Regular.ttf", "PlusJakartaSans");
+				// Fallback système
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
