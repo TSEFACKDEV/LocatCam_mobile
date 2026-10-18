@@ -1,16 +1,19 @@
-using LocatCam_mobile.Models;
+using LocatCam_mobile.Services;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 
 namespace LocatCam_mobile.Views;
 
 /// <summary>
-/// Données d'un slide d'onboarding.
+/// Donn\u00e9es d'un slide d'onboarding.
 /// </summary>
 public class OnboardingSlide
 {
+    /// <summary>Glyphe Font Awesome affich\u00e9 dans la pastille.</summary>
+    public string Icone { get; set; } = string.Empty;
+
     public string Titre { get; set; } = string.Empty;
     public string SousTitre { get; set; } = string.Empty;
-    public View Illustration { get; set; } = new ContentView();
 }
 
 public partial class OnboardingPage : ContentPage
@@ -36,21 +39,21 @@ public partial class OnboardingPage : ContentPage
     {
         new OnboardingSlide
         {
+            Icone = "\uf015", // house
             Titre = "Trouvez votre logement \u00e9tudiant",
-            SousTitre = "Cherchez une chambre, un studio ou un appartement pr\u00e8s de votre universit\u00e9 au Cameroun.",
-            Illustration = CreerIllustrationMaison()
+            SousTitre = "Cherchez une chambre, un studio ou un appartement pr\u00e8s de votre universit\u00e9 au Cameroun."
         },
         new OnboardingSlide
         {
+            Icone = "\uf1de", // sliders
             Titre = "Filtrez par budget, quartier et type",
-            SousTitre = "Affinez votre recherche par prix, meubl\u00e9, nombre de pi\u00e8ces et disponibilit\u00e9.",
-            Illustration = CreerIllustrationFiltres()
+            SousTitre = "Affinez votre recherche par prix, meubl\u00e9, nombre de pi\u00e8ces et disponibilit\u00e9."
         },
         new OnboardingSlide
         {
+            Icone = "\uf4ad", // comment-dots
             Titre = "Contactez directement le bailleur",
-            SousTitre = "Discutez avec le propri\u00e9taire via la messagerie in-app ou appelez-le en un clic.",
-            Illustration = CreerIllustrationMessage()
+            SousTitre = "Discutez avec le propri\u00e9taire via la messagerie in-app ou appelez-le en un clic."
         }
     };
 
@@ -60,10 +63,7 @@ public partial class OnboardingPage : ContentPage
         BindingContext = this;
     }
 
-    private void OnPasserClicked(object sender, EventArgs e)
-    {
-        TerminerOnboarding();
-    }
+    private void OnPasserClicked(object sender, EventArgs e) => TerminerOnboarding();
 
     private void OnPrecedentClicked(object sender, EventArgs e)
     {
@@ -83,87 +83,27 @@ public partial class OnboardingPage : ContentPage
         }
     }
 
-    private void OnCommencerClicked(object sender, EventArgs e)
-    {
-        TerminerOnboarding();
-    }
+    private void OnCommencerClicked(object sender, EventArgs e) => TerminerOnboarding();
 
-    private void TerminerOnboarding()
+    /// <summary>
+    /// Marque l'onboarding comme termin\u00e9 puis ouvre l'accueil (si connect\u00e9)
+    /// ou la page de connexion.
+    /// </summary>
+    private async void TerminerOnboarding()
     {
         Preferences.Set("OnboardingDone", true);
-        OuvrirPageSelonEtat();
-    }
 
-    private static void OuvrirPageSelonEtat()
-    {
-        var isLoggedIn = Preferences.Get("locatcam_is_logged_in", false);
-        MainThread.BeginInvokeOnMainThread(async () =>
+        string route;
+        try
         {
-            if (isLoggedIn)
-                await Shell.Current.GoToAsync("//HomePage");
-            else
-                await Shell.Current.GoToAsync("//LoginPage");
-        });
-    }
-
-    // ------------------------------------------------------------------
-    // Illustrations flat (compositions de formes MAUI, pas d'image externe)
-    // ------------------------------------------------------------------
-
-    private static View CreerIllustrationMaison()
-    {
-        var toit = new Border
+            var token = await SecureStorage.GetAsync("locatcam_access_token");
+            route = string.IsNullOrWhiteSpace(token) ? "LoginPage" : "HomePage";
+        }
+        catch
         {
-            WidthRequest = 100, HeightRequest = 50,
-            BackgroundColor = (Color)App.Current.Resources["Accent"],
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center
-        };
-        var corps = new Border
-        {
-            WidthRequest = 100, HeightRequest = 90,
-            BackgroundColor = Colors.White,
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center,
-            Margin = new Thickness(0, 20, 0, 0)
-        };
-        var porte = new Border
-        {
-            WidthRequest = 24, HeightRequest = 36,
-            BackgroundColor = (Color)App.Current.Resources["SurfaceSoft"],
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.End,
-            Margin = new Thickness(0, 0, 0, 12)
-        };
+            route = "LoginPage";
+        }
 
-        var grid = new Grid { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center };
-        grid.Add(toit);
-        grid.Add(corps);
-        grid.Add(porte);
-        return grid;
-    }
-
-    private static View CreerIllustrationFiltres()
-    {
-        var barre1 = new Border { WidthRequest = 70, HeightRequest = 10, BackgroundColor = (Color)App.Current.Resources["Accent"], HorizontalOptions = LayoutOptions.Center };
-        var barre2 = new Border { WidthRequest = 110, HeightRequest = 10, BackgroundColor = (Color)App.Current.Resources["SurfaceSoft"], HorizontalOptions = LayoutOptions.Center, Margin = new Thickness(0, 8, 0, 0) };
-        var barre3 = new Border { WidthRequest = 90, HeightRequest = 10, BackgroundColor = (Color)App.Current.Resources["Success"], HorizontalOptions = LayoutOptions.Center, Margin = new Thickness(0, 8, 0, 0) };
-
-        var grid = new Grid { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center };
-        grid.Add(barre1);
-        grid.Add(barre2);
-        grid.Add(barre3);
-        return grid;
-    }
-
-    private static View CreerIllustrationMessage()
-    {
-        var bulle1 = new Border { WidthRequest = 90, HeightRequest = 44, BackgroundColor = (Color)App.Current.Resources["Accent"], HorizontalOptions = LayoutOptions.Start };
-        var bulle2 = new Border { WidthRequest = 110, HeightRequest = 44, BackgroundColor = (Color)App.Current.Resources["SurfaceSoft"], HorizontalOptions = LayoutOptions.End, Margin = new Thickness(0, 12, 0, 0) };
-
-        var grid = new Grid { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center };
-        grid.Add(bulle1);
-        grid.Add(bulle2);
-        return grid;
+        NavigationShell.AllerVers(route);
     }
 }

@@ -7,7 +7,8 @@
              x:DataType="vm:FavorisViewModel"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.FavorisPage"
-             Title="Mes favoris">
+             Title="Mes favoris"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -15,58 +16,69 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
         <!-- Bandeau hors-ligne -->
         <ctrl:OfflineBanner Grid.Row="0" />
 
-        <!-- Barre de recherche (masquée pour les favoris) -->
-        <SearchBar Grid.Row="1"
-                   Placeholder="Rechercher dans vos favoris..."
-                   IsVisible="False" />
+        <!-- ============ EN-TÊTE ============ -->
+        <VerticalStackLayout Grid.Row="1" Padding="20,14,20,8" Spacing="2">
+            <Label Text="Mes favoris" Style="{StaticResource H1}" />
+            <Label Text="Vos logements sauvegardés, disponibles hors-ligne"
+                   Style="{StaticResource Caption}" />
+        </VerticalStackLayout>
 
-        <!-- Liste des favoris -->
+        <!-- ============ LISTE ============ -->
         <RefreshView Grid.Row="2"
                      IsRefreshing="{Binding IsRefreshing}"
-                     Command="{Binding ChargerFavorisCommand}">
-            <CollectionView ItemsSource="{Binding Favoris}"
+                     Command="{Binding ChargerFavorisCommand}"
+                     RefreshColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}">
+            <CollectionView x:Name="ListeFavoris"
+                            ItemsSource="{Binding Favoris}"
+                            SelectionMode="Single"
+                            SelectionChanged="OnFavoriSelectionne"
                             ItemSizingStrategy="MeasureFirstItem">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="18" />
+                </CollectionView.ItemsLayout>
+
                 <CollectionView.EmptyView>
                     <ctrl:EmptyStateView
-                        Icone="❤️"
+                        Icone="&#xf004;"
                         Titre="Aucun favori"
-                        Message="Vous n'avez pas encore ajouté d'annonce à vos favoris."
-                        BoutonTexte="Découvrir les annonces"
-                        BoutonCommande="{Binding ChargerFavorisCommand}"
+                        Message="Appuyez sur le cœur d'une annonce pour la retrouver ici, même sans connexion."
                         AfficherBouton="False" />
                 </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:AnnonceDto">
-                        <ctrl:AnnonceCard
-                            Titre="{Binding Titre}"
-                            Prix="{Binding Prix}"
-                            Ville="{Binding Ville}"
-                            Quartier="{Binding Quartier}"
-                            Type="{Binding Type}"
-                            Statut="{Binding Statut}" />
+                        <Grid Padding="20,0,20,0">
+                            <ctrl:AnnonceCard
+                                Titre="{Binding Titre}"
+                                Prix="{Binding Prix}"
+                                Ville="{Binding Ville}"
+                                Quartier="{Binding Quartier}"
+                                Type="{Binding Type}"
+                                Statut="{Binding Statut}"
+                                EstVerifie="{Binding EstVerifie}"
+                                PhotoUrl="{Binding PhotoPrincipaleUrl}" />
+                        </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
 
         <!-- Skeleton loading -->
-        <StackLayout Grid.Row="2"
-                     IsVisible="{Binding IsLoading}"
-                     VerticalOptions="Center"
-                     HorizontalOptions="Center"
-                     Spacing="10">
+        <VerticalStackLayout Grid.Row="2"
+                             IsVisible="{Binding IsLoading}"
+                             Padding="20,10,20,0"
+                             Spacing="18">
             <ctrl:SkeletonCard />
             <ctrl:SkeletonCard />
-            <ctrl:SkeletonCard />
-        </StackLayout>
+        </VerticalStackLayout>
 
-        <!-- Bottom navigation custom (animée) -->
+        <!-- Barre de navigation basse -->
         <ctrl:BottomNavBar Grid.Row="3" EstActif="FavorisPage" />
 
     </Grid>

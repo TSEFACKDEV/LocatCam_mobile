@@ -1,303 +1,395 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ctrl="clr-namespace:LocatCam_mobile.Controls"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.PublierPage"
              Title="Publier une annonce"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}"
              x:DataType="vm:PublierViewModel">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="ChampLabelStyle" TargetType="Label">
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                <Setter Property="Margin" Value="16, 8, 16, 2" />
+                <Setter Property="FontFamily" Value="PlusJakartaSans" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
+                <Setter Property="Margin" Value="4, 8, 4, 6" />
             </Style>
             <Style x:Key="ChampEntryStyle" TargetType="Entry">
-                <Setter Property="Margin" Value="16, 0, 16, 10" />
-                <Setter Property="HeightRequest" Value="48" />
-                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}" />
-                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="FontFamily" Value="PlusJakartaSans" />
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}" />
+                <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}" />
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*">
-        <!-- En-tête : titre de l'étape et progression -->
-        <StackLayout Grid.Row="0" Margin="16, 16, 16, 8" Spacing="4">
-            <Label Text="{Binding EtapeCourante, StringFormat='Étape {0}'}"
-                   FontSize="12" TextColor="{StaticResource Primary}" />
-            <Label x:Name="TitreEtapeLabel"
-                   FontSize="20" FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-        </StackLayout>
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
 
-        <!-- Bandeau erreur / succès -->
-        <Grid Grid.Row="1">
-            <ScrollView>
-                <StackLayout Spacing="0">
+        <!-- ============ EN-TÊTE : PROGRESSION ============ -->
+        <Grid Grid.Row="0" Padding="20,14,20,10" ColumnDefinitions="*,Auto">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="{Binding EtapeTexte}"
+                       Style="{StaticResource Micro}"
+                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+                <Label x:Name="TitreEtapeLabel" Style="{StaticResource H2}" />
+            </VerticalStackLayout>
+        </Grid>
 
-                    <!-- Erreur -->
-                    <Label Text="{Binding MessageErreur}"
-                           IsVisible="{Binding MessageErreur, Converter={StaticResource StringToBoolConverter}}"
-                           Margin="16, 8, 16, 4"
-                           Padding="12"
-                           TextColor="{StaticResource Error}"
-                           BackgroundColor="{StaticResource ErrorLight}"
-                           FontSize="14" />
+        <!-- ============ FORMULAIRE ============ -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,0,20,16" Spacing="0">
 
-                    <!-- Succès -->
-                    <Label Text="{Binding MessageSucces}"
-                           IsVisible="{Binding MessageSucces, Converter={StaticResource StringToBoolConverter}}"
-                           Margin="16, 8, 16, 4"
-                           Padding="12"
-                           TextColor="{StaticResource Success}"
-                           BackgroundColor="{StaticResource SuccessLight}"
-                           FontSize="14" />
+                <!-- Messages d'erreur / succès -->
+                <Frame BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorLightDark}}"
+                       BorderColor="Transparent"
+                       CornerRadius="14"
+                       Padding="14,12"
+                       Margin="0,4,0,10"
+                       HasShadow="False"
+                       IsVisible="{Binding MessageErreur, Converter={StaticResource StringToBoolConverter}}">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="&#xf071;" FontFamily="FASolid" FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding MessageErreur}"
+                               FontFamily="PlusJakartaSans" FontSize="13.5"
+                               TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                               LineBreakMode="WordWrap"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Frame>
 
-                    <!-- ======================== ÉTAPE : INFOS ======================== -->
-                    <StackLayout IsVisible="{Binding EstEtapeInfos}" Spacing="0">
-                        <Label Text="Informations de l'annonce" FontSize="16" FontAttributes="Bold"
-                               Margin="16, 14, 16, 8"
-                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                <Frame BackgroundColor="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessLightDark}}"
+                       BorderColor="Transparent"
+                       CornerRadius="14"
+                       Padding="14,12"
+                       Margin="0,4,0,10"
+                       HasShadow="False"
+                       IsVisible="{Binding MessageSucces, Converter={StaticResource StringToBoolConverter}}">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="&#xf058;" FontFamily="FASolid" FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding MessageSucces}"
+                               FontFamily="PlusJakartaSans" FontSize="13.5"
+                               TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
+                               LineBreakMode="WordWrap"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Frame>
 
-                        <Label Text="Titre" Style="{StaticResource ChampLabelStyle}" />
-                        <Entry Text="{Binding Titre}" Placeholder="Ex: T2 meublé à Bonanama"
+                <!-- ======================== ÉTAPE : INFOS ======================== -->
+                <VerticalStackLayout IsVisible="{Binding EstEtapeInfos}" Spacing="0">
+
+                    <Label Text="Titre" Style="{StaticResource ChampLabelStyle}" />
+                    <Frame Style="{StaticResource InputBorder}">
+                        <Entry Text="{Binding Titre}" Placeholder="Ex : T2 meublé à Bonanama"
                                Style="{StaticResource ChampEntryStyle}" />
+                    </Frame>
 
-                        <Label Text="Description" Style="{StaticResource ChampLabelStyle}" />
+                    <Label Text="Description" Style="{StaticResource ChampLabelStyle}" />
+                    <Frame Style="{StaticResource InputBorder}">
                         <Editor Text="{Binding Description}" Placeholder="Décrivez votre logement..."
-                               HeightRequest="100"
-                               Margin="16, 0, 16, 10"
-                               BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
-                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                                HeightRequest="110"
+                                FontFamily="PlusJakartaSans" FontSize="15"
+                                BackgroundColor="Transparent"
+                                TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                                PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}" />
+                    </Frame>
 
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="16, 0, 16, 10">
-                            <StackLayout Grid.Column="0" Spacing="4">
-                                <Label Text="Prix (FCFA)" Style="{StaticResource ChampLabelStyle}" />
-                                <Entry Text="{Binding PrixTexte}" Placeholder="150000"
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,6,0,0">
+                        <VerticalStackLayout Grid.Column="0" Spacing="0">
+                            <Label Text="Prix (FCFA)" Style="{StaticResource ChampLabelStyle}" />
+                            <Frame Style="{StaticResource InputBorder}">
+                                <Entry Text="{Binding PrixTexte}" Placeholder="15 000"
                                        Keyboard="Numeric"
                                        Style="{StaticResource ChampEntryStyle}" />
-                            </StackLayout>
-                            <StackLayout Grid.Column="1" Spacing="4">
-                                <Label Text="Type" Style="{StaticResource ChampLabelStyle}" />
+                            </Frame>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="0">
+                            <Label Text="Type" Style="{StaticResource ChampLabelStyle}" />
+                            <Frame Style="{StaticResource InputBorder}" Padding="10,0">
                                 <Picker ItemsSource="{Binding TypesBien}"
                                         SelectedItem="{Binding Type}"
-                                        Title="Sélectionner"
-                                        Margin="0, 0, 0, 10"
-                                        HeightRequest="48"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
-                                        TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                            </StackLayout>
-                        </Grid>
+                                        Title="Choisir"
+                                        FontFamily="PlusJakartaSans"
+                                        FontSize="14"
+                                        TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                                        BackgroundColor="Transparent"
+                                        HeightRequest="50"
+                                        VerticalOptions="Center" />
+                            </Frame>
+                        </VerticalStackLayout>
+                    </Grid>
 
-                        <Label Text="Quartier" Style="{StaticResource ChampLabelStyle}" />
-                        <Entry Text="{Binding Quartier}" Placeholder="Ex: Bonanama"
+                    <Label Text="Quartier" Style="{StaticResource ChampLabelStyle}" />
+                    <Frame Style="{StaticResource InputBorder}">
+                        <Entry Text="{Binding Quartier}" Placeholder="Ex : Bonanama"
                                Style="{StaticResource ChampEntryStyle}" />
+                    </Frame>
 
-                        <Label Text="Ville" Style="{StaticResource ChampLabelStyle}" />
-                        <Entry Text="{Binding Ville}" Placeholder="Ex: Douala"
+                    <Label Text="Ville" Style="{StaticResource ChampLabelStyle}" />
+                    <Frame Style="{StaticResource InputBorder}">
+                        <Entry Text="{Binding Ville}" Placeholder="Ex : Douala"
                                Style="{StaticResource ChampEntryStyle}" />
+                    </Frame>
 
-                        <Label Text="Adresse" Style="{StaticResource ChampLabelStyle}" />
-                        <Entry Text="{Binding Adresse}" Placeholder="Ex: Rue de Bonanama, immeuble XYZ"
+                    <Label Text="Adresse" Style="{StaticResource ChampLabelStyle}" />
+                    <Frame Style="{StaticResource InputBorder}">
+                        <Entry Text="{Binding Adresse}" Placeholder="Ex : Rue de Bonanama, immeuble ABC"
                                Style="{StaticResource ChampEntryStyle}" />
-                    </StackLayout>
+                    </Frame>
 
-                    <!-- ======================== ÉTAPE : LOCALISATION ======================== -->
-                    <StackLayout IsVisible="{Binding EstEtapeLocalisation}" Spacing="0">
-                        <Label Text="Localisation" FontSize="16" FontAttributes="Bold"
-                               Margin="16, 14, 16, 8"
-                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                        <Label Text="Vous pouvez préciser la position sur la carte (phase E) ou saisir les coordonnées ci-dessous."
-                               FontSize="13"
-                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                               Margin="16, 0, 16, 10" />
+                </VerticalStackLayout>
 
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="16, 0, 16, 10">
-                            <StackLayout Grid.Column="0" Spacing="4">
-                                <Label Text="Latitude" Style="{StaticResource ChampLabelStyle}" />
+                <!-- ======================== ÉTAPE : LOCALISATION ======================== -->
+                <VerticalStackLayout IsVisible="{Binding EstEtapeLocalisation}" Spacing="0">
+
+                    <Label Text="Positionnez votre logement sur la carte pour être trouvé facilement par les étudiants."
+                           Style="{StaticResource Caption}"
+                           Margin="4,4,4,10"
+                           HorizontalTextAlignment="Start" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="0">
+                            <Label Text="Latitude" Style="{StaticResource ChampLabelStyle}" />
+                            <Frame Style="{StaticResource InputBorder}">
                                 <Entry Text="{Binding Latitude}" Keyboard="Numeric"
                                        Style="{StaticResource ChampEntryStyle}" />
-                            </StackLayout>
-                            <StackLayout Grid.Column="1" Spacing="4">
-                                <Label Text="Longitude" Style="{StaticResource ChampLabelStyle}" />
+                            </Frame>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="0">
+                            <Label Text="Longitude" Style="{StaticResource ChampLabelStyle}" />
+                            <Frame Style="{StaticResource InputBorder}">
                                 <Entry Text="{Binding Longitude}" Keyboard="Numeric"
                                        Style="{StaticResource ChampEntryStyle}" />
-                            </StackLayout>
-                        </Grid>
-                    </StackLayout>
+                            </Frame>
+                        </VerticalStackLayout>
+                    </Grid>
 
-                    <!-- ======================== ÉTAPE : OPTIONS ======================== -->
-                    <StackLayout IsVisible="{Binding EstEtapeOptions}" Spacing="0">
-                        <Label Text="Options du logement" FontSize="16" FontAttributes="Bold"
-                               Margin="16, 14, 16, 8"
-                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                </VerticalStackLayout>
 
-                        <StackLayout Margin="16, 8, 16, 8" Spacing="12">
-                            <Grid ColumnDefinitions="Auto,*">
+                <!-- ======================== ÉTAPE : OPTIONS ======================== -->
+                <VerticalStackLayout IsVisible="{Binding EstEtapeOptions}" Spacing="0">
+
+                    <Frame Style="{StaticResource Card}" Padding="16,6" Margin="0,4,0,12">
+                        <VerticalStackLayout Spacing="0">
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14" Padding="0,10">
                                 <Switch Grid.Column="0" IsToggled="{Binding EstMeuble}"
-                                        HorizontalOptions="Start" />
-                                <Label Grid.Column="1" Text="Meublé" VerticalOptions="Center"
-                                       FontSize="16"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                                        OnColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                        HorizontalOptions="Start" VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                    <Label Text="Meublé" Style="{StaticResource BodyFort}" />
+                                    <Label Text="Le logement est équipé de meubles" Style="{StaticResource Caption}" />
+                                </VerticalStackLayout>
                             </Grid>
 
-                            <Grid ColumnDefinitions="Auto,*">
+                            <BoxView Style="{StaticResource Separateur}" Margin="54,0,0,0" />
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14" Padding="0,10">
                                 <Switch Grid.Column="0" IsToggled="{Binding Disponible}"
-                                        HorizontalOptions="Start" />
-                                <Label Grid.Column="1" Text="Disponible à la location" VerticalOptions="Center"
-                                       FontSize="16"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                                        OnColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                        HorizontalOptions="Start" VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                    <Label Text="Disponible à la location" Style="{StaticResource BodyFort}" />
+                                    <Label Text="Visible immédiatement par les étudiants" Style="{StaticResource Caption}" />
+                                </VerticalStackLayout>
                             </Grid>
-                        </StackLayout>
 
-                        <Label Text="Nombre de pièces" Style="{StaticResource ChampLabelStyle}" Margin="16, 8, 16, 2" />
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <Label Text="Nombre de pièces" Style="{StaticResource ChampLabelStyle}" />
+                    <Frame Style="{StaticResource InputBorder}">
                         <Entry Text="{Binding NombrePieces}" Keyboard="Numeric"
                                Style="{StaticResource ChampEntryStyle}" />
-                    </StackLayout>
+                    </Frame>
 
-                    <!-- ======================== ÉTAPE : PHOTOS (DÉSACTIVÉES - B1) ======================== -->
-                    <StackLayout IsVisible="{Binding EstEtapePhotos}" Spacing="0">
-                        <Label Text="Photos" FontSize="16" FontAttributes="Bold"
-                               Margin="16, 14, 16, 8"
-                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                </VerticalStackLayout>
 
-                        <Border Margin="16, 8, 16, 14"
-                                BackgroundColor="{StaticResource Surface}"
-                                Stroke="{StaticResource PrimaryLight}"
-                                StrokeThickness="1"
-                                Padding="16">
-                            <StackLayout Spacing="8">
-                                <Label Text="📷"
-                                       FontSize="40"
-                                       HorizontalOptions="Center" />
-                                <Label Text="Upload de photos"
-                                       FontSize="16" FontAttributes="Bold"
-                                       HorizontalOptions="Center"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                                <Label Text="Temporairement indisponible — correctif API en cours (anomalie B1)."
-                                       FontSize="13"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                                       HorizontalTextAlignment="Center" />
-                                <Label Text="Vous pourrez ajouter des photos dès que l'API sera corrigée."
-                                       FontSize="13"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                                       HorizontalTextAlignment="Center" />
-                            </StackLayout>
-                        </Border>
-                    </StackLayout>
+                <!-- ======================== ÉTAPE : PHOTOS (B1) ======================== -->
+                <VerticalStackLayout IsVisible="{Binding EstEtapePhotos}" Spacing="0">
 
-                    <!-- ======================== ÉTAPE : APERÇU ======================== -->
-                    <StackLayout IsVisible="{Binding EstEtapeApercu}" Spacing="0">
-                        <Label Text="Aperçu avant publication" FontSize="16" FontAttributes="Bold"
-                               Margin="16, 14, 16, 8"
-                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                    <Frame Style="{StaticResource Card}" Padding="20" Margin="0,4,0,0">
+                        <VerticalStackLayout Spacing="12">
 
-                        <StackLayout Margin="16, 8, 16, 14" Spacing="6">
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                                <Label Text="Titre" WidthRequest="110"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                <Label Text="{Binding Titre}"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                            </Grid>
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                                <Label Text="Prix" WidthRequest="110"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                <Label Text="{Binding PrixTexte, StringFormat='{0} FCFA'}"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                            </Grid>
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                                <Label Text="Type" WidthRequest="110"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                <Label Text="{Binding Type}"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                            </Grid>
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                                <Label Text="Quartier, Ville" WidthRequest="110"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                <Label Text="{Binding Quartier, StringFormat='{0}, {1}', ConverterParameter=...}"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                            </Grid>
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                                <Label Text="Adresse" WidthRequest="110"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                <Label Text="{Binding Adresse}"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                            </Grid>
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                                <Label Text="Meublé" WidthRequest="110"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                <Label Text="{Binding EstMeuble, StringFormat='{0:Oui;Non}'}"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                            </Grid>
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                                <Label Text="Pièces" WidthRequest="110"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                <Label Text="{Binding NombrePieces}"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
-                            </Grid>
-                        </StackLayout>
-                    </StackLayout>
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoft}, Dark={StaticResource AccentSoftDark}}"
+                                   BorderColor="Transparent"
+                                   CornerRadius="36"
+                                   WidthRequest="72" HeightRequest="72"
+                                   Padding="0" HasShadow="False"
+                                   HorizontalOptions="Center">
+                                <Label Text="&#xf030;" FontFamily="FASolid" FontSize="28"
+                                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Frame>
 
-                    <!-- ======================== ÉTAPE : TERMINÉ ======================== -->
-                    <StackLayout IsVisible="{Binding EstEtapeTermine}" Spacing="0">
-                        <Border Margin="16, 14, 16, 14"
-                                BackgroundColor="{StaticResource SuccessLight}"
-                                Stroke="{StaticResource Success}"
-                                StrokeThickness="1"
-                                Padding="16">
-                            <StackLayout Spacing="8">
-                                <Label Text="✅"
-                                       FontSize="40"
-                                       HorizontalOptions="Center" />
-                                <Label Text="Annonce publiée !"
-                                       FontSize="20" FontAttributes="Bold"
-                                       HorizontalOptions="Center"
-                                       TextColor="{StaticResource Success}" />
-                                <Label Text="{Binding MessageSucces}"
-                                       FontSize="14"
-                                       HorizontalTextAlignment="Center"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                            </StackLayout>
-                        </Border>
-                    </StackLayout>
+                            <Label Text="Upload de photos"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center" />
 
-                </StackLayout>
-            </ScrollView>
+                            <Label Text="Temporairement indisponible — correctif API en cours (anomalie B1)."
+                                   Style="{StaticResource Caption}"
+                                   HorizontalTextAlignment="Center" />
 
-            <!-- Barre de navigation inférieure -->
-            <Border Grid.Row="1" VerticalOptions="End"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
-                    Padding="16, 10, 16, 20">
-                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
-                    <Button Grid.Column="0" Text="Précédent"
-                            Command="{Binding PrecedentCommand}"
-                            IsEnabled="{Binding EstEtapeInfos, Converter={StaticResource InverseBoolConverter}}"
-                            BackgroundColor="Transparent"
-                            TextColor="{StaticResource Primary}"
-                            HeightRequest="48"
-                            SemanticProperties.Description="Étape précédente"
-                            SemanticProperties.Hint="Revenir à l'étape précédente du formulaire de publication" />
-                    <Button Grid.Column="1" Text="Suivant"
-                            Command="{Binding SuivantCommand}"
-                            IsVisible="{Binding EstEtapeTermine, Converter={StaticResource InverseBoolConverter}}"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                            TextColor="White"
-                            HeightRequest="48"
-                            SemanticProperties.Description="Étape suivante"
-                            SemanticProperties.Hint="Passer à l'étape suivante du formulaire de publication" />
-                    <Button Grid.Column="2" Text="Publier"
-                            Command="{Binding PublierCommand}"
-                            IsVisible="{Binding EstEtapeApercu}"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                            TextColor="White"
-                            HeightRequest="48"
-                            SemanticProperties.Description="Publier l'annonce"
-                            SemanticProperties.Hint="Publier l'annonce créée et la mettre en ligne" />
-                </Grid>
-            </Border>
-        </Grid>
+                            <Label Text="Vous pourrez ajouter des photos dès que l'API sera corrigée."
+                                   Style="{StaticResource Caption}"
+                                   HorizontalTextAlignment="Center" />
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+                <!-- ======================== ÉTAPE : APERÇU ======================== -->
+                <VerticalStackLayout IsVisible="{Binding EstEtapeApercu}" Spacing="0">
+
+                    <Frame Style="{StaticResource Card}" Padding="16,10" Margin="0,4,0,10">
+                        <VerticalStackLayout Spacing="0">
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="0,8">
+                                <Label Text="Titre" WidthRequest="96" Style="{StaticResource Micro}" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding Titre}" Style="{StaticResource Body}"
+                                       LineBreakMode="TailTruncation" />
+                            </Grid>
+                            <BoxView Style="{StaticResource Separateur}" />
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="0,8">
+                                <Label Text="Prix" WidthRequest="96" Style="{StaticResource Micro}" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding PrixTexte, StringFormat='{0} FCFA'}"
+                                       Style="{StaticResource BodyFort}" />
+                            </Grid>
+                            <BoxView Style="{StaticResource Separateur}" />
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="0,8">
+                                <Label Text="Type" WidthRequest="96" Style="{StaticResource Micro}" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding Type}" Style="{StaticResource Body}" />
+                            </Grid>
+                            <BoxView Style="{StaticResource Separateur}" />
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="0,8">
+                                <Label Text="Quartier" WidthRequest="96" Style="{StaticResource Micro}" VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                                    <Label Text="{Binding Quartier}" Style="{StaticResource Body}" VerticalOptions="Center" />
+                                    <Label Text="•" Style="{StaticResource Body}" VerticalOptions="Center" />
+                                    <Label Text="{Binding Ville}" Style="{StaticResource Body}" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                            <BoxView Style="{StaticResource Separateur}" />
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="0,8">
+                                <Label Text="Adresse" WidthRequest="96" Style="{StaticResource Micro}" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding Adresse}" Style="{StaticResource Body}"
+                                       LineBreakMode="TailTruncation" />
+                            </Grid>
+                            <BoxView Style="{StaticResource Separateur}" />
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="0,8">
+                                <Label Text="Meublé" WidthRequest="96" Style="{StaticResource Micro}" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="Oui" Style="{StaticResource Body}"
+                                       IsVisible="{Binding EstMeuble}" />
+                                <Label Grid.Column="1" Text="Non" Style="{StaticResource Body}"
+                                       IsVisible="{Binding EstMeuble, Converter={StaticResource InverseBoolConverter}}" />
+                            </Grid>
+                            <BoxView Style="{StaticResource Separateur}" />
+
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="0,8">
+                                <Label Text="Pièces" WidthRequest="96" Style="{StaticResource Micro}" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding NombrePieces}" Style="{StaticResource Body}" />
+                            </Grid>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+                <!-- ======================== ÉTAPE : TERMINÉ ======================== -->
+                <VerticalStackLayout IsVisible="{Binding EstEtapeTermine}" Spacing="0">
+
+                    <Frame Style="{StaticResource Card}" Padding="20" Margin="0,4,0,0"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessLightDark}}">
+                        <VerticalStackLayout Spacing="12">
+
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
+                                   BorderColor="Transparent"
+                                   CornerRadius="36"
+                                   WidthRequest="72" HeightRequest="72"
+                                   Padding="0" HasShadow="False"
+                                   HorizontalOptions="Center">
+                                <Label Text="&#xf058;" FontFamily="FASolid" FontSize="30" TextColor="White"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Frame>
+
+                            <Label Text="Annonce publiée !"
+                                   Style="{StaticResource H2}"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}" />
+
+                            <Label Text="{Binding MessageSucces}"
+                                   Style="{StaticResource Caption}"
+                                   HorizontalTextAlignment="Center" />
+
+                            <Button Text="Retour à l'accueil"
+                                    Clicked="OnRetourAccueilClicked"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Margin="0,6,0,0" />
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ============ BARRE D'ACTIONS ============ -->
+        <Frame Grid.Row="2"
+               BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource SurfaceCardDark}}"
+               BorderColor="Transparent"
+               CornerRadius="0"
+               Padding="16,10,16,14"
+               HasShadow="False"
+               IsVisible="{Binding EstEtapeTermine, Converter={StaticResource InverseBoolConverter}}">
+            <Frame.Shadow>
+                <Shadow Brush="#000000" Offset="0,-2" Radius="14" Opacity="0.06" />
+            </Frame.Shadow>
+
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        Text="Précédent"
+                        Command="{Binding PrecedentCommand}"
+                        IsEnabled="{Binding EstEtapeInfos, Converter={StaticResource InverseBoolConverter}}"
+                        Style="{StaticResource TextButton}"
+                        TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                        SemanticProperties.Description="Étape précédente" />
+
+                <Button Grid.Column="2"
+                        Text="Suivant"
+                        Command="{Binding SuivantCommand}"
+                        IsVisible="{Binding EstEtapeApercu, Converter={StaticResource InverseBoolConverter}}"
+                        Style="{StaticResource PrimaryButton}"
+                        WidthRequest="160"
+                        SemanticProperties.Description="Étape suivante" />
+
+                <Button Grid.Column="2"
+                        Text="Publier"
+                        Command="{Binding PublierCommand}"
+                        IsVisible="{Binding EstEtapeApercu}"
+                        Style="{StaticResource PrimaryButton}"
+                        WidthRequest="160"
+                        SemanticProperties.Description="Publier l'annonce" />
+            </Grid>
+        </Frame>
+
+        <!-- ============ BARRE DE NAVIGATION ============ -->
+        <ctrl:BottomNavBar Grid.Row="3" EstActif="PublierPage" />
+
     </Grid>
 
 </ContentPage>

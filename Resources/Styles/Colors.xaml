@@ -2,62 +2,61 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <!-- ===================== ENCRE (texte) ===================== -->
+    <Color x:Key="InkPrimary">#1C1C1E</Color>
+    <Color x:Key="InkPrimaryDark">#F2F2F2</Color>
+    <Color x:Key="InkSecondary">#6E6E73</Color>
+    <Color x:Key="InkSecondaryDark">#AEAEB2</Color>
+    <Color x:Key="InkMuted">#9A9AA0</Color>
+    <Color x:Key="InkMutedDark">#7C7C82</Color>
+
+    <!-- ===================== SURFACES ===================== -->
     <Color x:Key="Canvas">#FFFFFF</Color>
-    <Color x:Key="CanvasDark">#121212</Color>
-
-    <Color x:Key="SurfaceSoft">#F7F7F7</Color>
-    <Color x:Key="SurfaceSoftDark">#1E1E1E</Color>
-
+    <Color x:Key="CanvasDark">#111114</Color>
     <Color x:Key="SurfaceCard">#FFFFFF</Color>
-    <Color x:Key="SurfaceCardDark">#1E1E1E</Color>
+    <Color x:Key="SurfaceCardDark">#1C1C1F</Color>
+    <Color x:Key="SurfaceSoft">#F4F5F7</Color>
+    <Color x:Key="SurfaceSoftDark">#242428</Color>
+    <Color x:Key="Hairline">#E9E9EE</Color>
+    <Color x:Key="HairlineDark">#2E2E33</Color>
 
-    <Color x:Key="InkPrimary">#222222</Color>
-    <Color x:Key="InkPrimaryDark">#E8E8E8</Color>
-
-    <Color x:Key="InkSecondary">#6A6A6A</Color>
-    <Color x:Key="InkSecondaryDark">#B0B0B0</Color>
-
-    <Color x:Key="InkMuted">#929292</Color>
-    <Color x:Key="InkMutedDark">#7A7A7A</Color>
-
-    <Color x:Key="Hairline">#DDDDDD</Color>
-    <Color x:Key="HairlineDark">#2C2C2C</Color>
-
+    <!-- ===================== ACCENT LOCATCAM (BLEU) ===================== -->
     <Color x:Key="Accent">#1565C0</Color>
     <Color x:Key="AccentDark">#5B9BD5</Color>
-
     <Color x:Key="AccentPressed">#0D47A1</Color>
-    <Color x:Key="AccentPressedDark">#4A8AC4</Color>
+    <Color x:Key="AccentSoft">#E8F1FB</Color>
+    <Color x:Key="AccentSoftDark">#17293D</Color>
 
+    <!-- ===================== STATUTS ===================== -->
     <Color x:Key="Success">#2E7D32</Color>
     <Color x:Key="SuccessDark">#66BB6A</Color>
-
+    <Color x:Key="SuccessLight">#E8F5E9</Color>
+    <Color x:Key="SuccessLightDark">#14251A</Color>
     <Color x:Key="Warning">#F57C00</Color>
     <Color x:Key="WarningDark">#FFB74D</Color>
-
     <Color x:Key="Error">#C13515</Color>
     <Color x:Key="ErrorDark">#E57373</Color>
-
     <Color x:Key="ErrorLight">#FDECEA</Color>
     <Color x:Key="ErrorLightDark">#3A1A15</Color>
 
+    <!-- ===================== OVERLAYS ===================== -->
+    <Color x:Key="Scrim">#33000000</Color>
+    <Color x:Key="BadgeGlass">#99000000</Color>
+    <Color x:Key="CarteGlow">#D6E6FA</Color>
+
+    <!-- ===================== ALIAS (compatibilité écrans existants) ===================== -->
     <Color x:Key="Primary">#1565C0</Color>
     <Color x:Key="PrimaryLight">#5B9BD5</Color>
     <Color x:Key="PrimaryDark">#0D47A1</Color>
-
     <Color x:Key="Secondary">#2E7D32</Color>
     <Color x:Key="SecondaryLight">#66BB6A</Color>
-
     <Color x:Key="Surface">#FFFFFF</Color>
-    <Color x:Key="SurfaceDark">#1E1E1E</Color>
-
-    <Color x:Key="TextPrimary">#222222</Color>
-    <Color x:Key="TextPrimaryDark">#E8E8E8</Color>
-
-    <Color x:Key="TextSecondary">#6A6A6A</Color>
-    <Color x:Key="TextSecondaryDark">#B0B0B0</Color>
-
+    <Color x:Key="SurfaceDark">#1C1C1F</Color>
+    <Color x:Key="TextPrimary">#1C1C1E</Color>
+    <Color x:Key="TextPrimaryDark">#F2F2F2</Color>
+    <Color x:Key="TextSecondary">#6E6E73</Color>
+    <Color x:Key="TextSecondaryDark">#AEAEB2</Color>
     <Color x:Key="Background">#FFFFFF</Color>
-    <Color x:Key="BackgroundDark">#121212</Color>
+    <Color x:Key="BackgroundDark">#111114</Color>
 
 </ResourceDictionary>

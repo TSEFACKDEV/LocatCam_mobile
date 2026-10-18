@@ -110,7 +110,7 @@ public partial class RegisterViewModel : ObservableObject
             MessageIsError = false;
 
             await Task.Delay(1000);
-            await Shell.Current.GoToAsync("..");
+            Services.NavigationShell.AllerVers("LoginPage");
         }
         catch (Exception ex)
         {
@@ -126,7 +126,8 @@ public partial class RegisterViewModel : ObservableObject
     [RelayCommand]
     public async Task GoToLoginAsync()
     {
-        await Shell.Current.GoToAsync("..");
+        await Task.CompletedTask;
+        Services.NavigationShell.AllerVers("LoginPage");
     }
 
     private static bool EstEmailValide(string email)

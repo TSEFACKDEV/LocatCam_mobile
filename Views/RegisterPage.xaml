@@ -2,120 +2,171 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LocatCam_mobile.Views.RegisterPage"
-             Title="Inscription">
+             Title="Inscription"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="24,20" Spacing="16">
+        <VerticalStackLayout Padding="24,40,24,32" Spacing="16">
 
-            <!-- Marque -->
-            <Label Text="Créer un compte"
-                   Style="{StaticResource Display}"
-                   HorizontalOptions="Center" />
-            <Label Text="Rejoignez LocatCam"
-                   Style="{StaticResource H2}"
-                   HorizontalOptions="Center"
-                   TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
+            <!-- ============ TITRE ============ -->
+            <VerticalStackLayout Spacing="6" Margin="0,0,0,6">
+                <Label Text="Cr\u00e9er un compte" Style="{StaticResource Display}" HorizontalOptions="Center" />
+                <Label Text="Rejoignez LocatCam en quelques secondes"
+                       Style="{StaticResource Caption}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
 
-            <!-- Message -->
-            <Label Text="{Binding Message}"
-                   HorizontalOptions="Center"
-                   FontSize="14"
-                   TextColor="{StaticResource Error}"
-                   IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}" />
-
-            <!-- Nom -->
-            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,8">
-                <Entry x:Name="NomEntry"
-                       Placeholder="Nom complet"
-                       Text="{Binding Nom}"
-                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                       HorizontalOptions="Fill" />
+            <!-- ============ MESSAGE ============ -->
+            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorLightDark}}"
+                   BorderColor="Transparent"
+                   CornerRadius="14"
+                   Padding="14,12"
+                   HasShadow="False"
+                   IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}">
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="&#xf071;" FontFamily="FASolid" FontSize="15"
+                           TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                           VerticalOptions="Center" />
+                    <Label Text="{Binding Message}"
+                           FontFamily="PlusJakartaSans"
+                           FontSize="13.5"
+                           TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                           LineBreakMode="WordWrap"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
             </Frame>
 
-            <!-- Email -->
-            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,8">
-                <Entry x:Name="EmailEntry"
-                       Placeholder="Email"
-                       Keyboard="Email"
-                       Text="{Binding Email}"
-                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                       HorizontalOptions="Fill" />
+            <!-- ============ NOM ============ -->
+            <Frame Style="{StaticResource InputBorder}" HeightRequest="56">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="&#xf007;" FontFamily="FASolid" FontSize="15"
+                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           VerticalOptions="Center" />
+                    <Entry Grid.Column="1"
+                           Placeholder="Nom complet"
+                           Text="{Binding Nom}"
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                           FontFamily="PlusJakartaSans" FontSize="15"
+                           BackgroundColor="Transparent" VerticalOptions="Center" />
+                </Grid>
             </Frame>
 
-            <!-- Téléphone -->
-            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,8">
-                <Entry x:Name="TelephoneEntry"
-                       Placeholder="+237 6XX XXX XXX"
-                       Keyboard="Telephone"
-                       Text="{Binding Telephone}"
-                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                       HorizontalOptions="Fill" />
+            <!-- ============ EMAIL ============ -->
+            <Frame Style="{StaticResource InputBorder}" HeightRequest="56">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="&#xf0e0;" FontFamily="FASolid" FontSize="15"
+                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           VerticalOptions="Center" />
+                    <Entry Grid.Column="1"
+                           Placeholder="Adresse email"
+                           Keyboard="Email"
+                           Text="{Binding Email}"
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                           FontFamily="PlusJakartaSans" FontSize="15"
+                           BackgroundColor="Transparent" VerticalOptions="Center" />
+                </Grid>
             </Frame>
 
-            <!-- Mot de passe -->
-            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,8">
-                <Entry x:Name="MotDePasseEntry"
-                       Placeholder="Mot de passe (min 6 car.)"
-                       IsPassword="True"
-                       Text="{Binding MotDePasse}"
-                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                       HorizontalOptions="Fill" />
+            <!-- ============ TÉLÉPHONE ============ -->
+            <Frame Style="{StaticResource InputBorder}" HeightRequest="56">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="&#xf095;" FontFamily="FASolid" FontSize="15"
+                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           VerticalOptions="Center" />
+                    <Entry Grid.Column="1"
+                           Placeholder="+237 6XX XXX XXX"
+                           Keyboard="Telephone"
+                           Text="{Binding Telephone}"
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                           FontFamily="PlusJakartaSans" FontSize="15"
+                           BackgroundColor="Transparent" VerticalOptions="Center" />
+                </Grid>
             </Frame>
 
-            <!-- Confirmation -->
-            <Frame Style="{StaticResource InputBorder}" Margin="0,0,0,16">
-                <Entry x:Name="ConfirmationEntry"
-                       Placeholder="Confirmer le mot de passe"
-                       IsPassword="True"
-                       Text="{Binding ConfirmationMotDePasse}"
-                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                       HorizontalOptions="Fill" />
+            <!-- ============ MOT DE PASSE ============ -->
+            <Frame Style="{StaticResource InputBorder}" HeightRequest="56">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="&#xf023;" FontFamily="FASolid" FontSize="15"
+                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           VerticalOptions="Center" />
+                    <Entry Grid.Column="1"
+                           Placeholder="Mot de passe (min. 6 caract\u00e8res)"
+                           IsPassword="True"
+                           Text="{Binding MotDePasse}"
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                           FontFamily="PlusJakartaSans" FontSize="15"
+                           BackgroundColor="Transparent" VerticalOptions="Center" />
+                </Grid>
             </Frame>
 
-            <!-- Rôle -->
-            <Label Text="Rôle"
-                   Style="{StaticResource Caption}"
-                   Margin="0,4,0,4" />
-            <Picker x:Name="RolePicker"
-                    Title="Sélectionner un rôle"
-                    SelectedItem="{Binding Role}"
-                    HorizontalOptions="Fill"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
-                    TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Etudiant</x:String>
-                        <x:String>Bailleur</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+            <!-- ============ CONFIRMATION ============ -->
+            <Frame Style="{StaticResource InputBorder}" HeightRequest="56">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="&#xf023;" FontFamily="FASolid" FontSize="15"
+                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           VerticalOptions="Center" />
+                    <Entry Grid.Column="1"
+                           Placeholder="Confirmer le mot de passe"
+                           IsPassword="True"
+                           Text="{Binding ConfirmationMotDePasse}"
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                           FontFamily="PlusJakartaSans" FontSize="15"
+                           BackgroundColor="Transparent" VerticalOptions="Center" />
+                </Grid>
+            </Frame>
 
-            <!-- Bouton S'inscrire -->
+            <!-- ============ RÔLE ============ -->
+            <Label Text="Je suis" Style="{StaticResource Micro}" Margin="4,6,0,0" />
+            <Frame Style="{StaticResource InputBorder}" HeightRequest="56">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="&#xf508;" FontFamily="FASolid" FontSize="15"
+                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                           VerticalOptions="Center" />
+                    <Picker Grid.Column="1"
+                            Title="Choisir un r\u00f4le"
+                            SelectedItem="{Binding Role}"
+                            TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                            FontFamily="PlusJakartaSans"
+                            FontSize="15"
+                            BackgroundColor="Transparent"
+                            VerticalOptions="Center">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Etudiant</x:String>
+                                <x:String>Bailleur</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </Grid>
+            </Frame>
+
+            <!-- ============ BOUTON INSCRIPTION ============ -->
             <Button Text="S'inscrire"
                     Command="{Binding RegisterCommand}"
                     Style="{StaticResource PrimaryButton}"
-                    Margin="0,8,0,0" />
+                    Margin="0,10,0,0" />
 
             <ActivityIndicator IsRunning="{Binding IsBusy}"
                                IsVisible="{Binding IsBusy}"
+                               Color="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
                                HorizontalOptions="Center" />
 
-            <!-- Lien connexion -->
-            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="4" HorizontalOptions="Center">
-                <Label Text="Déjà un compte ?"
-                       FontSize="14"
-                       FontAttributes="Bold"
-                       VerticalOptions="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
-                <Button Grid.Column="1" Text="Connectez-vous"
+            <!-- ============ LIEN CONNEXION ============ -->
+            <VerticalStackLayout Spacing="0" Margin="0,6,0,0">
+                <Label Text="D\u00e9j\u00e0 un compte ?"
+                       Style="{StaticResource Caption}"
+                       HorizontalOptions="Center" />
+                <Button Text="Se connecter"
                         Command="{Binding GoToLoginCommand}"
-                        Style="{StaticResource TextButton}" />
-            </Grid>
+                        Style="{StaticResource TextButton}"
+                        HorizontalOptions="Center" />
+            </VerticalStackLayout>
 
         </VerticalStackLayout>
     </ScrollView>

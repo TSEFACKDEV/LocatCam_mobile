@@ -61,7 +61,7 @@ public partial class LoginViewModel : ObservableObject
 
             // Navigation vers l'accueil après un court délai pour laisser le message s'afficher
             await Task.Delay(800);
-            await Shell.Current.GoToAsync("//MainPage");
+            Services.NavigationShell.AllerVers("HomePage");
         }
         catch (Exception ex)
         {
@@ -77,6 +77,7 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     public async Task GoToRegisterAsync()
     {
-        await Shell.Current.GoToAsync("RegisterPage");
+        await Task.CompletedTask;
+        Services.NavigationShell.AllerVers("RegisterPage");
     }
 }

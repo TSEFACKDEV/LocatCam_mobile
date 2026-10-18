@@ -2,54 +2,48 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LocatCam_mobile.Controls.SkeletonCard"
-             HeightRequest="240">
+             HeightRequest="300">
 
-    <Frame Style="{StaticResource Card}"
-           HasShadow="False"
-           Padding="0">
+    <Frame Style="{StaticResource Card}">
+        <Frame.Shadow>
+            <Shadow Brush="#000000" Offset="0,6" Radius="14" Opacity="0.08" />
+        </Frame.Shadow>
 
-        <Grid RowDefinitions="140,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+        <Grid RowDefinitions="180,Auto,Auto,Auto">
 
             <!-- Skeleton photo -->
-            <Border BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                    VerticalOptions="Fill"
-                    HorizontalOptions="Fill">
-                <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                         WidthRequest="40" HeightRequest="40"
-                         HorizontalOptions="Center" VerticalOptions="Center" />
-            </Border>
+            <BoxView Grid.Row="0"
+                     Color="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                     CornerRadius="18,18,0,0" />
 
             <!-- Skeleton titre -->
-            <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                     HeightRequest="20" WidthRequest="200"
-                     Margin="12,8,12,4"
+            <BoxView Grid.Row="1"
+                     Color="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                     HeightRequest="16"
+                     WidthRequest="200"
+                     Margin="14,14,14,6"
+                     CornerRadius="8"
+                     HorizontalOptions="Start" />
+
+            <!-- Skeleton sous-titre -->
+            <BoxView Grid.Row="2"
+                     Color="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                     HeightRequest="12"
+                     WidthRequest="140"
+                     Margin="14,0,14,0"
+                     CornerRadius="6"
                      HorizontalOptions="Start" />
 
             <!-- Skeleton prix -->
-            <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                     Grid.Row="2" Grid.Column="0"
-                     HeightRequest="18" WidthRequest="100"
-                     Margin="12,4,12,0"
-                     HorizontalOptions="Start" />
-
-            <!-- Skeleton ville -->
-            <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                     Grid.Row="2" Grid.Column="1"
-                     HeightRequest="16" WidthRequest="80"
-                     Margin="0,4,12,0"
-                     HorizontalOptions="End" />
-
-            <!-- Skeleton quartier -->
-            <BoxView BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                     Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                     HeightRequest="14" WidthRequest="120"
-                     Margin="12,2,12,8"
+            <BoxView Grid.Row="3"
+                     Color="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                     HeightRequest="16"
+                     WidthRequest="96"
+                     Margin="14,12,14,16"
+                     CornerRadius="8"
                      HorizontalOptions="Start" />
 
         </Grid>
-
     </Frame>
 
 </ContentView>

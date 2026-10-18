@@ -37,4 +37,8 @@ public partial class PublierPage : ContentPage
             _ => "Publier"
         };
     }
+
+    /// <summary>Retour à l'accueil après publication.</summary>
+    private void OnRetourAccueilClicked(object? sender, EventArgs e)
+        => Services.NavigationShell.AllerVers("HomePage");
 }

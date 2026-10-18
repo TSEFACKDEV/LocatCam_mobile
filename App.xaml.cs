@@ -15,23 +15,35 @@ public partial class App : Application
 
 	protected override Window CreateWindow(IActivationState? activationState)
 	{
-		var onboardingDone = Preferences.Get("OnboardingDone", false);
-		var token = SecureStorage.GetAsync("locatcam_access_token").Result;
+		// Le Shell est la racine de la fenêtre : indispensable pour que toutes
+		// les navigations (GoToAsync, sélection de page) fonctionnent.
+		var shell = new AppShell();
 
-		Page startPage;
-		if (!onboardingDone)
-		{
-			startPage = new Views.OnboardingPage();
-		}
-		else if (!string.IsNullOrWhiteSpace(token))
-		{
-			startPage = new Views.HomePage();
-		}
-		else
-		{
-			startPage = new Views.LoginPage();
-		}
+		// Premier lancement : afficher l'onboarding (sélection directe, sans flash).
+		if (!Preferences.Get("OnboardingDone", false))
+			SelectionnerPage(shell, "OnboardingPage");
 
-		return new Window(startPage);
+		return new Window(shell);
+	}
+
+	/// <summary>Sélectionne la page racine du Shell portant cette route.</summary>
+	private static void SelectionnerPage(Shell shell, string route)
+	{
+		foreach (var item in shell.Items)
+		{
+			foreach (var section in item.Items)
+			{
+				foreach (var content in section.Items)
+				{
+					if (string.Equals(content.Route, route, StringComparison.OrdinalIgnoreCase))
+					{
+						section.CurrentItem = content;
+						item.CurrentItem = section;
+						shell.CurrentItem = item;
+						return;
+					}
+				}
+			}
+		}
 	}
 }

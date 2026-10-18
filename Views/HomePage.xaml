@@ -12,119 +12,211 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <cv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <Style x:Key="ChipPilule" TargetType="Frame">
-                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}" />
-                <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}" />
-                <Setter Property="CornerRadius" Value="32" />
-                <Setter Property="Padding" Value="10,4" />
-                <Setter Property="Margin" Value="0,0,8,0" />
-                <Setter Property="HasShadow" Value="False" />
-            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto"
+          BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
         <!-- Bandeau hors-ligne -->
         <ctrl:OfflineBanner Grid.Row="0" />
 
-        <!-- Barre de recherche : pilule SurfaceSoft -->
-        <Frame Grid.Row="1"
+        <!-- ============ EN-TÊTE : LOGO + BONJOUR ============ -->
+        <Grid Grid.Row="1" Margin="20,14,20,6" ColumnDefinitions="Auto,*">
+            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                   BorderColor="Transparent"
+                   CornerRadius="12"
+                   Padding="0"
+                   WidthRequest="40"
+                   HeightRequest="40"
+                   HasShadow="False"
+                   VerticalOptions="Center">
+                <Label Text="&#xf015;" FontFamily="FASolid" FontSize="18" TextColor="White"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Frame>
+
+            <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0" Spacing="0" VerticalOptions="Center">
+                <Label Text="LocatCam" Style="{StaticResource H1}" />
+                <Label Text="Trouvez votre logement au Cameroun"
+                       Style="{StaticResource Caption}" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- ============ BARRE DE RECHERCHE ============ -->
+        <Frame Grid.Row="2"
                Style="{StaticResource SearchPill}"
-               Margin="16,12,16,8"
-               HasShadow="False">
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                <Label Text="🔍"
-                       FontSize="18"
+               Margin="20,10,20,4">
+            <Frame.Shadow>
+                <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.08" />
+            </Frame.Shadow>
+
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Label Grid.Column="0" Text="&#xf002;" FontFamily="FASolid" FontSize="16"
+                       TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
                        VerticalOptions="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}" />
+                       Margin="10,0,0,0" />
+
                 <Entry Grid.Column="1"
-                       Placeholder="Rechercher un quartier, une ville..."
+                       Placeholder="Ville, quartier, type de logement..."
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
                        Text="{Binding Recherche}"
-                       VerticalOptions="Center"
                        TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                       BackgroundColor="Transparent" />
+                       FontFamily="PlusJakartaSans"
+                       FontSize="14.5"
+                       ReturnType="Search"
+                       ReturnCommand="{Binding RechercherCommand}"
+                       BackgroundColor="Transparent"
+                       VerticalOptions="Center" />
+
+                <!-- Bouton rechercher (rond, bleu) -->
+                <Frame Grid.Column="2"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                       BorderColor="Transparent"
+                       CornerRadius="20"
+                       Padding="0"
+                       WidthRequest="40"
+                       HeightRequest="40"
+                       HasShadow="False"
+                       VerticalOptions="Center">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding RechercherCommand}" />
+                    </Frame.GestureRecognizers>
+                    <Label Text="&#xf002;" FontFamily="FASolid" FontSize="15" TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                </Frame>
             </Grid>
         </Frame>
 
-        <!-- Chips de filtre -->
-        <ScrollView Grid.Row="2"
+        <!-- ============ CHIPS DE FILTRE ============ -->
+        <ScrollView Grid.Row="3"
+                    Orientation="Horizontal"
                     HorizontalScrollBarVisibility="Never"
                     VerticalOptions="Start"
-                    HeightRequest="56">
-            <StackLayout Orientation="Horizontal" Padding="16,0,16,0" Spacing="8">
-                <Frame Style="{StaticResource ChipPilule}"
+                    HeightRequest="58">
+            <HorizontalStackLayout Padding="20,10,20,6" Spacing="8">
+
+                <Frame Style="{StaticResource Pill}"
                        BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                       BorderColor="Transparent">
-                    <Label Text="Tous" FontSize="14" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" />
+                       Padding="14,7">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label Text="&#xf00c;" FontFamily="FASolid" FontSize="11" TextColor="White" VerticalOptions="Center" />
+                        <Label Text="Tous" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </Frame>
-                <Frame Style="{StaticResource ChipPilule}">
-                    <Label Text="Appartement" FontSize="14" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                           VerticalOptions="Center" />
+
+                <Frame Style="{StaticResource Pill}">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label Text="&#xf1ad;" FontFamily="FASolid" FontSize="11"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="Appartement" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </Frame>
-                <Frame Style="{StaticResource ChipPilule}">
-                    <Label Text="Maison" FontSize="14" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                           VerticalOptions="Center" />
+
+                <Frame Style="{StaticResource Pill}">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label Text="&#xf015;" FontFamily="FASolid" FontSize="11"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="Maison" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </Frame>
-                <Frame Style="{StaticResource ChipPilule}">
-                    <Label Text="Studio" FontSize="14" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                           VerticalOptions="Center" />
+
+                <Frame Style="{StaticResource Pill}">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label Text="&#xf81d;" FontFamily="FASolid" FontSize="11"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="Studio" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </Frame>
-                <Frame Style="{StaticResource ChipPilule}">
-                    <Label Text="Meublé" FontSize="14" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                           VerticalOptions="Center" />
+
+                <Frame Style="{StaticResource Pill}">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label Text="&#xf4b8;" FontFamily="FASolid" FontSize="11"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="Meublé" FontFamily="PlusJakartaSans" FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </Frame>
-            </StackLayout>
+
+            </HorizontalStackLayout>
         </ScrollView>
 
-        <!-- Liste des annonces -->
-        <RefreshView Grid.Row="3"
+        <!-- ============ LISTE DES ANNONCES ============ -->
+        <RefreshView Grid.Row="4"
                      IsRefreshing="{Binding IsRefreshing}"
-                     Command="{Binding RafraichirCommand}">
-            <CollectionView ItemsSource="{Binding Annonces}"
+                     Command="{Binding RafraichirCommand}"
+                     RefreshColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}">
+            <CollectionView x:Name="ListeAnnonces"
+                            ItemsSource="{Binding Annonces}"
+                            SelectionMode="Single"
+                            SelectionChanged="OnAnnonceSelectionnee"
                             ItemSizingStrategy="MeasureFirstItem"
                             RemainingItemsThreshold="5"
                             RemainingItemsThresholdReachedCommand="{Binding ChargerPlusCommand}">
+                <CollectionView.Header>
+                    <Grid Padding="20,8,20,10" ColumnDefinitions="*,Auto">
+                        <Label Text="Annonces disponibles" Style="{StaticResource H2}" VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                               Text="{Binding TotalCount, StringFormat='{0} résultats'}"
+                               Style="{StaticResource Caption}"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </CollectionView.Header>
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="18" />
+                </CollectionView.ItemsLayout>
+
                 <CollectionView.EmptyView>
                     <ctrl:EmptyStateView
-                        Icone="🏠"
+                        Icone="&#xf015;"
                         Titre="Aucune annonce"
-                        Message="Aucune annonce trouvée pour votre recherche."
+                        Message="Aucune annonce ne correspond à votre recherche. Essayez une autre ville ou un autre quartier."
                         BoutonTexte="Réessayer"
                         BoutonCommande="{Binding RafraichirCommand}"
                         AfficherBouton="True" />
                 </CollectionView.EmptyView>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:AnnonceDto">
-                        <ctrl:AnnonceCard
-                            Titre="{Binding Titre}"
-                            Prix="{Binding Prix}"
-                            Ville="{Binding Ville}"
-                            Quartier="{Binding Quartier}"
-                            Type="{Binding Type}"
-                            Statut="{Binding Statut}" />
+                        <Grid Padding="20,0,20,0">
+                            <ctrl:AnnonceCard
+                                Titre="{Binding Titre}"
+                                Prix="{Binding Prix}"
+                                Ville="{Binding Ville}"
+                                Quartier="{Binding Quartier}"
+                                Type="{Binding Type}"
+                                Statut="{Binding Statut}"
+                                EstVerifie="{Binding EstVerifie}"
+                                PhotoUrl="{Binding PhotoPrincipaleUrl}" />
+                        </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
 
-        <!-- Skeleton loading -->
-        <StackLayout Grid.Row="3"
-                     IsVisible="{Binding IsLoading}"
-                     VerticalOptions="Center"
-                     HorizontalOptions="Center"
-                     Spacing="12">
-            <ctrl:SkeletonCard WidthRequest="340" HeightRequest="270" />
-            <ctrl:SkeletonCard WidthRequest="340" HeightRequest="270" />
-            <ctrl:SkeletonCard WidthRequest="340" HeightRequest="270" />
-        </StackLayout>
+        <!-- Skeleton loading (premier chargement) -->
+        <VerticalStackLayout Grid.Row="4"
+                             IsVisible="{Binding IsLoading}"
+                             Padding="20,10,20,0"
+                             Spacing="18">
+            <ctrl:SkeletonCard />
+            <ctrl:SkeletonCard />
+            <ctrl:SkeletonCard />
+        </VerticalStackLayout>
 
-        <!-- Bottom navigation custom (animée) -->
-        <ctrl:BottomNavBar Grid.Row="4" EstActif="HomePage" />
+        <!-- Barre de navigation basse -->
+        <ctrl:BottomNavBar Grid.Row="5" EstActif="HomePage" />
 
     </Grid>
 

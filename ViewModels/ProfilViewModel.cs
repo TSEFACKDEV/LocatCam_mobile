@@ -62,6 +62,6 @@ public partial class ProfilViewModel : ObservableObject
     public async Task DeconnexionAsync()
     {
         await _authService.LogoutAsync();
-        await Shell.Current.GoToAsync("//LoginPage");
+        Services.NavigationShell.AllerVers("LoginPage");
     }
 }

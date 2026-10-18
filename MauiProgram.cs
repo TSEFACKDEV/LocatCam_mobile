@@ -19,6 +19,9 @@ public static class MauiProgram
 			{
 				// Plus Jakarta Sans (variable font) — police principale du design system
 				fonts.AddFont("PlusJakartaSans-Regular.ttf", "PlusJakartaSans");
+				// Font Awesome — icônes vectorielles (solid + regular)
+				fonts.AddFont("fa-solid-900.ttf", "FASolid");
+				fonts.AddFont("fa-regular-400.ttf", "FARegular");
 				// Fallback système
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");

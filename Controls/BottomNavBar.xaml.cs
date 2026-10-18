@@ -1,7 +1,12 @@
+using LocatCam_mobile.Services;
 using Microsoft.Maui.Controls;
 
 namespace LocatCam_mobile.Controls;
 
+/// <summary>
+/// Barre de navigation basse personnalis\u00e9e (5 onglets).
+/// L'onglet actif est mis en valeur par une pastille bleu clair + ic\u00f4ne bleue.
+/// </summary>
 public partial class BottomNavBar : ContentView
 {
     public static readonly BindableProperty EstActifProperty =
@@ -17,57 +22,83 @@ public partial class BottomNavBar : ContentView
     public BottomNavBar()
     {
         InitializeComponent();
-        MettreAJourApparence("HomePage");
+        MettreAJourApparence(EstActif);
     }
+
+    protected override void OnHandlerChanged()
+    {
+        base.OnHandlerChanged();
+
+        if (Application.Current != null)
+            Application.Current.RequestedThemeChanged += OnThemeChanged;
+    }
+
+    private void OnThemeChanged(object? sender, AppThemeChangedEventArgs e)
+        => MettreAJourApparence(EstActif);
 
     private static void OnEstActifChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is BottomNavBar nav)
-            nav.MettreAJourApparence((string)newValue);
+        if (bindable is BottomNavBar nav && newValue is string actif)
+            nav.MettreAJourApparence(actif);
     }
 
     private void MettreAJourApparence(string actif)
     {
-        var actifColor = (Color)App.Current.Resources["Accent"];
-        var inactifColor = (Color)App.Current.Resources["InkMuted"];
+        var accent = RessourceTheme("Accent", "AccentDark");
+        var inactif = RessourceTheme("InkMuted", "InkMutedDark");
+        var pastilleActive = RessourceTheme("AccentSoft", "AccentSoftDark");
+        var transparent = Colors.Transparent;
 
-        SetCouleurOnglet(IconeAccueil, LabelAccueil, actif == "HomePage", actifColor, inactifColor);
-        SetCouleurOnglet(IconeCarte, LabelCarte, actif == "CartePage", actifColor, inactifColor);
-        SetCouleurOnglet(IconeFavoris, LabelFavoris, actif == "FavorisPage", actifColor, inactifColor);
-        SetCouleurOnglet(IconePublier, LabelPublier, actif == "PublierPage", actifColor, inactifColor);
-        SetCouleurOnglet(IconeProfil, LabelProfil, actif == "ProfilPage", actifColor, inactifColor);
+        SetOnglet(PillAccueil, IconeAccueil, LabelAccueil, actif == "HomePage", accent, inactif, pastilleActive, transparent);
+        SetOnglet(PillCarte, IconeCarte, LabelCarte, actif == "CartePage", accent, inactif, pastilleActive, transparent);
+        SetOnglet(PillFavoris, IconeFavoris, LabelFavoris, actif == "FavorisPage", accent, inactif, pastilleActive, transparent);
+        SetOnglet(PillPublier, IconePublier, LabelPublier, actif == "PublierPage", accent, inactif, pastilleActive, transparent);
+        SetOnglet(PillProfil, IconeProfil, LabelProfil, actif == "ProfilPage", accent, inactif, pastilleActive, transparent);
     }
 
-    private static void SetCouleurOnglet(Label icone, Label label, bool estActif, Color actif, Color inactif)
+    private static void SetOnglet(Frame pill, Label icone, Label label, bool estActif,
+        Color accent, Color inactif, Color pastilleActive, Color transparent)
     {
-        icone.TextColor = estActif ? actif : inactif;
-        label.TextColor = estActif ? actif : inactif;
+        pill.BackgroundColor = estActif ? pastilleActive : transparent;
+        icone.TextColor = estActif ? accent : inactif;
+        label.TextColor = estActif ? accent : inactif;
+    }
+
+    private static Color RessourceTheme(string cleClair, string cleSombre)
+    {
+        try
+        {
+            var cle = Application.Current?.RequestedTheme == AppTheme.Dark ? cleSombre : cleClair;
+            if (Application.Current?.Resources.TryGetValue(cle, out var valeur) == true && valeur is Color couleur)
+                return couleur;
+        }
+        catch
+        {
+            // Ignorer : couleur par d\u00e9faut ci-dessous
+        }
+
+        return Colors.Gray;
     }
 
     private async void OnOngletTapped(object sender, TappedEventArgs e)
     {
-        if (sender is TapGestureRecognizer tgr && tgr.AutomationId is string route)
+        if (sender is not TapGestureRecognizer tgr || tgr.Parent is not VisualElement element)
+            return;
+
+        var route = element.AutomationId;
+        if (string.IsNullOrWhiteSpace(route))
+            return;
+
+        // Animation scale (80 ms aller/retour) puis navigation
+        EstActif = route;
+
+        var view = element as View;
+        if (view != null)
         {
-            // Trouver le grid parent pour l'animation scale
-            var view = tgr.Parent as View;
-            if (view != null)
-            {
-                await view.ScaleTo(0.92, 80, Easing.CubicOut);
-                await view.ScaleTo(1.0, 80, Easing.CubicIn);
-            }
-
-            EstActif = route;
-
-            if (route == "HomePage")
-                await Shell.Current.GoToAsync("//HomePage");
-            else if (route == "CartePage")
-                await Shell.Current.GoToAsync("//CartePage");
-            else if (route == "FavorisPage")
-                await Shell.Current.GoToAsync("//FavorisPage");
-            else if (route == "PublierPage")
-                await Shell.Current.GoToAsync("//PublierPage");
-            else if (route == "ProfilPage")
-                await Shell.Current.GoToAsync("//ProfilPage");
+            await view.ScaleTo(0.94, 70, Easing.CubicOut);
+            await view.ScaleTo(1.0, 70, Easing.CubicIn);
         }
+
+        NavigationShell.AllerVers(route);
     }
 }

@@ -1,107 +1,107 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:ctrl="clr-namespace:LocatCam_mobile.Controls"
              x:Class="LocatCam_mobile.Views.OnboardingPage"
              Title="Bienvenue">
 
-    <Grid RowDefinitions="*,Auto,Auto">
-        <!-- CarouselView : 3 slides -->
+    <Grid RowDefinitions="*,Auto"
+          BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
+
+        <!-- ============ CARROUSEL DES 3 SLIDES ============ -->
         <CarouselView Grid.Row="0"
                       x:Name="OnboardingCarousel"
                       Position="{Binding Position, Mode=TwoWay}"
+                      IndicatorView="OnboardingIndicator"
                       ItemsSource="{Binding Slides}"
                       Loop="False"
-                      VerticalOptions="FillAndExpand"
-                      HorizontalOptions="FillAndExpand">
+                      VerticalOptions="Fill">
             <CarouselView.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                    <Grid RowDefinitions="*,Auto" Padding="32,0,32,12" RowSpacing="28">
 
-                        <!-- Illustration flat (compositions de formes MAUI) -->
-                        <Grid Grid.Row="0"
-                              VerticalOptions="Center"
-                              HorizontalOptions="Center">
-                            <Frame WidthRequest="220" HeightRequest="220"
-                                   BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
-                                   CornerRadius="60"
-                                   HasShadow="False" />
-                            <ContentView Content="{Binding Illustration}" />
-                        </Grid>
+                        <!-- Illustration : pastille bleue avec icône blanche -->
+                        <Frame Grid.Row="0"
+                               WidthRequest="210" HeightRequest="210"
+                               CornerRadius="105"
+                               BorderColor="Transparent"
+                               HasShadow="False"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+                            <Frame.Shadow>
+                                <Shadow Brush="#1565C0" Offset="0,14" Radius="30" Opacity="0.30" />
+                            </Frame.Shadow>
+                            <Label Text="{Binding Icone}"
+                                   FontFamily="FASolid"
+                                   FontSize="78"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Frame>
 
-                        <!-- Contenu texte -->
-                        <StackLayout Grid.Row="1"
-                                     Margin="32, 24, 32, 0"
-                                     Spacing="16"
-                                     HorizontalOptions="Center">
+                        <!-- Texte -->
+                        <VerticalStackLayout Grid.Row="1" Spacing="12">
                             <Label Text="{Binding Titre}"
                                    Style="{StaticResource H1}"
                                    HorizontalTextAlignment="Center"
                                    LineBreakMode="WordWrap" />
                             <Label Text="{Binding SousTitre}"
                                    Style="{StaticResource Body}"
-                                   HorizontalTextAlignment="Center"
                                    TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                                   HorizontalTextAlignment="Center"
                                    LineBreakMode="WordWrap" />
-                        </StackLayout>
+                        </VerticalStackLayout>
                     </Grid>
                 </DataTemplate>
             </CarouselView.ItemTemplate>
         </CarouselView>
 
-        <!-- Bouton "Passer" (toujours visible, en haut à droite) -->
-        <Button Text="Passer"
+        <!-- ============ PASSER (haut droite) ============ -->
+        <Button Grid.Row="0"
+                Text="Passer"
                 Clicked="OnPasserClicked"
                 HorizontalOptions="End"
                 VerticalOptions="Start"
-                Margin="0, 50, 24, 0"
+                Margin="0,44,12,0"
                 BackgroundColor="Transparent"
                 TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
                 FontFamily="PlusJakartaSans"
                 FontAttributes="Bold"
                 FontSize="14" />
 
-        <!-- Indicateur de progression (pastilles) -->
-        <IndicatorView Grid.Row="1"
-                       x:Name="OnboardingIndicator"
-                       IndicatorColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
-                       SelectedIndicatorColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                       IndicatorsShape="Circle"
-                       HeightRequest="20"
-                       VerticalOptions="End"
-                       Margin="0, 0, 0, 140" />
+        <!-- ============ BAS : PAGINATION + ACTIONS ============ -->
+        <VerticalStackLayout Grid.Row="1" Spacing="22" Padding="24,0,24,36">
 
-        <!-- Boutons Précédent / Suivant -->
-        <Grid Grid.Row="2"
-              ColumnDefinitions="*,Auto,Auto"
-              ColumnSpacing="16"
-              Margin="24, 0, 24, 40"
-              VerticalOptions="End"
-              HorizontalOptions="Fill">
-            <Button Grid.Column="0" Text="Précédent"
-                    Clicked="OnPrecedentClicked"
-                    IsVisible="{Binding EstPremierSlide, Converter={StaticResource InverseBoolConverter}}"
-                    BackgroundColor="Transparent"
-                    TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                    FontFamily="PlusJakartaSans"
-                    FontAttributes="Bold"
-                    FontSize="16" />
-            <Button Grid.Column="1" Text="Suivant"
-                    Clicked="OnSuivantClicked"
-                    IsVisible="{Binding EstDernierSlide, Converter={StaticResource InverseBoolConverter}}"
-                    Style="{StaticResource PrimaryButton}"
-                    FontFamily="PlusJakartaSans" />
-            <Button Grid.Column="2" Text="Commencer"
-                    Clicked="OnCommencerClicked"
-                    IsVisible="{Binding EstDernierSlide}"
-                    Style="{StaticResource PrimaryButton}"
-                    FontFamily="PlusJakartaSans" />
-        </Grid>
+            <IndicatorView x:Name="OnboardingIndicator"
+                           HorizontalOptions="Center"
+                           IndicatorSize="8"
+                           IndicatorColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                           SelectedIndicatorColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <Button Grid.Column="0"
+                        Text="Précédent"
+                        Clicked="OnPrecedentClicked"
+                        IsVisible="{Binding EstPremierSlide, Converter={StaticResource InverseBoolConverter}}"
+                        Style="{StaticResource TextButton}"
+                        TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
+
+                <Button Grid.Column="2"
+                        Text="Suivant"
+                        Clicked="OnSuivantClicked"
+                        IsVisible="{Binding EstDernierSlide, Converter={StaticResource InverseBoolConverter}}"
+                        Style="{StaticResource PrimaryButton}"
+                        WidthRequest="170" />
+
+                <Button Grid.Column="2"
+                        Text="Commencer"
+                        Clicked="OnCommencerClicked"
+                        IsVisible="{Binding EstDernierSlide}"
+                        Style="{StaticResource PrimaryButton}"
+                        WidthRequest="170" />
+            </Grid>
+        </VerticalStackLayout>
+
     </Grid>
 
 </ContentPage>

@@ -104,7 +104,9 @@ public partial class MapViewModel : ObservableObject
     {
         if (SelectedAnnonce == null) return;
 
-        await Shell.Current.GoToAsync("//DetailAnnoncePage");
+        await Task.CompletedTask;
+        Services.AnnonceSelection.Annonce = SelectedAnnonce;
+        Services.NavigationShell.AllerVersAvecRetour("DetailAnnoncePage");
         CloseBottomSheet();
     }
 

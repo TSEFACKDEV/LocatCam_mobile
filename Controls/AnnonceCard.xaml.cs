@@ -22,6 +22,12 @@ public partial class AnnonceCard : ContentView, INotifyPropertyChanged
     public static readonly BindableProperty StatutProperty =
         BindableProperty.Create(nameof(Statut), typeof(string), typeof(AnnonceCard), string.Empty);
 
+    public static readonly BindableProperty PhotoUrlProperty =
+        BindableProperty.Create(nameof(PhotoUrl), typeof(string), typeof(AnnonceCard), string.Empty);
+
+    public static readonly BindableProperty EstVerifieProperty =
+        BindableProperty.Create(nameof(EstVerifie), typeof(bool), typeof(AnnonceCard), false);
+
     public string Titre
     {
         get => (string)GetValue(TitreProperty);
@@ -56,6 +62,20 @@ public partial class AnnonceCard : ContentView, INotifyPropertyChanged
     {
         get => (string)GetValue(StatutProperty);
         set => SetValue(StatutProperty, value);
+    }
+
+    /// <summary>URL de la photo principale (optionnelle).</summary>
+    public string PhotoUrl
+    {
+        get => (string)GetValue(PhotoUrlProperty);
+        set => SetValue(PhotoUrlProperty, value);
+    }
+
+    /// <summary>Badge "Vérifié" affiché sur la photo.</summary>
+    public bool EstVerifie
+    {
+        get => (bool)GetValue(EstVerifieProperty);
+        set => SetValue(EstVerifieProperty, value);
     }
 
     public AnnonceCard()

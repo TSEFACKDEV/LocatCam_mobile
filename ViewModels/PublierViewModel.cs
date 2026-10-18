@@ -108,6 +108,11 @@ public partial class PublierViewModel : ObservableObject
     public bool EstEtapeApercu => EtapeCourante == EtapePublier.Apercu;
     public bool EstEtapeTermine => EtapeCourante == EtapePublier.Termine;
 
+    /// <summary>Libellé de progression affiché dans l'en-tête ("Étape 2 / 5").</summary>
+    public string EtapeTexte => EtapeCourante == EtapePublier.Termine
+        ? "Terminé"
+        : $"Étape {(int)EtapeCourante + 1} / 5";
+
     private void NotifierEtapes()
     {
         OnPropertyChanged(nameof(EstEtapeInfos));
@@ -116,6 +121,7 @@ public partial class PublierViewModel : ObservableObject
         OnPropertyChanged(nameof(EstEtapePhotos));
         OnPropertyChanged(nameof(EstEtapeApercu));
         OnPropertyChanged(nameof(EstEtapeTermine));
+        OnPropertyChanged(nameof(EtapeTexte));
     }
 
     // ------------------------------------------------------------------

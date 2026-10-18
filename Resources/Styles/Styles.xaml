@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <Color x:Key="InkPrimary">#222222</Color>
-    <Color x:Key="InkPrimaryDark">#E8E8E8</Color>
-    <Color x:Key="InkSecondary">#6A6A6A</Color>
-    <Color x:Key="InkSecondaryDark">#B0B0B0</Color>
-    <Color x:Key="InkMuted">#929292</Color>
-    <Color x:Key="InkMutedDark">#7A7A7A</Color>
-    <Color x:Key="Accent">#1565C0</Color>
-    <Color x:Key="AccentDark">#5B9BD5</Color>
-    <Color x:Key="SurfaceCard">#FFFFFF</Color>
-    <Color x:Key="SurfaceCardDark">#1E1E1E</Color>
-    <Color x:Key="SurfaceSoft">#F7F7F7</Color>
-    <Color x:Key="SurfaceSoftDark">#1E1E1E</Color>
 
+    <!-- ==================================================================
+         TYPOGRAPHIE — Plus Jakarta Sans
+         ================================================================== -->
     <Style x:Key="Display" TargetType="Label">
         <Setter Property="FontFamily" Value="PlusJakartaSans" />
         <Setter Property="FontSize" Value="28" />
@@ -24,7 +15,7 @@
     </Style>
     <Style x:Key="H1" TargetType="Label">
         <Setter Property="FontFamily" Value="PlusJakartaSans" />
-        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontSize" Value="23" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="Label.LineHeight" Value="1.25" />
         <Setter Property="Label.CharacterSpacing" Value="-0.4" />
@@ -32,79 +23,151 @@
     </Style>
     <Style x:Key="H2" TargetType="Label">
         <Setter Property="FontFamily" Value="PlusJakartaSans" />
-        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontSize" Value="19" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="Label.LineHeight" Value="1.25" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}" />
     </Style>
     <Style x:Key="Body" TargetType="Label">
         <Setter Property="FontFamily" Value="PlusJakartaSans" />
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Label.LineHeight" Value="1.45" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}" />
+    </Style>
+    <Style x:Key="BodyFort" TargetType="Label">
+        <Setter Property="FontFamily" Value="PlusJakartaSans" />
+        <Setter Property="FontSize" Value="15" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="Label.LineHeight" Value="1.4" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}" />
     </Style>
     <Style x:Key="Caption" TargetType="Label">
         <Setter Property="FontFamily" Value="PlusJakartaSans" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="Label.LineHeight" Value="1.3" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Label.LineHeight" Value="1.35" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}" />
     </Style>
     <Style x:Key="Micro" TargetType="Label">
         <Setter Property="FontFamily" Value="PlusJakartaSans" />
-        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontSize" Value="11" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="TextTransform" Value="Uppercase" />
-        <Setter Property="Label.CharacterSpacing" Value="0.6" />
+        <Setter Property="Label.CharacterSpacing" Value="0.8" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}" />
     </Style>
+    <Style x:Key="Prix" TargetType="Label">
+        <Setter Property="FontFamily" Value="PlusJakartaSans" />
+        <Setter Property="FontSize" Value="17" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}" />
+    </Style>
 
+    <!-- ==================================================================
+         ICÔNES (Font Awesome)
+         ================================================================== -->
+    <Style x:Key="IconeFa" TargetType="Label">
+        <Setter Property="FontFamily" Value="FASolid" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}" />
+    </Style>
+    <Style x:Key="IconeFaPetite" TargetType="Label">
+        <Setter Property="FontFamily" Value="FASolid" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}" />
+    </Style>
+    <Style x:Key="IconeFaGrande" TargetType="Label">
+        <Setter Property="FontFamily" Value="FASolid" />
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+    </Style>
+
+    <!-- ==================================================================
+         BOUTONS
+         ================================================================== -->
     <Style x:Key="PrimaryButton" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
         <Setter Property="TextColor" Value="White" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HeightRequest" Value="52" />
         <Setter Property="FontFamily" Value="PlusJakartaSans" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="FontSize" Value="16" />
+        <Setter Property="Padding" Value="20,0" />
+    </Style>
+    <Style x:Key="SecondaryButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentSoft}, Dark={StaticResource AccentSoftDark}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HeightRequest" Value="52" />
+        <Setter Property="FontFamily" Value="PlusJakartaSans" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Padding" Value="20,0" />
     </Style>
     <Style x:Key="TextButton" TargetType="Button">
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="CornerRadius" Value="10" />
         <Setter Property="HeightRequest" Value="44" />
         <Setter Property="FontFamily" Value="PlusJakartaSans" />
         <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="15" />
     </Style>
 
+    <!-- ==================================================================
+         SURFACES / CARTES
+         ================================================================== -->
     <Style x:Key="Card" TargetType="Frame">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceCard}, Dark={StaticResource SurfaceCardDark}}" />
-        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="18" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="HasShadow" Value="False" />
     </Style>
-
     <Style x:Key="Pill" TargetType="Frame">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}" />
+        <Setter Property="BorderColor" Value="Transparent" />
         <Setter Property="CornerRadius" Value="32" />
-        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Padding" Value="10,5" />
         <Setter Property="HasShadow" Value="False" />
     </Style>
-
     <Style x:Key="InputBorder" TargetType="Frame">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="12" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="14,2" />
+        <Setter Property="HasShadow" Value="False" />
+    </Style>
+    <Style x:Key="SearchPill" TargetType="Frame">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource SurfaceCardDark}}" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}" />
+        <Setter Property="CornerRadius" Value="32" />
+        <Setter Property="Padding" Value="8,6" />
         <Setter Property="HasShadow" Value="False" />
     </Style>
 
-    <Style x:Key="SearchPill" TargetType="Frame">
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}" />
-        <Setter Property="CornerRadius" Value="32" />
-        <Setter Property="Padding" Value="12" />
+    <!-- Pastille d'icône ronde (fond bleu très clair) -->
+    <Style x:Key="PastilleIcone" TargetType="Frame">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentSoft}, Dark={StaticResource AccentSoftDark}}" />
+        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="22" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="WidthRequest" Value="44" />
+        <Setter Property="HeightRequest" Value="44" />
         <Setter Property="HasShadow" Value="False" />
     </Style>
+
+    <!-- Séparateur -->
+    <Style x:Key="Separateur" TargetType="BoxView">
+        <Setter Property="HeightRequest" Value="1" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}" />
+    </Style>
+
 </ResourceDictionary>

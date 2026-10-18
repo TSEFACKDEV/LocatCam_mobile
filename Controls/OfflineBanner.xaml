@@ -4,19 +4,24 @@
              x:Class="LocatCam_mobile.Controls.OfflineBanner"
              x:Name="Root">
 
-    <Border BackgroundColor="{StaticResource Error}"
-            Padding="10"
-            IsVisible="{Binding IsOffline, Source={x:Reference Root}}">
-        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-            <Label Text="⚠️"
-                   FontSize="18"
-                   VerticalOptions="Center" />
-            <Label Grid.Column="1"
-                   Text="Vous êtes hors-ligne. Certaines fonctionnalités sont indisponibles."
+    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorLightDark}}"
+           BorderColor="Transparent"
+           CornerRadius="0"
+           Padding="16,10"
+           HasShadow="False"
+           IsVisible="{Binding IsOffline, Source={x:Reference Root}}">
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <Label Text="&#xf071;"
+                   FontFamily="FASolid"
                    FontSize="14"
                    TextColor="White"
                    VerticalOptions="Center" />
-        </Grid>
-    </Border>
+            <Label Text="Vous êtes hors-ligne. Certaines fonctionnalités sont indisponibles."
+                   FontFamily="PlusJakartaSans"
+                   FontSize="13"
+                   TextColor="White"
+                   VerticalOptions="Center" />
+        </HorizontalStackLayout>
+    </Frame>
 
 </ContentView>

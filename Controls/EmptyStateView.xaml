@@ -4,28 +4,43 @@
              x:Class="LocatCam_mobile.Controls.EmptyStateView"
              x:Name="This">
 
-    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="14" Padding="32">
 
-        <Label Text="{Binding Source={x:Reference This}, Path=Icone}"
-               FontSize="64"
-               HorizontalOptions="Center" />
+        <!-- Pastille avec icône -->
+        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoft}, Dark={StaticResource AccentSoftDark}}"
+               BorderColor="Transparent"
+               CornerRadius="46"
+               WidthRequest="92"
+               HeightRequest="92"
+               Padding="0"
+               HasShadow="False"
+               HorizontalOptions="Center">
+            <Label Text="{Binding Source={x:Reference This}, Path=Icone}"
+                   FontFamily="FASolid"
+                   FontSize="34"
+                   TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+        </Frame>
 
         <Label Text="{Binding Source={x:Reference This}, Path=Titre}"
-               FontSize="20"
-               FontAttributes="Bold"
+               Style="{StaticResource H2}"
                HorizontalOptions="Center"
-               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+               HorizontalTextAlignment="Center" />
 
         <Label Text="{Binding Source={x:Reference This}, Path=Message}"
-               FontSize="14"
+               Style="{StaticResource Caption}"
                HorizontalOptions="Center"
-               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-               HorizontalTextAlignment="Center" />
+               HorizontalTextAlignment="Center"
+               MaximumWidthRequest="300" />
 
         <Button Text="{Binding Source={x:Reference This}, Path=BoutonTexte}"
                 Command="{Binding Source={x:Reference This}, Path=BoutonCommande}"
                 IsVisible="{Binding Source={x:Reference This}, Path=AfficherBouton}"
-                HorizontalOptions="Center" />
+                Style="{StaticResource PrimaryButton}"
+                HorizontalOptions="Center"
+                MinimumWidthRequest="200"
+                Margin="0,8,0,0" />
 
     </VerticalStackLayout>
 
