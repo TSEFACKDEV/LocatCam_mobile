@@ -2,6 +2,7 @@
 using LocatCam_mobile.Services;
 using LocatCam_mobile.Services.Interfaces;
 using Microsoft.Extensions.Logging;
+using SQLite;
 
 namespace LocatCam_mobile;
 
@@ -24,7 +25,7 @@ public static class MauiProgram
 #endif
 
 		// ====================================================================
-		// Phase A & B — Injection de dépendances
+		// Phase A & B & C — Injection de dépendances
 		// ====================================================================
 
 		// 1. TokenHandler (singleton) — gère le Bearer token et le refresh
@@ -41,12 +42,37 @@ public static class MauiProgram
 
 		// 4. AuthService (singleton) — reçoit IApiClient et TokenHandler
 		var authService = new AuthService(apiClientInstance, tokenHandler);
-		// Casser la dépendance circulaire : TokenHandler appelle AuthService pour le refresh
 		tokenHandler.RefreshTokenFunc = authService.RefreshTokenAsync;
 		builder.Services.AddSingleton<IAuthService>(authService);
 
+		// ====================================================================
+		// Phase C — Services métier + base SQLite
+		// ====================================================================
+
+		// Base SQLite locale (chemin dans le dossier des données de l'app)
+		var dbPath = Path.Combine(FileSystem.AppDataDirectory, "locatcam.db3");
+		var localDb = new LocalDbService(dbPath);
+		builder.Services.AddSingleton<ILocalDbService>(localDb);
+
+		// Services métier
+		builder.Services.AddSingleton<IAnnonceService, AnnonceService>();
+		builder.Services.AddSingleton<IFavoriService, FavoriService>();
+		builder.Services.AddSingleton<IMessageService, MessageService>();
+
 		var app = builder.Build();
 		App.ServiceProvider = app.Services;
+
+		// Initialisation de la base SQLite locale au démarrage (mode hors-ligne)
+		try
+		{
+		 var dbService = app.Services.GetRequiredService<ILocalDbService>();
+			dbService.InitializeAsync().GetAwaiter().GetResult();
+		}
+		catch (Exception ex)
+		{
+			System.Diagnostics.Debug.WriteLine($"[MauiProgram] Erreur initialisation base SQLite: {ex.Message}");
+		}
+
 		return app;
 	}
 }
