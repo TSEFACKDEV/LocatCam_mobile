@@ -11,6 +11,17 @@ public partial class FavorisPage : ContentPage
 		var services = App.ServiceProvider;
 		var vm = services?.GetRequiredService<ViewModels.FavorisViewModel>();
 		BindingContext = vm;
+
+		NavigationShell.PageAffichee += OnPageAffichee;
+	}
+
+	private async void OnPageAffichee(string route)
+	{
+		if (string.Equals(route, "FavorisPage", StringComparison.OrdinalIgnoreCase) &&
+			BindingContext is ViewModels.FavorisViewModel vm)
+		{
+			await vm.InitialiserAsync();
+		}
 	}
 
 	protected override async void OnAppearing()

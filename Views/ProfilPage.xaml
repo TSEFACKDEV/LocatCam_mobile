@@ -2,12 +2,21 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ctrl="clr-namespace:LocatCam_mobile.Controls"
+             xmlns:cv="clr-namespace:LocatCam_mobile.Converters"
              x:DataType="vm:ProfilViewModel"
              xmlns:vm="clr-namespace:LocatCam_mobile.ViewModels"
              x:Class="LocatCam_mobile.Views.ProfilPage"
              Shell.NavBarIsVisible="False"
              Title="Mon profil"
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <cv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <cv:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <cv:StringToBoolConverter x:Key="StringToBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto">
 
@@ -19,25 +28,70 @@
 
                 <!-- ============ EN-TÊTE PROFIL ============ -->
                 <VerticalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,10,0,4">
-                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                           BorderColor="Transparent"
-                           CornerRadius="44"
-                           WidthRequest="88" HeightRequest="88"
-                           Padding="0"
-                           HasShadow="False"
-                           HorizontalOptions="Center">
-                        <Frame.Shadow>
-                            <Shadow Brush="#1565C0" Offset="0,10" Radius="22" Opacity="0.28" />
-                        </Frame.Shadow>
-                        <Label x:Name="AvatarInitiale"
-                               Text="U"
-                               FontFamily="PlusJakartaSansBold"
-                               FontSize="34"
-                               FontAttributes="None"
-                               TextColor="White"
+                    <!-- Avatar : photo ou initiale -->
+                    <Grid HorizontalOptions="Center" VerticalOptions="Center">
+                        <Frame x:Name="AvatarFrame"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                               BorderColor="Transparent"
+                               CornerRadius="44"
+                               WidthRequest="88" HeightRequest="88"
+                               Padding="0"
+                               HasShadow="False"
                                HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                    </Frame>
+                               IsVisible="{Binding PhotoUrl, Converter={StaticResource InverseBoolConverter}}">
+                            <Frame.Shadow>
+                                <Shadow Brush="#1565C0" Offset="0,10" Radius="22" Opacity="0.28" />
+                            </Frame.Shadow>
+                            <Label x:Name="AvatarInitiale"
+                                   Text="U"
+                                   FontFamily="PlusJakartaSansBold"
+                                   FontSize="34"
+                                   FontAttributes="None"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Frame>
+
+                        <Image Source="{Binding PhotoUrl}"
+                               Aspect="AspectFill"
+                               WidthRequest="88" HeightRequest="88"
+                               HorizontalOptions="Center"
+                               IsVisible="{Binding PhotoUrl, Converter={StaticResource StringToBoolConverter}}">
+                            <Image.Clip>
+                                <EllipseGeometry RadiusX="44" RadiusY="44" Center="44,44" />
+                            </Image.Clip>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectionnerPhotoProfilCommand}" />
+                            </Image.GestureRecognizers>
+                        </Image>
+
+                        <!-- Bouton modifier l'avatar -->
+                        <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1C1C1F}"
+                               BorderColor="Transparent"
+                               CornerRadius="20"
+                               WidthRequest="40" HeightRequest="40"
+                               Padding="0"
+                               HasShadow="False"
+                               HorizontalOptions="End"
+                               VerticalOptions="End"
+                               Margin="0,0,8,8">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectionnerPhotoProfilCommand}" />
+                            </Frame.GestureRecognizers>
+                            <Label Text="&#xf303;"
+                                   FontFamily="FASolid"
+                                   FontSize="14"
+                                   TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Frame>
+                    </Grid>
+
+                    <!-- Indicateur de chargement photo -->
+                    <ActivityIndicator IsRunning="{Binding EstEnChargementPhoto}"
+                                       IsVisible="{Binding EstEnChargementPhoto}"
+                                       Color="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                       HorizontalOptions="Center" />
 
                     <Label Text="{Binding Nom}"
                            Style="{StaticResource H1}"
@@ -156,6 +210,27 @@
                             <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
                                 <Label Text="Revoir l'introduction" Style="{StaticResource BodyFort}" />
                                 <Label Text="Redécouvrir les fonctionnalités de LocatCam" Style="{StaticResource Caption}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="&#xf054;" FontFamily="FASolid" FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+
+                        <BoxView Style="{StaticResource Separateur}" Margin="54,0,0,0" />
+
+                        <!-- Mes messages -->
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14" Padding="0,10">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnMessagesClicked" />
+                            </Grid.GestureRecognizers>
+                            <Frame Style="{StaticResource PastilleIcone}" WidthRequest="40" HeightRequest="40" CornerRadius="20">
+                                <Label Text="&#xf4ad;" FontFamily="FASolid" FontSize="15"
+                                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                <Label Text="Mes messages" Style="{StaticResource BodyFort}" />
+                                <Label Text="Retrouver vos conversations" Style="{StaticResource Caption}" />
                             </VerticalStackLayout>
                             <Label Grid.Column="2" Text="&#xf054;" FontFamily="FASolid" FontSize="12"
                                    TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"

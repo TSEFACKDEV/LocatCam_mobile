@@ -43,8 +43,7 @@
                          Command="{Binding ChargerConversationsCommand}">
                 <CollectionView x:Name="ListeConversations"
                                 ItemsSource="{Binding Conversations}"
-                                SelectionMode="Single"
-                                SelectedItem="{Binding ConversationSelectionnee, Mode=TwoWay}"
+                                SelectionMode="None"
                                 ItemSizingStrategy="MeasureFirstItem">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
@@ -71,6 +70,10 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:ConversationDto">
                             <Frame Style="{StaticResource Card}" Padding="14" Margin="20,0,20,0">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnConversationTapped"
+                                                          CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
 
                                     <!-- Avatar -->
@@ -171,18 +174,43 @@
                                        HasShadow="False"
                                        HorizontalOptions="Start"
                                        MaximumWidthRequest="290">
+                                    <Frame.Triggers>
+                                        <DataTrigger TargetType="Frame" Binding="{Binding EstMoi}" Value="True">
+                                            <Setter Property="HorizontalOptions" Value="End" />
+                                            <Setter Property="BackgroundColor"
+                                                    Value="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+                                        </DataTrigger>
+                                    </Frame.Triggers>
                                     <Label Text="{Binding Contenu}"
                                            FontFamily="PlusJakartaSans"
                                            FontSize="14.5"
                                            TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                                           LineBreakMode="WordWrap" />
+                                           LineBreakMode="WordWrap">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding EstMoi}" Value="True">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
                                 </Frame>
-                                <Label Text="{Binding DateEnvoi, StringFormat='{0:HH:mm}'}"
-                                       FontFamily="PlusJakartaSans"
-                                       FontSize="10.5"
-                                       TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                                       HorizontalOptions="Start"
-                                       Margin="6,0,0,0" />
+                                <HorizontalStackLayout Spacing="6"
+                                                       HorizontalOptions="Start"
+                                                       Margin="6,0,0,0">
+                                    <HorizontalStackLayout.Triggers>
+                                        <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding EstMoi}" Value="True">
+                                            <Setter Property="HorizontalOptions" Value="End" />
+                                        </DataTrigger>
+                                    </HorizontalStackLayout.Triggers>
+                                    <Label Text="{Binding DateEnvoi, StringFormat='{0:HH:mm}'}"
+                                           FontFamily="PlusJakartaSans"
+                                           FontSize="10.5"
+                                           TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}" />
+                                    <Label Text="Lu"
+                                           IsVisible="{Binding AfficherAccuseLecture}"
+                                           FontFamily="PlusJakartaSansBold"
+                                           FontSize="10.5"
+                                           TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+                                </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
@@ -190,41 +218,51 @@
             </ScrollView>
 
             <!-- Zone de saisie -->
-            <Frame Grid.Row="2"
-                   BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
-                   BorderColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
-                   CornerRadius="26"
-                   Padding="6,6,6,6"
-                   Margin="16,8,16,16"
-                   HasShadow="False">
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                    <Entry Grid.Column="0"
-                           Text="{Binding ContenuNouveauMessage}"
-                           Placeholder="Écrire un message..."
-                           PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                           TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
-                           FontFamily="PlusJakartaSans"
-                           FontSize="14.5"
-                           BackgroundColor="Transparent"
-                           Margin="10,0,0,0"
-                           VerticalOptions="Center" />
+            <VerticalStackLayout Grid.Row="2" Spacing="2">
+                <Label Text="{Binding MessageErreur}"
+                       IsVisible="{Binding MessageErreur, Converter={StaticResource StringToBoolConverter}}"
+                       Style="{StaticResource Caption}"
+                       TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                       HorizontalTextAlignment="Center"
+                       Margin="20,0,20,0" />
 
-                    <Frame Grid.Column="1"
-                           BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                           BorderColor="Transparent"
-                           CornerRadius="22"
-                           WidthRequest="44" HeightRequest="44"
-                           Padding="0"
-                           HasShadow="False"
-                           VerticalOptions="Center">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding EnvoyerMessageCommand}" />
-                        </Frame.GestureRecognizers>
-                        <Label Text="&#xf1d8;" FontFamily="FASolid" FontSize="16" TextColor="White"
-                               HorizontalOptions="Center" VerticalOptions="Center" />
-                    </Frame>
-                </Grid>
-            </Frame>
+                <Frame BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
+                       BorderColor="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                       CornerRadius="26"
+                       Padding="6,6,6,6"
+                       Margin="16,4,16,16"
+                       HasShadow="False">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <Entry Grid.Column="0"
+                               Text="{Binding ContenuNouveauMessage}"
+                               Placeholder="Écrire un message..."
+                               PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                               TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                               FontFamily="PlusJakartaSans"
+                               FontSize="14.5"
+                               BackgroundColor="Transparent"
+                               Margin="10,0,0,0"
+                               ReturnType="Send"
+                               ReturnCommand="{Binding EnvoyerMessageCommand}"
+                               VerticalOptions="Center" />
+
+                        <Frame Grid.Column="1"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                               BorderColor="Transparent"
+                               CornerRadius="22"
+                               WidthRequest="44" HeightRequest="44"
+                               Padding="0"
+                               HasShadow="False"
+                               VerticalOptions="Center">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding EnvoyerMessageCommand}" />
+                            </Frame.GestureRecognizers>
+                            <Label Text="&#xf1d8;" FontFamily="FASolid" FontSize="16" TextColor="White"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Frame>
+                    </Grid>
+                </Frame>
+            </VerticalStackLayout>
 
             <ActivityIndicator Grid.Row="2"
                                IsRunning="{Binding IsLoadingMessages}"

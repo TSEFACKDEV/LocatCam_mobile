@@ -9,152 +9,234 @@
              BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}"
              x:DataType="vm:MapViewModel">
 
-    <Grid RowDefinitions="*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <Grid Grid.Row="0">
+        <!-- ============ EN-TÊTE CARTE : TITRE + POSITION + RAYON ============ -->
+        <Grid Grid.Row="0"
+              Padding="16,10,16,6"
+              RowDefinitions="Auto,Auto,Auto">
 
-            <!-- ============ CARTE (WebView Leaflet + OSM) ============ -->
-            <WebView x:Name="MapWebView"
-                     VerticalOptions="Fill"
-                     HorizontalOptions="Fill" />
+            <Label Grid.Row="0"
+                   Text="Logements autour de vous"
+                   Style="{StaticResource H1}"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Center" />
 
-            <!-- ============ BANDEAU D'ERREUR ============ -->
-            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorLightDark}}"
-                   BorderColor="Transparent"
-                   CornerRadius="14"
-                   Padding="14,10"
-                   Margin="16,44,16,0"
-                   HasShadow="False"
-                   HorizontalOptions="Fill"
-                   VerticalOptions="Start"
-                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
-                <HorizontalStackLayout Spacing="10">
-                    <Label Text="&#xf071;" FontFamily="FASolid" FontSize="14"
-                           TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
-                           VerticalOptions="Center" />
-                    <Label Text="{Binding ErrorMessage}"
-                           FontFamily="PlusJakartaSans"
-                           FontSize="13"
-                           TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
-                           VerticalOptions="Center" />
+            <Label Grid.Row="1"
+                   Text="{Binding LocationStatus}"
+                   Style="{StaticResource Caption}"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Center"
+                   IsVisible="{Binding HasLocation}" />
+
+            <!-- Sélecteur de rayon (chips horizontaux) -->
+            <ScrollView Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalScrollBarVisibility="Never"
+                        HeightRequest="44">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="Rayon :"
+                           Style="{StaticResource Caption}"
+                           VerticalOptions="Center"
+                           Margin="0,0,8,0" />
+                    <Button Text="500 m"
+                            Command="{Binding ChangerRayonCommand}"
+                            CommandParameter="500"
+                            Style="{StaticResource FilterButton}" />
+                    <Button Text="1 km"
+                            Command="{Binding ChangerRayonCommand}"
+                            CommandParameter="1000"
+                            Style="{StaticResource FilterButton}" />
+                    <Button Text="2 km"
+                            Command="{Binding ChangerRayonCommand}"
+                            CommandParameter="2000"
+                            Style="{StaticResource FilterButton}" />
+                    <Button Text="5 km"
+                            Command="{Binding ChangerRayonCommand}"
+                            CommandParameter="5000"
+                            Style="{StaticResource FilterButton}" />
+                    <Button Text="10 km"
+                            Command="{Binding ChangerRayonCommand}"
+                            CommandParameter="10000"
+                            Style="{StaticResource FilterButton}" />
                 </HorizontalStackLayout>
-            </Frame>
-
-            <!-- ============ BOUTON ME LOCALISER (FAB) ============ -->
-            <Button Text="&#xf124;"
-                    FontFamily="FASolid"
-                    FontSize="18"
-                    Clicked="OnLocateClicked"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                    TextColor="White"
-                    CornerRadius="26"
-                    WidthRequest="52"
-                    HeightRequest="52"
-                    Padding="0"
-                    HorizontalOptions="End"
-                    VerticalOptions="End"
-                    Margin="0,0,20,20"
-                    SemanticProperties.Description="Me localiser" />
-
-            <!-- ============ BOTTOM SHEET (annonce sélectionnée) ============ -->
-            <Grid x:Name="BottomSheet"
-                  IsVisible="{Binding IsBottomSheetOpen}"
-                  VerticalOptions="End"
-                  HorizontalOptions="Fill"
-                  Margin="16,0,16,16">
-                <Frame Style="{StaticResource Card}" Padding="0">
-                    <Frame.Shadow>
-                        <Shadow Brush="#000000" Offset="0,8" Radius="22" Opacity="0.16" />
-                    </Frame.Shadow>
-
-                    <VerticalStackLayout Spacing="0" Padding="16,10,16,16">
-
-                        <!-- Poignée de préhension -->
-                        <BoxView HeightRequest="4" WidthRequest="42"
-                                 HorizontalOptions="Center"
-                                 Color="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
-                                 CornerRadius="2"
-                                 Margin="0,2,0,12" />
-
-                        <!-- Photo -->
-                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoft}, Dark={StaticResource AccentSoftDark}}"
-                               BorderColor="Transparent"
-                               CornerRadius="14"
-                               Padding="0"
-                               HeightRequest="150"
-                               HasShadow="False">
-                            <Grid>
-                                <Label Text="&#xf015;" FontFamily="FASolid" FontSize="36"
-                                       TextColor="{AppThemeBinding Light={StaticResource CarteGlow}, Dark=#2A3F5C}"
-                                       HorizontalOptions="Center" VerticalOptions="Center" />
-                                <Image Source="{Binding MainPhotoUrl}"
-                                       Aspect="AspectFill"
-                                       IsVisible="{Binding MainPhotoUrl, Converter={StaticResource StringToBoolConverter}}" />
-                            </Grid>
-                        </Frame>
-
-                        <!-- Infos -->
-                        <VerticalStackLayout Margin="0,12,0,0" Spacing="5">
-                            <Label Text="{Binding SelectedAnnonce.Titre}"
-                                   Style="{StaticResource BodyFort}"
-                                   LineBreakMode="TailTruncation" />
-
-                            <HorizontalStackLayout Spacing="6">
-                                <Label Text="{Binding SelectedAnnonce.Prix, Converter={StaticResource PrixFcfaConverter}}"
-                                       Style="{StaticResource Prix}"
-                                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
-                                <Label Text="/ mois" Style="{StaticResource Caption}" VerticalOptions="End" Margin="0,0,0,2" />
-                            </HorizontalStackLayout>
-
-                            <HorizontalStackLayout Spacing="6">
-                                <Label Text="&#xf3c5;" FontFamily="FASolid" FontSize="11"
-                                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
-                                       VerticalOptions="Center" />
-                                <Label Text="{Binding SelectedAnnonce.Adresse}"
-                                       Style="{StaticResource Caption}"
-                                       LineBreakMode="TailTruncation"
-                                       VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-
-                            <HorizontalStackLayout Spacing="6">
-                                <Label Text="&#xf1ad;" FontFamily="FASolid" FontSize="11"
-                                       TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
-                                       VerticalOptions="Center" />
-                                <Label Text="{Binding SelectedAnnonce.Quartier}" Style="{StaticResource Caption}" VerticalOptions="Center" />
-                                <Label Text="•" Style="{StaticResource Caption}" VerticalOptions="Center" />
-                                <Label Text="{Binding SelectedAnnonce.Ville}" Style="{StaticResource Caption}" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-
-                        <!-- Actions -->
-                        <Grid Margin="0,14,0,0" ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                            <Button Grid.Column="0"
-                                    Text="Voir les détails"
-                                    Command="{Binding ViewDetailsCommand}"
-                                    Style="{StaticResource PrimaryButton}" />
-
-                            <Button Grid.Column="1"
-                                    Text="&#xf00d;"
-                                    FontFamily="FASolid"
-                                    FontSize="15"
-                                    Command="{Binding CloseBottomSheetCommand}"
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
-                                    TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
-                                    CornerRadius="14"
-                                    WidthRequest="52"
-                                    HeightRequest="52"
-                                    Padding="0"
-                                    SemanticProperties.Description="Fermer" />
-                        </Grid>
-
-                    </VerticalStackLayout>
-                </Frame>
-            </Grid>
+            </ScrollView>
 
         </Grid>
 
+        <!-- ============ CARTE (WebView Leaflet + OSM) ============ -->
+        <WebView x:Name="MapWebView"
+                 Grid.Row="1"
+                 VerticalOptions="Fill"
+                 HorizontalOptions="Fill" />
+
+        <!-- ============ BANDEAU D'ERREUR ============ -->
+        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorLightDark}}"
+               BorderColor="Transparent"
+               CornerRadius="14"
+               Padding="14,10"
+               Margin="16,56,16,0"
+               HasShadow="False"
+               HorizontalOptions="Fill"
+               VerticalOptions="Start"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="&#xf071;" FontFamily="FASolid" FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                       VerticalOptions="Center" />
+                <Label Text="{Binding ErrorMessage}"
+                       FontFamily="PlusJakartaSans"
+                       FontSize="13"
+                       TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </Frame>
+
+        <!-- ============ BOUTON VOUS ÊTES ICI (FAB) ============ -->
+        <Button Grid.Row="1"
+                Text="&#xf124;"
+                FontFamily="FASolid"
+                FontSize="20"
+                Command="{Binding CentrerSurMoiCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                TextColor="White"
+                CornerRadius="30"
+                WidthRequest="60"
+                HeightRequest="60"
+                Padding="0"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,20,24"
+                SemanticProperties.Description="Me localiser et voir les logements autour" />
+
+        <!-- ============ COMPTEUR ANNONCES ============ -->
+        <Frame Grid.Row="1"
+               BackgroundColor="{AppThemeBinding Light=White, Dark=#1C1C1F}"
+               BorderColor="Transparent"
+               CornerRadius="16"
+               Padding="10,8"
+               HasShadow="False"
+               HorizontalOptions="Center"
+               VerticalOptions="Start"
+               Margin="0,16,0,0"
+               IsVisible="{Binding HasLocation}">
+            <HorizontalStackLayout Spacing="8">
+                <Label Text="&#xf015;" FontFamily="FASolid" FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                       VerticalOptions="Center" />
+                <Label Text="{Binding AnnoncesCount, StringFormat='{0} logement(s) autour de vous'}"
+                       FontFamily="PlusJakartaSansBold"
+                       FontSize="13"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </Frame>
+
+        <!-- ============ BOTTOM SHEET (annonce sélectionnée) ============ -->
+        <Grid x:Name="BottomSheet"
+              Grid.Row="1"
+              IsVisible="{Binding IsBottomSheetOpen}"
+              VerticalOptions="End"
+              HorizontalOptions="Fill"
+              Margin="16,0,16,16">
+            <Frame Style="{StaticResource Card}" Padding="0">
+                <Frame.Shadow>
+                    <Shadow Brush="#000000" Offset="0,8" Radius="22" Opacity="0.16" />
+                </Frame.Shadow>
+
+                <VerticalStackLayout Spacing="0" Padding="16,10,16,16">
+
+                    <!-- Poignée de préhension -->
+                    <BoxView HeightRequest="4" WidthRequest="42"
+                             HorizontalOptions="Center"
+                             Color="{AppThemeBinding Light={StaticResource Hairline}, Dark={StaticResource HairlineDark}}"
+                             CornerRadius="2"
+                             Margin="0,2,0,12" />
+
+                    <!-- Photo -->
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoft}, Dark={StaticResource AccentSoftDark}}"
+                           BorderColor="Transparent"
+                           CornerRadius="14"
+                           Padding="0"
+                           HeightRequest="150"
+                           HasShadow="False">
+                        <Grid>
+                            <Label Text="&#xf015;" FontFamily="FASolid" FontSize="36"
+                                   TextColor="{AppThemeBinding Light={StaticResource CarteGlow}, Dark=#2A3F5C}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                            <Image Source="{Binding MainPhotoUrl}"
+                                   Aspect="AspectFill"
+                                   IsVisible="{Binding MainPhotoUrl, Converter={StaticResource StringToBoolConverter}}" />
+                        </Grid>
+                    </Frame>
+
+                    <!-- Infos + distance -->
+                    <VerticalStackLayout Margin="0,12,0,0" Spacing="6">
+                        <Label Text="{Binding SelectedAnnonce.Titre}"
+                               Style="{StaticResource BodyFort}"
+                               LineBreakMode="TailTruncation" />
+
+                        <!-- Badge distance -->
+                        <Label Text="{Binding SelectedAnnonce.DistanceTexte, StringFormat='À {0} de vous'}"
+                               Style="{StaticResource Caption}"
+                               TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                               FontAttributes="Bold"
+                               IsVisible="{Binding SelectedAnnonce.DistanceTexte, Converter={StaticResource StringToBoolConverter}}" />
+
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="{Binding SelectedAnnonce.Prix, Converter={StaticResource PrixFcfaConverter}}"
+                                   Style="{StaticResource Prix}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}" />
+                            <Label Text="/ mois" Style="{StaticResource Caption}" VerticalOptions="End" Margin="0,0,0,2" />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="&#xf3c5;" FontFamily="FASolid" FontSize="11"
+                                   TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                                   VerticalOptions="Center" />
+                            <Label Text="{Binding SelectedAnnonce.Adresse}"
+                                   Style="{StaticResource Caption}"
+                                   LineBreakMode="TailTruncation"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="&#xf1ad;" FontFamily="FASolid" FontSize="11"
+                                   TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                                   VerticalOptions="Center" />
+                            <Label Text="{Binding SelectedAnnonce.Quartier}" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                            <Label Text="•" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                            <Label Text="{Binding SelectedAnnonce.Ville}" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Actions -->
+                    <Grid Margin="0,14,0,0" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <Button Grid.Column="0"
+                                Text="Voir les détails"
+                                Command="{Binding ViewDetailsCommand}"
+                                Style="{StaticResource PrimaryButton}" />
+
+                        <Button Grid.Column="1"
+                                Text="&#xf00d;"
+                                FontFamily="FASolid"
+                                FontSize="15"
+                                Command="{Binding CloseBottomSheetCommand}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceSoft}, Dark={StaticResource SurfaceSoftDark}}"
+                                TextColor="{AppThemeBinding Light={StaticResource InkSecondary}, Dark={StaticResource InkSecondaryDark}}"
+                                CornerRadius="14"
+                                WidthRequest="52"
+                                HeightRequest="52"
+                                Padding="0"
+                                SemanticProperties.Description="Fermer" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+
         <!-- ============ BARRE DE NAVIGATION ============ -->
-        <ctrl:BottomNavBar Grid.Row="1" EstActif="CartePage" />
+        <ctrl:BottomNavBar Grid.Row="2" EstActif="CartePage" />
 
     </Grid>
 

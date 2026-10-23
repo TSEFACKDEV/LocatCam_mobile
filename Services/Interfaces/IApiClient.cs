@@ -23,10 +23,13 @@ public interface IApiClient
     Task<ApiResponse<string>> Register([Body] RegisterRequest request);
 
     [Post("/api/auth/refresh")]
-    Task<ApiResponse<LoginResponse>> Refresh([Body] string refreshToken);
+    Task<ApiResponse<LoginResponse>> Refresh([Body] RefreshRequest request);
 
     [Get("/api/auth/me")]
     Task<ApiResponse<UserDto>> Me();
+
+    [Put("/api/auth/me/photo")]
+    Task<ApiResponse<UserDto>> UpdatePhoto([Body] UpdatePhotoDto dto);
 
     // ========================================================================
     // ANNONCES
@@ -49,6 +52,9 @@ public interface IApiClient
 
     [Post("/api/annonces")]
     Task<ApiResponse<AnnonceDto>> CreateAnnonce([Body] AnnonceCreateDto dto);
+
+    [Post("/api/annonces/{id}/photos")]
+    Task<ApiResponse<string>> AddPhotos(string id, [Body] IEnumerable<PhotoCreateDto> photos);
 
     [Put("/api/annonces/{id}")]
     Task<ApiResponse<AnnonceDto>> UpdateAnnonce(string id, [Body] AnnonceUpdateDto dto);
@@ -91,6 +97,9 @@ public interface IApiClient
 
     [Get("/api/messages/conversation/{autreUserId}")]
     Task<ApiResponse<List<MessageDto>>> GetConversation(string autreUserId);
+
+    [Put("/api/messages/conversation/{autreUserId}/lu")]
+    Task<ApiResponse<string>> MarkConversationAsRead(string autreUserId);
 
     [Put("/api/messages/{id}/lu")]
     Task<ApiResponse<string>> MarkAsRead(string id);

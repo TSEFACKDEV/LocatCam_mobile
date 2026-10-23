@@ -16,14 +16,14 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto"
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto"
           BackgroundColor="{AppThemeBinding Light={StaticResource Canvas}, Dark={StaticResource CanvasDark}}">
 
         <!-- Bandeau hors-ligne -->
         <ctrl:OfflineBanner Grid.Row="0" />
 
         <!-- ============ EN-TÊTE : LOGO + BONJOUR ============ -->
-        <Grid Grid.Row="1" Margin="20,14,20,6" ColumnDefinitions="Auto,*">
+        <Grid Grid.Row="1" Margin="20,14,20,6" ColumnDefinitions="Auto,*,Auto">
             <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
                    BorderColor="Transparent"
                    CornerRadius="12"
@@ -41,6 +41,25 @@
                 <Label Text="Trouvez votre logement au Cameroun"
                        Style="{StaticResource Caption}" />
             </VerticalStackLayout>
+
+            <!-- Accès direct à la messagerie -->
+            <Frame Grid.Column="2"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoft}, Dark={StaticResource AccentSoftDark}}"
+                   BorderColor="Transparent"
+                   CornerRadius="20"
+                   Padding="0"
+                   WidthRequest="40"
+                   HeightRequest="40"
+                   HasShadow="False"
+                   VerticalOptions="Center"
+                   SemanticProperties.Description="Ouvrir la messagerie">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnMessagesClicked" />
+                </Frame.GestureRecognizers>
+                <Label Text="&#xf4ad;" FontFamily="FASolid" FontSize="16"
+                       TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Frame>
         </Grid>
 
         <!-- ============ BARRE DE RECHERCHE ============ -->
@@ -88,8 +107,44 @@
             </Grid>
         </Frame>
 
+        <!-- ============ FILTRE PRIX (budget) ============ -->
+        <Frame Grid.Row="3"
+               Style="{StaticResource SearchPill}"
+               Margin="20,6,20,6">
+            <Frame.Shadow>
+                <Shadow Brush="#000000" Offset="0,4" Radius="14" Opacity="0.08" />
+            </Frame.Shadow>
+            <Grid ColumnDefinitions="Auto,10,Auto,10,Auto,10,Auto,*" ColumnSpacing="6">
+                <Label Grid.Column="0" Text="&#xf155;" FontFamily="FASolid" FontSize="15"
+                       TextColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="2" Text="min" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                <Entry Grid.Column="4"
+                       Keyboard="Numeric"
+                       Text="{Binding PrixMinTexte}"
+                       Placeholder="Prix min"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       FontFamily="PlusJakartaSans"
+                       FontSize="13"
+                       BackgroundColor="Transparent"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="6" Text="max" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                <Entry Grid.Column="8"
+                       Keyboard="Numeric"
+                       Text="{Binding PrixMaxTexte}"
+                       Placeholder="Prix max"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource InkMuted}, Dark={StaticResource InkMutedDark}}"
+                       TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"
+                       FontFamily="PlusJakartaSans"
+                       FontSize="13"
+                       BackgroundColor="Transparent"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Frame>
+
         <!-- ============ CHIPS DE FILTRE ============ -->
-        <ScrollView Grid.Row="3"
+        <ScrollView Grid.Row="4"
                     Orientation="Horizontal"
                     HorizontalScrollBarVisibility="Never"
                     VerticalOptions="Start"
@@ -160,7 +215,7 @@
         </ScrollView>
 
         <!-- ============ LISTE DES ANNONCES ============ -->
-        <RefreshView Grid.Row="4"
+        <RefreshView Grid.Row="5"
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RafraichirCommand}"
                      RefreshColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}">
@@ -213,7 +268,7 @@
         </RefreshView>
 
         <!-- Skeleton loading (premier chargement) -->
-        <VerticalStackLayout Grid.Row="4"
+        <VerticalStackLayout Grid.Row="5"
                              IsVisible="{Binding IsLoading}"
                              Padding="20,10,20,0"
                              Spacing="18">
@@ -223,7 +278,7 @@
         </VerticalStackLayout>
 
         <!-- Barre de navigation basse -->
-        <ctrl:BottomNavBar Grid.Row="5" EstActif="HomePage" />
+        <ctrl:BottomNavBar Grid.Row="6" EstActif="HomePage" />
 
     </Grid>
 

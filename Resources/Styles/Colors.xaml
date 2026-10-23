@@ -4,7 +4,7 @@
 
     <!-- ==================================================================
          PALETTE LOCATCAM — douce, élégante et moderne
-         Une encre bleu nuit, un indigo lumineux, des surfaces très claires.
+         Une encre bleu nuit, le bleu institutionnel #1565C0, des surfaces très claires.
          ================================================================== -->
 
     <!-- ===================== ENCRE (texte) ===================== -->
@@ -25,13 +25,13 @@
     <Color x:Key="Hairline">#E7EAF3</Color>
     <Color x:Key="HairlineDark">#2B3040</Color>
 
-    <!-- ===================== ACCENT LOCATCAM (INDIGO DOUX) ===================== -->
-    <Color x:Key="Accent">#4361EE</Color>
-    <Color x:Key="AccentLight">#7C93FF</Color>
-    <Color x:Key="AccentDark">#93A9FF</Color>
-    <Color x:Key="AccentPressed">#324BC4</Color>
-    <Color x:Key="AccentSoft">#EEF2FF</Color>
-    <Color x:Key="AccentSoftDark">#1A2240</Color>
+    <!-- ===================== ACCENT LOCATCAM (BLEU #1565C0) ===================== -->
+    <Color x:Key="Accent">#1565C0</Color>
+    <Color x:Key="AccentLight">#1E88E5</Color>
+    <Color x:Key="AccentDark">#64B5F6</Color>
+    <Color x:Key="AccentPressed">#0D47A1</Color>
+    <Color x:Key="AccentSoft">#E3F2FD</Color>
+    <Color x:Key="AccentSoftDark">#0F2744</Color>
 
     <!-- Touche chaleureuse, réservée aux distinctions (badges « vérifié ») -->
     <Color x:Key="Gold">#C8A96A</Color>
@@ -52,24 +52,24 @@
     <!-- ===================== OVERLAYS ===================== -->
     <Color x:Key="Scrim">#33000000</Color>
     <Color x:Key="BadgeGlass">#99000000</Color>
-    <Color x:Key="CarteGlow">#DCE5FF</Color>
+    <Color x:Key="CarteGlow">#D6E8FF</Color>
 
     <!-- ===================== DÉGRADÉS ===================== -->
     <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#4361EE" Offset="0.0" />
-        <GradientStop Color="#7C93FF" Offset="1.0" />
+        <GradientStop Color="#1565C0" Offset="0.0" />
+        <GradientStop Color="#42A5F5" Offset="1.0" />
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="SoftGradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#F4F7FF" Offset="0.0" />
+        <GradientStop Color="#F3F8FF" Offset="0.0" />
         <GradientStop Color="#FFFFFF" Offset="0.55" />
-        <GradientStop Color="#EDF2FF" Offset="1.0" />
+        <GradientStop Color="#E3F0FF" Offset="1.0" />
     </LinearGradientBrush>
 
     <!-- ===================== ALIAS (compatibilité écrans existants) ===================== -->
-    <Color x:Key="Primary">#4361EE</Color>
-    <Color x:Key="PrimaryLight">#7C93FF</Color>
-    <Color x:Key="PrimaryDark">#324BC4</Color>
+    <Color x:Key="Primary">#1565C0</Color>
+    <Color x:Key="PrimaryLight">#1E88E5</Color>
+    <Color x:Key="PrimaryDark">#0D47A1</Color>
     <Color x:Key="Secondary">#2F9E6E</Color>
     <Color x:Key="SecondaryLight">#6FD3A5</Color>
     <Color x:Key="Surface">#FFFFFF</Color>

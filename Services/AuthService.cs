@@ -177,7 +177,10 @@ public class AuthService : IAuthService
             if (string.IsNullOrWhiteSpace(refreshToken))
                 return false;
 
-            var response = await _apiClient.Refresh(refreshToken);
+            var response = await _apiClient.Refresh(new RefreshRequest
+            {
+                RefreshToken = refreshToken
+            });
 
             if (!response.IsSuccessStatusCode || response.Content == null)
                 return false;
@@ -192,6 +195,42 @@ public class AuthService : IAuthService
         }
         catch (Exception)
         {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Met à jour l'URL de la photo de profil sur le serveur et dans le SecureStorage.
+    /// </summary>
+    public async Task<bool> UpdatePhotoAsync(string photoUrl)
+    {
+        try
+        {
+            var response = await _apiClient.UpdatePhoto(new UpdatePhotoDto
+            {
+                PhotoUrl = photoUrl
+            });
+
+            if (!response.IsSuccessStatusCode || response.Content == null)
+                return false;
+
+            // Mettre à jour l'utilisateur stocké
+            var userJson = await SecureStorage.GetAsync(UserKey);
+            if (!string.IsNullOrWhiteSpace(userJson))
+            {
+                var user = System.Text.Json.JsonSerializer.Deserialize<UserDto>(userJson);
+                if (user != null)
+                {
+                    user.PhotoUrl = photoUrl;
+                    await SecureStorage.SetAsync(UserKey, System.Text.Json.JsonSerializer.Serialize(user));
+                }
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AuthService] UpdatePhoto: {ex.Message}");
             return false;
         }
     }

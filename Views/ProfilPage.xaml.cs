@@ -49,4 +49,8 @@ public partial class ProfilPage : ContentPage
 		Preferences.Set("OnboardingDone", false);
 		Services.NavigationShell.AllerVers("OnboardingPage");
 	}
+
+	/// <summary>Ouvre la messagerie depuis le profil.</summary>
+	private void OnMessagesClicked(object sender, TappedEventArgs e)
+		=> Services.NavigationShell.AllerVersAvecRetour("MessageriePage", "ProfilPage");
 }

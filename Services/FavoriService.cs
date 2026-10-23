@@ -1,7 +1,7 @@
 using LocatCam_mobile.Models;
 using LocatCam_mobile.Services.Interfaces;
 using Refit;
-using SQLite;
+using System.Text.Json;
 
 namespace LocatCam_mobile.Services;
 
@@ -28,11 +28,7 @@ public class FavoriService : IFavoriService
             var response = await _apiClient.GetFavoris();
 
             if (!response.IsSuccessStatusCode || response.Content == null)
-            {
-                // Hors-ligne ou erreur : retour du cache SQLite
-                var favorisLocaux = await _localDb.GetFavorisLocauxAsync();
-                return favorisLocaux.Select(f => new AnnonceDto { Id = Guid.Parse(f.AnnonceId) }).ToList();
-            }
+                return await GetFavorisLocauxAsync();
 
             // L'API renvoie des favoris contenant chacun l'annonce complète.
             var annonces = response.Content
@@ -40,33 +36,31 @@ public class FavoriService : IFavoriService
                 .Select(f => f.Annonce!)
                 .ToList();
 
-            // Mettre à jour le cache local avec les IDs de favoris serveur
-            foreach (var annonce in annonces)
-            {
-                var estDejaLocal = await _localDb.IsFavoriLocalAsync(annonce.Id.ToString());
-                if (!estDejaLocal)
-                {
-                    await _localDb.AjouterFavoriLocalAsync(annonce.Id.ToString(), annonce);
-                }
-            }
+            // Aligner le cache local (ajouts ET suppressions faites ailleurs).
+            await _localDb.SynchroniserFavorisLocauxAsync(annonces);
 
             return annonces;
         }
         catch (ApiException ex)
         {
             System.Diagnostics.Debug.WriteLine($"[FavoriService] Erreur API {ex.StatusCode}: {ex.Message}");
-            // Fallback sur le cache local
-            var favorisLocaux = await _localDb.GetFavorisLocauxAsync();
-            return favorisLocaux.Select(f => new AnnonceDto { Id = Guid.Parse(f.AnnonceId) }).ToList();
+            return await GetFavorisLocauxAsync();
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[FavoriService] Erreur inattendue: {ex.Message}");
-            return new List<AnnonceDto>();
+            return await GetFavorisLocauxAsync();
         }
     }
 
-    public async Task<bool> AddFavoriAsync(string annonceId)
+    /// <inheritdoc/>
+    public async Task SynchroniserFavorisAsync()
+    {
+        // GetFavorisAsync met à jour le cache SQLite ; le résultat n'est pas nécessaire ici.
+        _ = await GetFavorisAsync();
+    }
+
+    public async Task<bool> AddFavoriAsync(string annonceId, AnnonceDto? annonce = null)
     {
         try
         {
@@ -74,13 +68,16 @@ public class FavoriService : IFavoriService
 
             if (response.IsSuccessStatusCode)
             {
-                // Mise à jour du cache local
-                var estDejaLocal = await _localDb.IsFavoriLocalAsync(annonceId);
-                if (!estDejaLocal)
-                {
-                    // Récupérer l'annonce pour la stocker localement (simplifié)
-                    await _localDb.AjouterFavoriLocalAsync(annonceId, new AnnonceDto { Id = Guid.Parse(annonceId) });
-                }
+                await MettreEnCacheAsync(annonceId, annonce);
+                return true;
+            }
+
+            // L'API renvoie 400 quand l'annonce est déjà en favori : c'est un
+            // succès idempotent (le cache local était simplement désynchronisé).
+            if ((int)response.StatusCode == 400 &&
+                (response.Error?.Content?.Contains("déjà", StringComparison.OrdinalIgnoreCase) ?? false))
+            {
+                await MettreEnCacheAsync(annonceId, annonce);
                 return true;
             }
 
@@ -89,8 +86,8 @@ public class FavoriService : IFavoriService
         catch (ApiException ex)
         {
             System.Diagnostics.Debug.WriteLine($"[FavoriService] Erreur API {ex.StatusCode}: {ex.Message}");
-            // En cas d'erreur réseau, on stocke quand même en local pour mode hors-ligne
-            await _localDb.AjouterFavoriLocalAsync(annonceId, new AnnonceDto { Id = Guid.Parse(annonceId) });
+            // En cas d'erreur réseau, on stocke quand même en local pour le mode hors-ligne.
+            await MettreEnCacheAsync(annonceId, annonce);
             return true;
         }
         catch (Exception ex)
@@ -106,8 +103,9 @@ public class FavoriService : IFavoriService
         {
             var response = await _apiClient.RemoveFavori(annonceId);
 
-            // Contournement anomalie M1 : accepter 200 et 204 comme succès
-            if (response.IsSuccessStatusCode)
+            // Contournement anomalie M1 : accepter 200 et 204 comme succès.
+            // Un 404 signifie que le favori n'existe déjà plus : succès idempotent.
+            if (response.IsSuccessStatusCode || (int)response.StatusCode == 404)
             {
                 await _localDb.RetirerFavoriLocalAsync(annonceId);
                 return true;
@@ -118,7 +116,6 @@ public class FavoriService : IFavoriService
         catch (ApiException ex)
         {
             System.Diagnostics.Debug.WriteLine($"[FavoriService] Erreur API {ex.StatusCode}: {ex.Message}");
-            // En cas d'erreur réseau, on retire quand même du cache local
             await _localDb.RetirerFavoriLocalAsync(annonceId);
             return true;
         }
@@ -140,5 +137,53 @@ public class FavoriService : IFavoriService
             System.Diagnostics.Debug.WriteLine($"[FavoriService] Erreur IsFavoriAsync: {ex.Message}");
             return false;
         }
+    }
+
+    /// <summary>Enregistre un favori dans le cache local avec l'annonce complète.</summary>
+    private async Task MettreEnCacheAsync(string annonceId, AnnonceDto? annonce)
+    {
+        if (annonce == null)
+        {
+            try
+            {
+                var detail = await _apiClient.GetAnnonceById(annonceId);
+                if (detail.IsSuccessStatusCode && detail.Content != null)
+                    annonce = detail.Content;
+            }
+            catch
+            {
+                // Cache dégradé : seul l'identifiant sera conservé.
+            }
+        }
+
+        await _localDb.AjouterFavoriLocalAsync(
+            annonceId,
+            annonce ?? new AnnonceDto { Id = Guid.Parse(annonceId) });
+    }
+
+    /// <summary>Reconstruit les annonces favorites depuis le cache SQLite.</summary>
+    private async Task<List<AnnonceDto>> GetFavorisLocauxAsync()
+    {
+        var favorisLocaux = await _localDb.GetFavorisLocauxAsync();
+        var annonces = new List<AnnonceDto>();
+
+        foreach (var favori in favorisLocaux)
+        {
+            if (string.IsNullOrWhiteSpace(favori.AnnonceJson))
+                continue;
+
+            try
+            {
+                var annonce = JsonSerializer.Deserialize<AnnonceDto>(favori.AnnonceJson);
+                if (annonce != null)
+                    annonces.Add(annonce);
+            }
+            catch (JsonException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[FavoriService] Cache favori illisible: {ex.Message}");
+            }
+        }
+
+        return annonces;
     }
 }

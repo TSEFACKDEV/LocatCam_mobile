@@ -32,4 +32,10 @@ public interface IAnnonceService
     /// <summary>Récupère les annonces dans une bounding box pour la carte.</summary>
     Task<List<AnnonceDto>> GetAnnoncesMapAsync(
         double minLat, double maxLat, double minLng, double maxLng);
+
+    /// <summary>Déclare des photos Cloudinary liées à une annonce (après upload mobile).</summary>
+    Task<bool> AddPhotosAsync(string annonceId, List<PhotoCreateDto> photos);
+
+    /// <summary>Obtient une signature Cloudinary pour l'upload direct depuis le mobile.</summary>
+    Task<PhotoSignatureDto> GetSignatureAsync();
 }

@@ -30,4 +30,7 @@ public interface IAuthService
 
     /// <summary>Renouvelle l'access token via le refresh token.</summary>
     Task<bool> RefreshTokenAsync();
+
+    /// <summary>Met à jour l'URL de la photo de profil sur le serveur.</summary>
+    Task<bool> UpdatePhotoAsync(string photoUrl);
 }

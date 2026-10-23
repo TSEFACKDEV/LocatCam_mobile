@@ -2,7 +2,7 @@ using LocatCam_mobile.ViewModels;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Devices.Sensors;
 using System.Globalization;
-using System.Text.Json;
+using System.Linq;
 
 namespace LocatCam_mobile.Views;
 
@@ -20,10 +20,41 @@ public partial class CartePage : ContentPage
 
         BindingContext = _vm;
 
+        // Quand le ViewModel met à jour les marqueurs (nouveau rayon, nouveau centre),
+        // on les réinjecte dans la WebView avec la position et le rayon utilisateur.
+        _vm.PropertyChanged += async (s, e) =>
+        {
+            if (e.PropertyName == nameof(MapViewModel.MarkersJson))
+            {
+                await InjectMarkersAsync();
+                await InjectUserPositionAsync();
+                await InjectUserRadiusAsync();
+            }
+        };
+
         _ = LoadMapHtmlAsync();
 
-        // Bridge JS &rarr; C# : interception des URL "locatcam://..."
+        // Bridge JS → C# : interception des URL "locatcam://..."
         MapWebView.Navigating += OnWebViewNavigating;
+    }
+
+    /// <summary>Initialise la position et les marqueurs une fois la carte HTML prête.</summary>
+    private async Task InitialiserCarteAsync()
+    {
+        await _vm.InitialiserPositionAsync();
+        await InjectUserPositionAsync();
+        await InjectUserRadiusAsync();
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Géolocalisation automatique à chaque apparition de la page carte
+        if (_htmlLoaded)
+        {
+            await InitialiserCarteAsync();
+        }
     }
 
     private async Task LoadMapHtmlAsync()
@@ -37,9 +68,8 @@ public partial class CartePage : ContentPage
             MapWebView.Source = new HtmlWebViewSource { Html = html };
             _htmlLoaded = true;
 
-            // Chargement initial autour de Douala (Cameroun)
-            await _vm.LoadAnnouncementsAsync(3.5, 4.6, 9.2, 10.3);
-            await InjectMarkersAsync();
+            // Géolocalisation automatique dès que la carte HTML est prête
+            _ = InitialiserCarteAsync();
         }
         catch (Exception ex)
         {
@@ -47,13 +77,21 @@ public partial class CartePage : ContentPage
         }
     }
 
-    private async Task InjectMarkersAsync()
+    /// <summary>Envoie la position utilisateur détectée vers la carte JS.</summary>
+    private async Task InjectUserPositionAsync()
+    {
+        if (!_htmlLoaded || !_vm.HasLocation) return;
+
+        var lat = _vm.CurrentLatitude.ToString(CultureInfo.InvariantCulture);
+        var lng = _vm.CurrentLongitude.ToString(CultureInfo.InvariantCulture);
+        await MapWebView.EvaluateJavaScriptAsync($"setUserPosition({lat}, {lng})");
+    }
+
+    /// <summary>Envoie le rayon de recherche sélectionné vers la carte JS.</summary>
+    private async Task InjectUserRadiusAsync()
     {
         if (!_htmlLoaded) return;
-
-        var json = _vm.MarkersJson ?? "[]";
-        var js = $"addMarkers({json})";
-        await MapWebView.EvaluateJavaScriptAsync(js);
+        await MapWebView.EvaluateJavaScriptAsync($"setUserRadius({_vm.UserRadiusMeters})");
     }
 
     private void OnWebViewNavigating(object sender, WebNavigatingEventArgs e)
@@ -62,7 +100,6 @@ public partial class CartePage : ContentPage
         if (!url.StartsWith("locatcam://", StringComparison.OrdinalIgnoreCase))
             return;
 
-        // On annule la navigation : il s'agit d'un message JS, pas d'une vraie URL
         e.Cancel = true;
 
         if (url.StartsWith("locatcam://marker?id=", StringComparison.OrdinalIgnoreCase))
@@ -95,8 +132,12 @@ public partial class CartePage : ContentPage
 
         if (minLat.HasValue && maxLat.HasValue && minLng.HasValue && maxLng.HasValue)
         {
+            // Recharger les annonces dans la nouvelle bounding box, puis réinjecter
+            // la position utilisateur et le rayon pour les conserver à l'écran
             await _vm.LoadAnnouncementsAsync(minLat.Value, maxLat.Value, minLng.Value, maxLng.Value);
             await InjectMarkersAsync();
+            await InjectUserPositionAsync();
+            await InjectUserRadiusAsync();
         }
     }
 
@@ -114,29 +155,12 @@ public partial class CartePage : ContentPage
         return null;
     }
 
-    private async void OnLocateClicked(object sender, EventArgs e)
+    private async Task InjectMarkersAsync()
     {
-        try
-        {
-            var location = await Geolocation.Default.GetLastKnownLocationAsync();
-            if (location == null) return;
+        if (!_htmlLoaded) return;
 
-            var lat = location.Latitude;
-            var lng = location.Longitude;
-
-            // Centrer la carte sur la position
-            var latStr = lat.ToString(CultureInfo.InvariantCulture);
-            var lngStr = lng.ToString(CultureInfo.InvariantCulture);
-            await MapWebView.EvaluateJavaScriptAsync($"centerOn({latStr}, {lngStr}, 15)");
-
-            // Recharger les annonces autour de la position
-            var margin = 0.05;
-            await _vm.LoadAnnouncementsAsync(lat - margin, lat + margin, lng - margin, lng + margin);
-            await InjectMarkersAsync();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"[CartePage] Géolocalisation indisponible: {ex.Message}");
-        }
+        var json = _vm.MarkersJson ?? "[]";
+        var js = $"addMarkers({json})";
+        await MapWebView.EvaluateJavaScriptAsync(js);
     }
 }

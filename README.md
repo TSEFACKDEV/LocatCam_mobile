@@ -67,7 +67,7 @@ messagerie directe avec les bailleurs.
   **Profil → Revoir l'introduction**.
 - **Démarrage maîtrisé** : splash native → page de démarrage → onboarding, connexion ou
   accueil, sans flash d'écran intermédiaire.
-- **Design system doux et moderne** : indigo `#4361EE`, surfaces claires, cartes arrondies,
+- **Design system doux et moderne** : bleu LocatCam `#1565C0`, surfaces claires, cartes arrondies,
   ombres légères, typographie Plus Jakarta Sans.
 - **Mode sombre** automatique (thème système) ou manuel depuis le profil.
 - **Interface responsive** et zones tactiles conformes aux recommandations d'accessibilité.
@@ -328,8 +328,8 @@ Mot de passe : Etudiant@123
 
 | Rôle | Couleur clair | Couleur sombre |
 |---|---|---|
-| Accent | `#4361EE` | `#93A9FF` |
-| Accent clair | `#7C93FF` | — |
+| Accent | `#1565C0` | `#64B5F6` |
+| Accent clair | `#1E88E5` | — |
 | Fond | `#F8F9FD` | `#0E1017` |
 | Surface carte | `#FFFFFF` | `#181B23` |
 | Surface douce | `#F2F4FA` | `#232733` |

@@ -12,11 +12,14 @@ public interface IFavoriService
     Task<List<AnnonceDto>> GetFavorisAsync();
 
     /// <summary>Ajoute une annonce aux favoris (API + SQLite).</summary>
-    Task<bool> AddFavoriAsync(string annonceId);
+    Task<bool> AddFavoriAsync(string annonceId, AnnonceDto? annonce = null);
 
     /// <summary>Retire une annonce des favoris (API + SQLite).</summary>
     Task<bool> RemoveFavoriAsync(string annonceId);
 
     /// <summary>Vérifie si une annonce est dans les favoris (cache local).</summary>
     Task<bool> IsFavoriAsync(string annonceId);
+
+    /// <summary>Rafraîchit le cache local depuis l'API.</summary>
+    Task SynchroniserFavorisAsync();
 }

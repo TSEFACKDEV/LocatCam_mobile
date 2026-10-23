@@ -14,7 +14,14 @@ namespace LocatCam_mobile.Services;
 /// </summary>
 public static class NavigationShell
 {
-    private static string _retour = "HomePage";
+    private static readonly Stack<string> _historique = new();
+
+    /// <summary>
+    /// Notifie les pages qu'une route vient d'être affichée. Les pages Shell
+    /// restent en mémoire : OnAppearing n'est donc pas toujours rejoué et une
+    /// page comme la messagerie doit pouvoir se resynchroniser explicitement.
+    /// </summary>
+    public static event Action<string>? PageAffichee;
 
     /// <summary>Route de la page actuellement affichée (ou chaîne vide).</summary>
     public static string RouteCourante
@@ -50,6 +57,18 @@ public static class NavigationShell
     /// </summary>
     public static bool AllerVers(string route)
     {
+        var ok = Naviguer(route);
+
+        // Navigation directe (onglet, connexion, démarrage) : la pile de
+        // retour précédente n'a plus de sens.
+        if (ok)
+            _historique.Clear();
+
+        return ok;
+    }
+
+    private static bool Naviguer(string route)
+    {
         var shell = Shell.Current;
         if (shell == null || string.IsNullOrWhiteSpace(route))
             return false;
@@ -65,6 +84,7 @@ public static class NavigationShell
                         section.CurrentItem = content;
                         item.CurrentItem = section;
                         shell.CurrentItem = item;
+                        PageAffichee?.Invoke(route);
                         return true;
                     }
                 }
@@ -73,40 +93,45 @@ public static class NavigationShell
 
         // Repli : route absolue à trois slashs (///Route pour un ShellContent racine).
         _ = shell.GoToAsync("///" + route);
+        PageAffichee?.Invoke(route);
         return false;
     }
 
-    /// <summary>Va vers une page en mémorisant la page courante (bouton Retour).</summary>
+    /// <summary>Va vers une page en empilant la page d'origine pour le retour.</summary>
     public static void AllerVersAvecRetour(string route, string? origine = null)
     {
-        if (!string.IsNullOrWhiteSpace(origine))
+        var precedent = !string.IsNullOrWhiteSpace(origine) ? origine : RouteCourante;
+
+        if (!string.IsNullOrWhiteSpace(precedent) &&
+            !string.Equals(precedent, route, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(precedent, "StartupPage", StringComparison.OrdinalIgnoreCase))
         {
-            _retour = origine;
-        }
-        else
-        {
-            var courante = RouteCourante;
-            if (!string.IsNullOrEmpty(courante) &&
-                !string.Equals(courante, route, StringComparison.OrdinalIgnoreCase))
-            {
-                _retour = courante;
-            }
+            _historique.Push(precedent);
         }
 
-        AllerVers(route);
+        Naviguer(route);
     }
 
-    /// <summary>Revient à la page précédente mémorisée (accueil par défaut).</summary>
+    /// <summary>Revient à la page précédente (accueil par défaut).</summary>
     public static void Revenir()
     {
-        // StartupPage ne doit jamais être une destination « retour » : elle ne
-        // rejoue pas sa logique quand on revient dessus.
-        if (string.IsNullOrWhiteSpace(_retour) ||
-            string.Equals(_retour, "StartupPage", StringComparison.OrdinalIgnoreCase))
+        while (_historique.Count > 0)
         {
-            _retour = "HomePage";
+            var precedent = _historique.Pop();
+
+            // StartupPage ne doit jamais être une destination « retour » : elle
+            // ne rejoue pas sa logique quand on revient dessus.
+            if (string.IsNullOrWhiteSpace(precedent) ||
+                string.Equals(precedent, "StartupPage", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(precedent, RouteCourante, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (Naviguer(precedent))
+                return;
         }
 
-        AllerVers(_retour);
+        Naviguer("HomePage");
     }
 }

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using LocatCam_mobile.Models;
 using LocatCam_mobile.Services.Interfaces;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace LocatCam_mobile.ViewModels;
 
@@ -30,6 +31,14 @@ public partial class HomeViewModel : ObservableObject
 
     [ObservableProperty]
     private string _recherche = string.Empty;
+
+    /// <summary>Prix minimum (budget) saisi par l'utilisateur.</summary>
+    [ObservableProperty]
+    private string _prixMinTexte = string.Empty;
+
+    /// <summary>Prix maximum (budget) saisi par l'utilisateur.</summary>
+    [ObservableProperty]
+    private string _prixMaxTexte = string.Empty;
 
     /// <summary>Type d'annonce actif (null = tous).</summary>
     [ObservableProperty]
@@ -88,9 +97,27 @@ public partial class HomeViewModel : ObservableObject
         {
             var recherche = (Recherche ?? string.Empty).Trim();
 
+            // --- Filtres prix (budget) ---
+            decimal? prixMin = null;
+            decimal? prixMax = null;
+            if (!string.IsNullOrWhiteSpace(PrixMinTexte))
+            {
+                var net = PrixMinTexte.Replace("\u00A0", string.Empty).Replace(" ", string.Empty).Trim();
+                if (decimal.TryParse(net, NumberStyles.Number, CultureInfo.InvariantCulture, out var pmin))
+                    prixMin = pmin;
+            }
+            if (!string.IsNullOrWhiteSpace(PrixMaxTexte))
+            {
+                var net = PrixMaxTexte.Replace("\u00A0", string.Empty).Replace(" ", string.Empty).Trim();
+                if (decimal.TryParse(net, NumberStyles.Number, CultureInfo.InvariantCulture, out var pmax))
+                    prixMax = pmax;
+            }
+
             var (items, totalCount) = await _annonceService.GetAnnoncesAsync(
                 page: _page,
                 pageSize: PageSize,
+                prixMin: prixMin,
+                prixMax: prixMax,
                 ville: string.IsNullOrWhiteSpace(recherche) ? null : recherche,
                 type: TypeFiltre,
                 estMeuble: MeubleFiltre);
@@ -102,6 +129,8 @@ public partial class HomeViewModel : ObservableObject
                 (items, totalCount) = await _annonceService.GetAnnoncesAsync(
                     page: _page,
                     pageSize: PageSize,
+                    prixMin: prixMin,
+                    prixMax: prixMax,
                     quartier: recherche,
                     type: TypeFiltre,
                     estMeuble: MeubleFiltre);

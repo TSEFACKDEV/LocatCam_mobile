@@ -31,6 +31,13 @@ public partial class DetailAnnoncePage : ContentPage
 	private void OnRetourClicked(object sender, TappedEventArgs e)
 		=> NavigationShell.Revenir();
 
+	/// <summary>Bouton retour Android : revient à la page d'origine.</summary>
+	protected override bool OnBackButtonPressed()
+	{
+		NavigationShell.Revenir();
+		return true;
+	}
+
 	/// <summary>Ouvre la messagerie pour contacter le bailleur.</summary>
 	private void OnContacterClicked(object sender, EventArgs e)
 	{

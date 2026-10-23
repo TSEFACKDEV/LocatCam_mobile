@@ -18,4 +18,7 @@ public interface IMessageService
 
     /// <summary>Marque un message comme lu.</summary>
     Task<bool> MarkAsReadAsync(string messageId);
+
+    /// <summary>Marque comme lus tous les messages reçus d'un utilisateur.</summary>
+    Task<bool> MarkConversationAsReadAsync(string autreUserId);
 }

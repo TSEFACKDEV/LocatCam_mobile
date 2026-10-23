@@ -47,6 +47,9 @@ public partial class DetailAnnonceViewModel : ObservableObject
 
             if (Annonce != null)
             {
+                // Synchroniser le cache local avec le serveur : le cœur doit
+                // refléter l'état réel même après réinstallation de l'app.
+                await _favoriService.SynchroniserFavorisAsync();
                 EstFavori = await _favoriService.IsFavoriAsync(Annonce.Id.ToString());
             }
         }
@@ -77,7 +80,7 @@ public partial class DetailAnnonceViewModel : ObservableObject
             }
             else
             {
-                succes = await _favoriService.AddFavoriAsync(Annonce.Id.ToString());
+                succes = await _favoriService.AddFavoriAsync(Annonce.Id.ToString(), Annonce);
             }
 
             if (succes)

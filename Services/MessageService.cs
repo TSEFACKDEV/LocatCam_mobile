@@ -28,7 +28,8 @@ public class MessageService : IMessageService
                 return new List<ConversationDto>();
 
             // L'API renvoie les messages à plat : on reconstruit les conversations
-            // côté mobile (une conversation par correspondant).
+            // côté mobile (une conversation par correspondant). Les noms et le
+            // titre de l'annonce sont désormais fournis par l'API.
             var messages = response.Content;
             var moi = await _authService.GetCurrentUserAsync();
             if (moi == null)
@@ -40,31 +41,20 @@ public class MessageService : IMessageService
                          m.ExpediteurId == moi.Id ? m.DestinataireId : m.ExpediteurId))
             {
                 var dernier = groupe.OrderByDescending(m => m.DateEnvoi).First();
+                var jeSuisExpediteur = dernier.ExpediteurId == moi.Id;
 
-                var conversation = new ConversationDto
+                var nom = jeSuisExpediteur ? dernier.DestinataireNom : dernier.ExpediteurNom;
+
+                conversations.Add(new ConversationDto
                 {
                     UtilisateurId = groupe.Key,
+                    UtilisateurNom = string.IsNullOrWhiteSpace(nom) ? "Contact" : nom,
                     AnnonceId = dernier.AnnonceId,
+                    AnnonceTitre = dernier.AnnonceTitre ?? string.Empty,
                     DernierMessage = dernier.Contenu,
                     DateDernierMessage = dernier.DateEnvoi,
                     MessagesNonLus = groupe.Count(m => m.DestinataireId == moi.Id && !m.Lu)
-                };
-
-                // Compléter avec le titre de l'annonce et le nom du bailleur.
-                var annonce = await _apiClient.GetAnnonceById(dernier.AnnonceId.ToString());
-                if (annonce.IsSuccessStatusCode && annonce.Content != null)
-                {
-                    conversation.AnnonceTitre = annonce.Content.Titre;
-                    conversation.UtilisateurNom = annonce.Content.UserId == groupe.Key
-                        ? (annonce.Content.NomBailleur ?? "Bailleur")
-                        : "Étudiant";
-                }
-                else
-                {
-                    conversation.UtilisateurNom = "Contact";
-                }
-
-                conversations.Add(conversation);
+                });
             }
 
             return conversations
@@ -134,6 +124,25 @@ public class MessageService : IMessageService
         try
         {
             var response = await _apiClient.MarkAsRead(messageId);
+            return response.IsSuccessStatusCode;
+        }
+        catch (ApiException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[MessageService] Erreur API {ex.StatusCode}: {ex.Message}");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[MessageService] Erreur inattendue: {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task<bool> MarkConversationAsReadAsync(string autreUserId)
+    {
+        try
+        {
+            var response = await _apiClient.MarkConversationAsRead(autreUserId);
             return response.IsSuccessStatusCode;
         }
         catch (ApiException ex)

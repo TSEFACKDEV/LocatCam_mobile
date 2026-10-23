@@ -1,4 +1,5 @@
 using LocatCam_mobile.Models;
+using SQLite;
 
 namespace LocatCam_mobile.Services.Interfaces;
 
@@ -16,6 +17,9 @@ public interface ILocalDbService
     Task AjouterFavoriLocalAsync(string annonceId, AnnonceDto annonce);
     Task RetirerFavoriLocalAsync(string annonceId);
 
+    /// <summary>Aligne le cache local sur la liste de favoris renvoyée par l'API.</summary>
+    Task SynchroniserFavorisLocauxAsync(IEnumerable<AnnonceDto> annonces);
+
     // --- Recherches récentes ---
     Task<List<RechercheRecente>> GetRecherchesRecentesAsync();
     Task AjouterRechercheRecenteAsync(string query, int nbResultats);
@@ -27,9 +31,14 @@ public interface ILocalDbService
 /// </summary>
 public class FavoriLocal
 {
-    public int Id { get; set; }
+    /// <summary>Identifiant de l'annonce : clé primaire du cache local.</summary>
+    [PrimaryKey]
     public string AnnonceId { get; set; } = string.Empty;
+
     public DateTime DateAjout { get; set; } = DateTime.UtcNow;
+
+    /// <summary>Annonce complète sérialisée pour l'affichage hors-ligne.</summary>
+    public string? AnnonceJson { get; set; }
 }
 
 /// <summary>

@@ -8,7 +8,7 @@ using System.Linq;
 namespace LocatCam_mobile.ViewModels;
 
 /// <summary>
-/// ViewModel de la messagerie in-app (Phase F).
+/// ViewModel de la messagerie in-app.
 /// Affiche la liste des conversations et permet d'échanger des messages
 /// avec le destinataire d'une annonce (POST /api/messages).
 /// </summary>
@@ -16,6 +16,8 @@ public partial class MessagerieViewModel : ObservableObject
 {
     private readonly IMessageService _messageService;
     private readonly IAuthService _authService;
+
+    private bool _chargementMessagesEnCours;
 
     public MessagerieViewModel(IMessageService messageService, IAuthService authService)
     {
@@ -52,6 +54,9 @@ public partial class MessagerieViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoadingMessages;
 
+    [ObservableProperty]
+    private string _messageErreur = string.Empty;
+
     /// <summary>ID de l'annonce concernée par la conversation courante.</summary>
     public Guid AnnonceIdCourante => ConversationSelectionnee?.AnnonceId ?? Guid.Empty;
 
@@ -68,12 +73,14 @@ public partial class MessagerieViewModel : ObservableObject
     [RelayCommand]
     public async Task ChargerConversationsAsync()
     {
+        if (IsLoadingConversations) return;
+
         IsLoadingConversations = true;
+        var selectionPrecedente = ConversationSelectionnee?.UtilisateurId;
+
         try
         {
-            var liste = await _messageService.GetConversationsAsync();
-            Conversations = new ObservableCollection<ConversationDto>(liste ?? new List<ConversationDto>());
-            OnPropertyChanged(nameof(TotalNonLus));
+            var liste = await _messageService.GetConversationsAsync() ?? new List<ConversationDto>();
 
             // Conversation demandée depuis « Contacter le bailleur ».
             var demandee = Services.ConversationSelection.Conversation;
@@ -81,18 +88,37 @@ public partial class MessagerieViewModel : ObservableObject
             {
                 Services.ConversationSelection.Conversation = null;
 
-                var existante = Conversations.FirstOrDefault(c => c.UtilisateurId == demandee.UtilisateurId);
+                var existante = liste.FirstOrDefault(c => c.UtilisateurId == demandee.UtilisateurId);
                 if (existante == null)
                 {
-                    Conversations.Insert(0, demandee);
-                    existante = demandee;
+                    liste.Insert(0, demandee);
+                    selectionPrecedente = demandee.UtilisateurId;
                 }
+                else if (selectionPrecedente == null)
+                {
+                    selectionPrecedente = existante.UtilisateurId;
+                }
+            }
 
-                ConversationSelectionnee = existante;
+            Conversations.Clear();
+            foreach (var conversation in liste.OrderByDescending(c => c.DateDernierMessage))
+                Conversations.Add(conversation);
+
+            OnPropertyChanged(nameof(TotalNonLus));
+
+            // Conserver la conversation ouverte après un rafraîchissement.
+            if (selectionPrecedente.HasValue)
+            {
+                var aRouvrir = Conversations.FirstOrDefault(c => c.UtilisateurId == selectionPrecedente.Value);
+                if (aRouvrir != null && !ReferenceEquals(aRouvrir, ConversationSelectionnee))
+                    ConversationSelectionnee = aRouvrir;
+                else if (aRouvrir == null)
+                    ConversationSelectionnee = null;
             }
         }
         catch (Exception ex)
         {
+            MessageErreur = "Impossible de charger les conversations.";
             System.Diagnostics.Debug.WriteLine($"[MessagerieViewModel] Erreur conversations: {ex.Message}");
         }
         finally
@@ -107,11 +133,16 @@ public partial class MessagerieViewModel : ObservableObject
 
     partial void OnConversationSelectionneeChanged(ConversationDto? value)
     {
-        if (value == null) return;
-
         OnPropertyChanged(nameof(ConversationOuverte));
         OnPropertyChanged(nameof(AnnonceIdCourante));
         OnPropertyChanged(nameof(DestinataireIdCourant));
+        OnPropertyChanged(nameof(TotalNonLus));
+
+        if (value == null)
+        {
+            Messages.Clear();
+            return;
+        }
 
         _ = ChargerMessagesAsync();
     }
@@ -119,25 +150,65 @@ public partial class MessagerieViewModel : ObservableObject
     [RelayCommand]
     private async Task ChargerMessagesAsync()
     {
-        if (ConversationSelectionnee == null) return;
+        if (ConversationSelectionnee == null || _chargementMessagesEnCours) return;
 
+        _chargementMessagesEnCours = true;
         IsLoadingMessages = true;
-        Messages.Clear();
+        MessageErreur = string.Empty;
+
+        var destinataire = DestinataireIdCourant;
+        var messages = new List<MessageDto>();
 
         try
         {
-            var historique = await _messageService.GetConversationAsync(DestinataireIdCourant.ToString());
-            foreach (var m in historique ?? new List<MessageDto>())
+            messages = await _messageService.GetConversationAsync(destinataire.ToString())
+                       ?? new List<MessageDto>();
+
+            Messages.Clear();
+            foreach (var m in messages.OrderBy(m => m.DateEnvoi))
+            {
+                m.EstMoi = m.ExpediteurId == CurrentUserId;
                 Messages.Add(m);
+            }
+
+            // Accusés de lecture : l'utilisateur vient d'ouvrir la conversation.
+            if (messages.Any(m => m.DestinataireId == CurrentUserId && !m.Lu))
+            {
+                var marque = await _messageService.MarkConversationAsReadAsync(destinataire.ToString());
+                if (marque)
+                {
+                    foreach (var m in Messages.Where(m => m.DestinataireId == CurrentUserId))
+                        m.Lu = true;
+
+                    if (ConversationSelectionnee != null)
+                        ConversationSelectionnee.MessagesNonLus = 0;
+                    OnPropertyChanged(nameof(TotalNonLus));
+                }
+            }
         }
         catch (Exception ex)
         {
+            MessageErreur = "Impossible de charger les messages.";
             System.Diagnostics.Debug.WriteLine($"[MessagerieViewModel] Erreur messages: {ex.Message}");
         }
         finally
         {
             IsLoadingMessages = false;
+            _chargementMessagesEnCours = false;
         }
+    }
+
+    /// <summary>Identifiant de l'utilisateur connecté (mis en cache).</summary>
+    private Guid CurrentUserId { get; set; }
+
+    /// <summary>
+    /// Prépare le ViewModel : identifie l'utilisateur puis charge les conversations.
+    /// </summary>
+    public async Task InitialiserAsync()
+    {
+        var moi = await _authService.GetCurrentUserAsync();
+        CurrentUserId = moi?.Id ?? Guid.Empty;
+        await ChargerConversationsAsync();
     }
 
     // ------------------------------------------------------------------
@@ -148,9 +219,12 @@ public partial class MessagerieViewModel : ObservableObject
     private async Task EnvoyerMessageAsync()
     {
         if (ConversationSelectionnee == null) return;
-        if (string.IsNullOrWhiteSpace(ContenuNouveauMessage)) return;
+
+        var contenu = ContenuNouveauMessage?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(contenu)) return;
 
         IsLoadingMessages = true;
+        MessageErreur = string.Empty;
 
         try
         {
@@ -158,22 +232,36 @@ public partial class MessagerieViewModel : ObservableObject
             {
                 AnnonceId = AnnonceIdCourante,
                 DestinataireId = DestinataireIdCourant,
-                Contenu = ContenuNouveauMessage.Trim()
+                Contenu = contenu
             };
 
-            var envoie = await _messageService.SendMessageAsync(dto);
+            var envoye = await _messageService.SendMessageAsync(dto);
 
-            if (envoie != null)
+            if (envoye == null)
             {
-                Messages.Add(envoie);
-                ContenuNouveauMessage = string.Empty;
-
-                // Rafraîchir la liste des conversations (compteur non lus)
-                await ChargerConversationsAsync();
+                MessageErreur = "Le message n'a pas pu être envoyé. Vérifiez votre connexion.";
+                return;
             }
+
+            envoye.EstMoi = true;
+            Messages.Add(envoye);
+            ContenuNouveauMessage = string.Empty;
+
+            // Mettre à jour la conversation ouverte sans recharger toute la liste
+            // (un rechargement faisait perdre la sélection et refermait le chat).
+            ConversationSelectionnee.DernierMessage = envoye.Contenu;
+            ConversationSelectionnee.DateDernierMessage = envoye.DateEnvoi;
+            ConversationSelectionnee.MessagesNonLus = 0;
+
+            var item = Conversations.FirstOrDefault(c => c.UtilisateurId == ConversationSelectionnee.UtilisateurId);
+            if (item != null && !ReferenceEquals(item, ConversationSelectionnee))
+                Conversations.Remove(item);
+
+            OnPropertyChanged(nameof(TotalNonLus));
         }
         catch (Exception ex)
         {
+            MessageErreur = "Erreur lors de l'envoi du message.";
             System.Diagnostics.Debug.WriteLine($"[MessagerieViewModel] Erreur envoi: {ex.Message}");
         }
         finally
@@ -189,5 +277,6 @@ public partial class MessagerieViewModel : ObservableObject
         ConversationSelectionnee = null;
         Messages.Clear();
         ContenuNouveauMessage = string.Empty;
+        MessageErreur = string.Empty;
     }
 }

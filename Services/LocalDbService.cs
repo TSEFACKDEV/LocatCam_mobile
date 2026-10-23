@@ -1,6 +1,7 @@
 using LocatCam_mobile.Models;
 using LocatCam_mobile.Services.Interfaces;
 using SQLite;
+using System.Text.Json;
 
 namespace LocatCam_mobile.Services;
 
@@ -46,13 +47,60 @@ public class LocalDbService : ILocalDbService, IDisposable
         await _db.InsertAsync(new FavoriLocal
         {
             AnnonceId = annonceId,
-            DateAjout = DateTime.UtcNow
+            DateAjout = DateTime.UtcNow,
+            AnnonceJson = JsonSerializer.Serialize(annonce)
         });
     }
 
     public async Task RetirerFavoriLocalAsync(string annonceId)
     {
         await _db.ExecuteAsync("DELETE FROM FavoriLocal WHERE AnnonceId = ?", annonceId);
+    }
+
+    /// <inheritdoc/>
+    public async Task SynchroniserFavorisLocauxAsync(IEnumerable<AnnonceDto> annonces)
+    {
+        var liste = annonces
+            .Where(a => a.Id != Guid.Empty)
+            .GroupBy(a => a.Id.ToString())
+            .Select(g => g.First())
+            .ToList();
+
+        var idsServeur = liste.Select(a => a.Id.ToString()).ToHashSet();
+        var locaux = await _db.Table<FavoriLocal>().ToListAsync();
+
+        // Retirer du cache les favoris supprimés côté serveur. On utilise du
+        // SQL explicite pour rester compatible avec les bases créées avant
+        // l'ajout de la clé primaire sur AnnonceId.
+        foreach (var local in locaux.Where(l => !idsServeur.Contains(l.AnnonceId)))
+        {
+            await _db.ExecuteAsync(
+                "DELETE FROM FavoriLocal WHERE AnnonceId = ?", local.AnnonceId);
+        }
+
+        // Ajouter / rafraîchir les favoris du serveur.
+        foreach (var annonce in liste)
+        {
+            var id = annonce.Id.ToString();
+            var json = JsonSerializer.Serialize(annonce);
+            var existant = locaux.FirstOrDefault(l => l.AnnonceId == id);
+
+            if (existant == null)
+            {
+                await _db.InsertAsync(new FavoriLocal
+                {
+                    AnnonceId = id,
+                    DateAjout = DateTime.UtcNow,
+                    AnnonceJson = json
+                });
+            }
+            else
+            {
+                await _db.ExecuteAsync(
+                    "UPDATE FavoriLocal SET AnnonceJson = ? WHERE AnnonceId = ?",
+                    json, id);
+            }
+        }
     }
 
     // --- Recherches récentes ---

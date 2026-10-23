@@ -47,59 +47,79 @@
         <Grid ColumnDefinitions="*,*,*,*,*">
 
             <!-- ============ ACCUEIL ============ -->
-            <VerticalStackLayout Grid.Column="0" AutomationId="HomePage" Spacing="3" HorizontalOptions="Fill">
-                <VerticalStackLayout.GestureRecognizers>
+            <Grid Grid.Column="0" AutomationId="HomePage" InputTransparent="False">
+                <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="HomePage" />
-                </VerticalStackLayout.GestureRecognizers>
-                <Frame x:Name="PillAccueil" Style="{StaticResource NavPill}">
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Frame Grid.Row="0" x:Name="PillAccueil" Style="{StaticResource NavPill}" InputTransparent="True">
                     <Label x:Name="IconeAccueil" Text="&#xf015;" Style="{StaticResource NavIcone}" />
                 </Frame>
-                <Label x:Name="LabelAccueil" Text="Accueil" Style="{StaticResource NavLabel}" />
-            </VerticalStackLayout>
+                <Label Grid.Row="1" x:Name="LabelAccueil" Text="Accueil" Style="{StaticResource NavLabel}" InputTransparent="True" />
+            </Grid>
 
             <!-- ============ CARTE ============ -->
-            <VerticalStackLayout Grid.Column="1" AutomationId="CartePage" Spacing="3" HorizontalOptions="Fill">
-                <VerticalStackLayout.GestureRecognizers>
+            <Grid Grid.Column="1" AutomationId="CartePage" InputTransparent="False">
+                <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="CartePage" />
-                </VerticalStackLayout.GestureRecognizers>
-                <Frame x:Name="PillCarte" Style="{StaticResource NavPill}">
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Frame Grid.Row="0" x:Name="PillCarte" Style="{StaticResource NavPill}" InputTransparent="True">
                     <Label x:Name="IconeCarte" Text="&#xf279;" Style="{StaticResource NavIcone}" />
                 </Frame>
-                <Label x:Name="LabelCarte" Text="Carte" Style="{StaticResource NavLabel}" />
-            </VerticalStackLayout>
+                <Label Grid.Row="1" x:Name="LabelCarte" Text="Carte" Style="{StaticResource NavLabel}" InputTransparent="True" />
+            </Grid>
 
             <!-- ============ FAVORIS ============ -->
-            <VerticalStackLayout Grid.Column="2" AutomationId="FavorisPage" Spacing="3" HorizontalOptions="Fill">
-                <VerticalStackLayout.GestureRecognizers>
+            <Grid Grid.Column="2" AutomationId="FavorisPage" InputTransparent="False">
+                <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="FavorisPage" />
-                </VerticalStackLayout.GestureRecognizers>
-                <Frame x:Name="PillFavoris" Style="{StaticResource NavPill}">
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Frame Grid.Row="0" x:Name="PillFavoris" Style="{StaticResource NavPill}" InputTransparent="True">
                     <Label x:Name="IconeFavoris" Text="&#xf004;" Style="{StaticResource NavIcone}" />
                 </Frame>
-                <Label x:Name="LabelFavoris" Text="Favoris" Style="{StaticResource NavLabel}" />
-            </VerticalStackLayout>
+                <Label Grid.Row="1" x:Name="LabelFavoris" Text="Favoris" Style="{StaticResource NavLabel}" InputTransparent="True" />
+            </Grid>
 
             <!-- ============ PUBLIER ============ -->
-            <VerticalStackLayout Grid.Column="3" AutomationId="PublierPage" Spacing="3" HorizontalOptions="Fill">
-                <VerticalStackLayout.GestureRecognizers>
+            <Grid Grid.Column="3" AutomationId="PublierPage" InputTransparent="False">
+                <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="PublierPage" />
-                </VerticalStackLayout.GestureRecognizers>
-                <Frame x:Name="PillPublier" Style="{StaticResource NavPill}">
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Frame Grid.Row="0" x:Name="PillPublier" Style="{StaticResource NavPill}" InputTransparent="True">
                     <Label x:Name="IconePublier" Text="&#xf067;" Style="{StaticResource NavIcone}" />
                 </Frame>
-                <Label x:Name="LabelPublier" Text="Publier" Style="{StaticResource NavLabel}" />
-            </VerticalStackLayout>
+                <Label Grid.Row="1" x:Name="LabelPublier" Text="Publier" Style="{StaticResource NavLabel}" InputTransparent="True" />
+            </Grid>
 
             <!-- ============ PROFIL ============ -->
-            <VerticalStackLayout Grid.Column="4" AutomationId="ProfilPage" Spacing="3" HorizontalOptions="Fill">
-                <VerticalStackLayout.GestureRecognizers>
+            <Grid Grid.Column="4" AutomationId="ProfilPage" InputTransparent="False">
+                <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="ProfilPage" />
-                </VerticalStackLayout.GestureRecognizers>
-                <Frame x:Name="PillProfil" Style="{StaticResource NavPill}">
+                </Grid.GestureRecognizers>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Frame Grid.Row="0" x:Name="PillProfil" Style="{StaticResource NavPill}" InputTransparent="True">
                     <Label x:Name="IconeProfil" Text="&#xf007;" Style="{StaticResource NavIcone}" />
                 </Frame>
-                <Label x:Name="LabelProfil" Text="Profil" Style="{StaticResource NavLabel}" />
-            </VerticalStackLayout>
+                <Label Grid.Row="1" x:Name="LabelProfil" Text="Profil" Style="{StaticResource NavLabel}" InputTransparent="True" />
+            </Grid>
 
         </Grid>
     </Frame>

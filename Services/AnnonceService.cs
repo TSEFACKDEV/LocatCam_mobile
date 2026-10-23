@@ -1,6 +1,7 @@
 using LocatCam_mobile.Models;
 using LocatCam_mobile.Services.Interfaces;
 using Refit;
+using System.Collections.Generic;
 
 namespace LocatCam_mobile.Services;
 
@@ -155,6 +156,41 @@ public class AnnonceService : IAnnonceService
         {
             System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur inattendue: {ex.Message}");
             return false;
+        }
+    }
+
+    public async Task<bool> AddPhotosAsync(string annonceId, List<PhotoCreateDto> photos)
+    {
+        try
+        {
+            var response = await _apiClient.AddPhotos(annonceId, photos);
+            return response.IsSuccessStatusCode;
+        }
+        catch (ApiException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur API {ex.StatusCode}: {ex.Message}");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur inattendue: {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task<PhotoSignatureDto?> GetSignatureAsync()
+    {
+        try
+        {
+            var response = await _apiClient.GetSignature();
+            if (!response.IsSuccessStatusCode || response.Content == null)
+                return null;
+            return response.Content;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur signature: {ex.Message}");
+            return null;
         }
     }
 

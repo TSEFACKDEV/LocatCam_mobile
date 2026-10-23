@@ -12,6 +12,17 @@ public partial class HomePage : ContentPage
 		var services = App.ServiceProvider;
 		var vm = services?.GetRequiredService<ViewModels.HomeViewModel>();
 		BindingContext = vm;
+
+		NavigationShell.PageAffichee += OnPageAffichee;
+	}
+
+	private async void OnPageAffichee(string route)
+	{
+		if (string.Equals(route, "HomePage", StringComparison.OrdinalIgnoreCase) &&
+			BindingContext is ViewModels.HomeViewModel vm)
+		{
+			await vm.InitialiserAsync();
+		}
 	}
 
 	protected override async void OnAppearing()
@@ -32,6 +43,10 @@ public partial class HomePage : ContentPage
 		if (sender is Controls.AnnonceCard card && card.BindingContext is AnnonceDto annonce)
 			OuvrirDetail(annonce);
 	}
+
+	/// <summary>Ouvre la messagerie depuis l'icône de l'en-tête.</summary>
+	private void OnMessagesClicked(object sender, TappedEventArgs e)
+		=> NavigationShell.AllerVersAvecRetour("MessageriePage", "HomePage");
 
 	private static void OuvrirDetail(AnnonceDto annonce)
 	{

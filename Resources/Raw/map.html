@@ -3,16 +3,71 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<title>LocatCam — Carte</title>
+	<title>LocatCam — Carte interactive</title>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
 	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 	<style>
 		html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; }
 		#map { height: 100vh; width: 100vw; }
-		.leaflet-popup-content-wrapper { font-family: sans-serif; }
-		.leaflet-popup-content { margin: 8px; font-size: 13px; line-height: 1.4; }
-		.leaflet-popup-content strong { display: block; margin-bottom: 4px; font-size: 14px; }
+		.leaflet-popup-content-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+		.leaflet-popup-content { margin: 10px; font-size: 13px; line-height: 1.4; }
+		.leaflet-popup-content strong { display: block; margin-bottom: 6px; font-size: 15px; }
+
+		/* Marqueur utilisateur : point bleu avec halo pulsant */
+		.user-marker {
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			background: #1565C0;
+			border: 4px solid rgba(21, 101, 192, 0.35);
+			box-shadow: 0 0 12px rgba(21, 101, 192, 0.6);
+			position: relative;
+		}
+		.user-marker::after {
+			content: "";
+			position: absolute;
+			top: 50%; left: 50%;
+			width: 40px; height: 40px;
+			margin-top: -20px; margin-left: -20px;
+			border-radius: 50%;
+			background: rgba(21, 101, 192, 0.15);
+			animation: locatcam-pulse 2.5s infinite;
+			z-index: -1;
+		}
+		@keyframes locatcam-pulse {
+			0% { transform: scale(0.85); opacity: 0.7; }
+			70% { transform: scale(1.35); opacity: 0; }
+			100% { transform: scale(0.85); opacity: 0.7; }
+		}
+
+		/* Cercle de rayon autour de l'utilisateur */
+		.user-radius-circle {
+			fill: rgba(21, 101, 192, 0.12);
+			stroke: #1565C0;
+			stroke-width: 2;
+			stroke-dasharray: 8 6;
+			stroke-opacity: 0.7;
+			fill-opacity: 0.12;
+		}
+
+		/* Badge distance dans le popup */
+		.dist-badge {
+			display: inline-block;
+			margin-top: 6px;
+			padding: 4px 10px;
+			border-radius: 20px;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: 0.3px;
+		}
+		.dist-close { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+		.dist-mid { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+		.dist-far { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+		.annonce-marker-close { background-color: #28a745; }
+		.annonce-marker-mid { background-color: #ffc107; }
+		.annonce-marker-far { background-color: #dc3545; }
 	</style>
 </head>
 <body>
@@ -20,20 +75,118 @@
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 	<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 	<script>
-		var map = L.map('map', { zoomControl: true, touchZoom: true, scrollWheelZoom: false });
+		var map = L.map('map', {
+			zoomControl: true,
+			touchZoom: true,
+			scrollWheelZoom: false,
+			zoomSnap: 0.5
+		});
 
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			attribution: '&copy; OpenStreetMap contributors',
 			maxZoom: 19
 		}).addTo(map);
 
+		// Couches
 		var markersLayer = L.markerClusterGroup({
 			spiderfyOnMaxZoom: false,
 			showCoverageOnHover: false,
 			zoomToBoundsOnClick: true,
-			maxClusterRadius: 50
+			maxClusterRadius: 55
 		});
 		map.addLayer(markersLayer);
+
+		var userMarker = null;
+		var userCircle = null;
+		var userLatLng = null;
+		var currentRadiusMeters = 2000; // rayon par défaut 2 km
+
+		// --- API appelée depuis le C# (ma connexion) ---
+		window.setUserPosition = function (lat, lng) {
+			userLatLng = L.latLng(lat, lng);
+
+			if (userMarker) {
+				userMarker.setLatLng(userLatLng);
+			} else {
+				var icon = L.divIcon({
+					className: 'user-marker',
+					iconSize: [28, 28],
+					iconAnchor: [14, 14]
+				});
+				userMarker = L.marker(userLatLng, { icon: icon, interactive: false, title: 'Vous êtes ici' });
+				userMarker.addTo(map);
+			}
+
+			if (userCircle) {
+				map.removeLayer(userCircle);
+			}
+			userCircle = L.circle(userLatLng, {
+				radius: currentRadiusMeters,
+				className: 'user-radius-circle'
+			}).addTo(map);
+
+			// Recentrer sur l'utilisateur au premier placement
+			if (!window.__userCentered) {
+				map.setView(userLatLng, 14);
+				window.__userCentered = true;
+			}
+
+			map.invalidateSize();
+		};
+
+		window.setUserRadius = function (meters) {
+			currentRadiusMeters = meters;
+			if (userCircle && userLatLng) {
+				map.removeLayer(userCircle);
+				userCircle = L.circle(userLatLng, {
+					radius: currentRadiusMeters,
+					className: 'user-radius-circle'
+				}).addTo(map);
+			}
+		};
+
+		window.centerOnUser = function () {
+			if (userLatLng) {
+				map.setView(userLatLng, 14);
+			}
+		};
+
+		function distanceToUser(lat, lng) {
+			if (!userLatLng) return null;
+			var R = 6371000; // mètres
+			var rad = Math.PI / 180;
+			var dLat = (lat - userLatLng.lat) * rad;
+			var dLng = (lng - userLatLng.lng) * rad;
+			var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				Math.cos(userLatLng.lat * rad) * Math.cos(lat * rad) *
+				Math.sin(dLng/2) * Math.sin(dLng/2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+			return R * c; // mètres
+		}
+
+		function distClass(meters) {
+			if (meters <= 800) return 'dist-close';
+			if (meters <= 2500) return 'dist-mid';
+			return 'dist-far';
+		}
+
+		function markerClass(meters) {
+			if (meters <= 800) return 'annonce-marker-close';
+			if (meters <= 2500) return 'annonce-marker-mid';
+			return 'annonce-marker-far';
+		}
+
+		function markerColor(meters) {
+			if (!meters) return '#6c757d';
+			if (meters <= 800) return '#28a745';
+			if (meters <= 2500) return '#ffc107';
+			return '#dc3545';
+		}
+
+		function formatDist(m) {
+			if (m < 1000) return Math.round(m) + ' m';
+			return (m / 1000).toFixed(1) + ' km';
+		}
 
 		window.clearMarkers = function () {
 			markersLayer.clearLayers();
@@ -48,24 +201,34 @@
 			}
 			annonces.forEach(function (a) {
 				if (!a.latitude || !a.longitude) return;
-				var marker = L.marker([a.latitude, a.longitude], { title: a.titre || '' });
+
+				var dist = distanceToUser(a.latitude, a.longitude);
+				var dClass = dist ? distClass(dist) : 'dist-mid';
+				var mClass = dist ? markerClass(dist) : '';
+
+				var marker = L.marker([a.latitude, a.longitude], {
+					title: a.titre || '',
+					icon: L.divIcon({
+						className: 'annonce-marker',
+						html: '<div style="width:14px;height:14px;border-radius:50%;background:' + markerColor(dist) + ';border:2px solid #fff;margin:1px;box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>',
+						iconSize: [26, 26],
+						iconAnchor: [13, 26]
+					})
+				});
 				marker.annonceId = a.id;
+				var distHtml = dist ? '<span class="dist-badge ' + dClass + '">À ' + formatDist(dist) + ' de vous</span>' : '';
 				var popup = L.popup({ className: 'locatcam-popup' })
 					.setContent('<strong>' + (a.titre || 'Annonce') + '</strong>' +
-						'<div>' + (a.prix ? a.prix.toLocaleString('fr-CM') + ' FCFA' : '') + '</div>' +
-						'<div>' + (a.quartier || '') + ', ' + (a.ville || '') + '</div>');
+						'<div style="font-size:12px;color:#555;margin-top:2px;">' +
+						(a.prix ? a.prix.toLocaleString('fr-CM') + ' FCFA / mois' : '') +
+						' • ' + (a.quartier || '') + ', ' + (a.ville || '') + '</div>' +
+						distHtml);
 				marker.bindPopup(popup);
 				marker.on('click', function () {
 					window.onMarkerClick(a.id);
 				});
 				markersLayer.addLayer(marker);
 			});
-			if (annonces.length > 0) {
-				var first = annonces[0];
-				if (first.latitude && first.longitude) {
-					map.setView([first.latitude, first.longitude], 13);
-				}
-			}
 		};
 
 		window.centerOn = function (lat, lng, zoom) {
@@ -76,7 +239,7 @@
 			window.location.href = 'locatcam://marker?id=' + encodeURIComponent(id);
 		};
 
-		// Rechargement des annonces quand la zone visible change (debounce)
+		// Rechargement quand la zone visible change (debounce)
 		var moveTimer = null;
 		map.on('moveend', function () {
 			if (moveTimer) clearTimeout(moveTimer);
@@ -91,7 +254,7 @@
 			}, 600);
 		});
 
-		// Position initiale : Douala, Cameroun
+		// Position initiale : Cameroun (sera overridée par la géolocalisation)
 		map.setView([4.0511, 9.7679], 13);
 	</script>
 </body>
