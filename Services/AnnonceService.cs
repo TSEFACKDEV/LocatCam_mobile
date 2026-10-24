@@ -13,6 +13,9 @@ public class AnnonceService : IAnnonceService
 {
     private readonly IApiClient _apiClient;
 
+    /// <summary>Dernier message d'erreur lisible (statut HTTP + corps de réponse).</summary>
+    public string? DerniereErreur { get; private set; }
+
     public AnnonceService(IApiClient apiClient)
     {
         _apiClient = apiClient;
@@ -96,22 +99,29 @@ public class AnnonceService : IAnnonceService
 
     public async Task<AnnonceDto?> CreateAnnonceAsync(AnnonceCreateDto dto)
     {
+        DerniereErreur = null;
         try
         {
             var response = await _apiClient.CreateAnnonce(dto);
 
             if (!response.IsSuccessStatusCode || response.Content == null)
+            {
+                DerniereErreur = $"HTTP {(int)response.StatusCode} : {response.Error?.Content ?? response.StatusCode.ToString()}";
+                System.Diagnostics.Debug.WriteLine($"[AnnonceService] Création annonce refusée {DerniereErreur}");
                 return null;
+            }
 
             return response.Content;
         }
         catch (ApiException ex)
         {
+            DerniereErreur = $"HTTP {(int)ex.StatusCode} : {ex.Content}";
             System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur API {ex.StatusCode}: {ex.Message}");
             return null;
         }
         catch (Exception ex)
         {
+            DerniereErreur = ex.Message;
             System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur inattendue: {ex.Message}");
             return null;
         }
@@ -161,13 +171,17 @@ public class AnnonceService : IAnnonceService
 
     public async Task<bool> AddPhotosAsync(string annonceId, List<PhotoCreateDto> photos)
     {
+        DerniereErreur = null;
         try
         {
             var response = await _apiClient.AddPhotos(annonceId, photos);
+            if (!response.IsSuccessStatusCode)
+                DerniereErreur = $"HTTP {(int)response.StatusCode} : {response.Error?.Content}";
             return response.IsSuccessStatusCode;
         }
         catch (ApiException ex)
         {
+            DerniereErreur = $"HTTP {(int)ex.StatusCode} : {ex.Content}";
             System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur API {ex.StatusCode}: {ex.Message}");
             return false;
         }
@@ -180,15 +194,26 @@ public class AnnonceService : IAnnonceService
 
     public async Task<PhotoSignatureDto?> GetSignatureAsync()
     {
+        DerniereErreur = null;
         try
         {
             var response = await _apiClient.GetSignature();
             if (!response.IsSuccessStatusCode || response.Content == null)
+            {
+                DerniereErreur = $"HTTP {(int)response.StatusCode} : {response.Error?.Content}";
                 return null;
+            }
             return response.Content;
+        }
+        catch (ApiException ex)
+        {
+            DerniereErreur = $"HTTP {(int)ex.StatusCode} : {ex.Content}";
+            System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur signature: {ex.Message}");
+            return null;
         }
         catch (Exception ex)
         {
+            DerniereErreur = ex.Message;
             System.Diagnostics.Debug.WriteLine($"[AnnonceService] Erreur signature: {ex.Message}");
             return null;
         }

@@ -28,6 +28,9 @@ public interface IAuthService
     /// <summary>Récupère le profil de l'utilisateur connecté.</summary>
     Task<UserDto?> GetCurrentUserAsync();
 
+    /// <summary>Recharge le profil depuis le serveur et met à jour le cache local.</summary>
+    Task<UserDto?> RafraichirProfilAsync();
+
     /// <summary>Renouvelle l'access token via le refresh token.</summary>
     Task<bool> RefreshTokenAsync();
 

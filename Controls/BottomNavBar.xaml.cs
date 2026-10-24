@@ -1,4 +1,8 @@
+using CommunityToolkit.Mvvm.Messaging;
+using LocatCam_mobile.Models;
 using LocatCam_mobile.Services;
+using LocatCam_mobile.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 
 namespace LocatCam_mobile.Controls;
@@ -13,16 +17,45 @@ public partial class BottomNavBar : ContentView
         BindableProperty.Create(nameof(EstActif), typeof(string), typeof(BottomNavBar), "HomePage",
             propertyChanged: OnEstActifChanged);
 
+    public static readonly BindableProperty EstBailleurProperty =
+        BindableProperty.Create(nameof(EstBailleur), typeof(bool), typeof(BottomNavBar), false,
+            propertyChanged: OnEstBailleurChanged);
+
     public string EstActif
     {
         get => (string)GetValue(EstActifProperty);
         set => SetValue(EstActifProperty, value);
     }
 
+    /// <summary>L'onglet Publier n'est affiché que pour les comptes Bailleur.</summary>
+    public bool EstBailleur
+    {
+        get => (bool)GetValue(EstBailleurProperty);
+        set => SetValue(EstBailleurProperty, value);
+    }
+
     public BottomNavBar()
     {
         InitializeComponent();
         MettreAJourApparence(EstActif);
+
+        // Mise à jour immédiate de l'avatar quand la photo change depuis le profil.
+        WeakReferenceMessenger.Default.Register<PhotoProfilMessage>(this, (recipient, message) =>
+        {
+            if (recipient is BottomNavBar nav)
+                nav.AppliquerPhotoProfil(message.PhotoUrl);
+        });
+    }
+
+    /// <summary>Affiche la photo de profil dans l'onglet, ou l'icône par défaut.</summary>
+    private void AppliquerPhotoProfil(string? photoUrl)
+    {
+        var aUnePhoto = !string.IsNullOrWhiteSpace(photoUrl);
+        IconeProfil.IsVisible = !aUnePhoto;
+        PhotoProfilNav.IsVisible = aUnePhoto;
+
+        if (aUnePhoto)
+            PhotoProfilNav.Source = ImageSource.FromUri(new Uri(photoUrl!));
     }
 
     protected override void OnHandlerChanged()
@@ -31,6 +64,31 @@ public partial class BottomNavBar : ContentView
 
         if (Application.Current != null)
             Application.Current.RequestedThemeChanged += OnThemeChanged;
+
+        ChargerRoleAsync();
+    }
+
+    private async void ChargerRoleAsync()
+    {
+        try
+        {
+            var auth = App.ServiceProvider?.GetService<IAuthService>();
+            if (auth == null) return;
+
+            var user = await auth.GetCurrentUserAsync();
+            EstBailleur = string.Equals(user?.Role, "Bailleur", StringComparison.OrdinalIgnoreCase);
+            AppliquerPhotoProfil(user?.PhotoUrl);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[BottomNavBar] Rôle indisponible: {ex.Message}");
+        }
+    }
+
+    private static void OnEstBailleurChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is BottomNavBar nav)
+            nav.MettreAJourApparence(nav.EstActif);
     }
 
     private void OnThemeChanged(object? sender, AppThemeChangedEventArgs e)
@@ -54,6 +112,15 @@ public partial class BottomNavBar : ContentView
         SetOnglet(PillFavoris, IconeFavoris, LabelFavoris, actif == "FavorisPage", accent, inactif, pastilleActive, transparent);
         SetOnglet(PillPublier, IconePublier, LabelPublier, actif == "PublierPage", accent, inactif, pastilleActive, transparent);
         SetOnglet(PillProfil, IconeProfil, LabelProfil, actif == "ProfilPage", accent, inactif, pastilleActive, transparent);
+
+        // Masquer complètement l'onglet Publier pour les non-bailleurs et
+        // redistribuer les colonnes (5 onglets -> 4 onglets).
+        OngletPublier.IsVisible = EstBailleur;
+        Grid.SetColumn(OngletProfil, EstBailleur ? 4 : 3);
+        GrilleOnglets.ColumnDefinitions.Clear();
+        var nbColonnes = EstBailleur ? 5 : 4;
+        for (int i = 0; i < nbColonnes; i++)
+            GrilleOnglets.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
     }
 
     private static void SetOnglet(Frame pill, Label icone, Label label, bool estActif,

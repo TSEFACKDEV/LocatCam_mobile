@@ -7,6 +7,9 @@ namespace LocatCam_mobile.Services.Interfaces;
 /// </summary>
 public interface IAnnonceService
 {
+    /// <summary>Dernier message d'erreur lisible (statut HTTP + corps de réponse).</summary>
+    string? DerniereErreur { get; }
+
     /// <summary>Récupère la liste paginée des annonces avec filtres.</summary>
     Task<(List<AnnonceDto> Items, int TotalCount)> GetAnnoncesAsync(
         int page = 1, int pageSize = 10,

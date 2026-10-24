@@ -26,6 +26,44 @@
                 <!-- Bandeau hors-ligne -->
                 <ctrl:OfflineBanner />
 
+                <!-- Message d'erreur (upload photo, profil...) -->
+                <Frame BackgroundColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorLightDark}}"
+                       BorderColor="Transparent"
+                       CornerRadius="14"
+                       Padding="14,10"
+                       Margin="0,4,0,0"
+                       HasShadow="False"
+                       IsVisible="{Binding MessageErreur, Converter={StaticResource StringToBoolConverter}}">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="&#xf071;" FontFamily="FASolid" FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding MessageErreur}"
+                               FontFamily="PlusJakartaSans" FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Frame>
+
+                <!-- Message de succès -->
+                <Frame BackgroundColor="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessLightDark}}"
+                       BorderColor="Transparent"
+                       CornerRadius="14"
+                       Padding="14,10"
+                       Margin="0,4,0,0"
+                       HasShadow="False"
+                       IsVisible="{Binding MessageSucces, Converter={StaticResource StringToBoolConverter}}">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="&#xf058;" FontFamily="FASolid" FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding MessageSucces}"
+                               FontFamily="PlusJakartaSans" FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Frame>
+
                 <!-- ============ EN-TÊTE PROFIL ============ -->
                 <VerticalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,10,0,4">
                     <!-- Avatar : photo ou initiale -->
@@ -38,7 +76,7 @@
                                Padding="0"
                                HasShadow="False"
                                HorizontalOptions="Center"
-                               IsVisible="{Binding PhotoUrl, Converter={StaticResource InverseBoolConverter}}">
+                               IsVisible="{Binding AfficherInitiales}">
                             <Frame.Shadow>
                                 <Shadow Brush="#1565C0" Offset="0,10" Radius="22" Opacity="0.28" />
                             </Frame.Shadow>

@@ -123,9 +123,6 @@ public partial class PublierViewModel : ObservableObject
     /// <summary>Libre du nombre de photos sélectionnées.</summary>
     public string NbPhotosTexte => $"{PhotosSelectionnees.Count} photo(s) sélectionnée(s)";
 
-    /// <summary>Nom du cloud Cloudinary (doit correspondre à la configuration serveur).</summary>
-    private const string CloudinaryCloudName = "locatcam";
-
     /// <summary>Types de bien proposés.</summary>
     public ObservableCollection<string> TypesBien { get; } = new()
     {
@@ -296,63 +293,68 @@ public partial class PublierViewModel : ObservableObject
     {
         if (_fichiersSelectionnes.Count == 0) return;
 
-        try
+        // 1. Obtenir la signature Cloudinary depuis l'API (nécessite un token valide)
+        var signature = await _annonceService.GetSignatureAsync();
+        if (signature == null || string.IsNullOrWhiteSpace(signature.CloudName))
         {
-            // 1. Obtenir la signature Cloudinary depuis l'API (nécessite un token valide)
-            var signature = await _annonceService.GetSignatureAsync();
-            if (signature == null)
-            {
-                System.Diagnostics.Debug.WriteLine("[PublierViewModel] Impossible d'obtenir la signature Cloudinary.");
-                return;
-            }
-
-            // 2. Uploader chaque image sur Cloudinary
-            var photosADclarer = new List<PhotoCreateDto>();
-            int ordre = 0;
-
-            foreach (var file in _fichiersSelectionnes)
-            {
-                using var stream = await file.OpenReadAsync();
-                using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(60) };
-                using var content = new MultipartFormDataContent();
-
-                content.Add(new StreamContent(stream), "file", file.FileName ?? "image.jpg");
-                content.Add(new StringContent(signature.Timestamp.ToString()), "timestamp");
-                content.Add(new StringContent(signature.Folder), "folder");
-                content.Add(new StringContent(signature.UploadPreset), "upload_preset");
-                content.Add(new StringContent(signature.Signature), "signature");
-
-                var uploadUrl = $"https://api.cloudinary.com/v1_1/{CloudinaryCloudName}/image/upload";
-                var uploadResponse = await httpClient.PostAsync(uploadUrl, content);
-
-                if (!uploadResponse.IsSuccessStatusCode)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[PublierViewModel] Échec upload Cloudinary: {uploadResponse.StatusCode}");
-                    continue;
-                }
-
-                var uploadResult = await uploadResponse.Content.ReadFromJsonAsync<CloudinaryUploadResult>();
-                if (uploadResult == null) continue;
-
-                photosADclarer.Add(new PhotoCreateDto
-                {
-                    AnnonceId = annonceId,
-                    UrlCloudinary = uploadResult.SecureUrl,
-                    PublicId = uploadResult.PublicId,
-                    Ordre = ordre++,
-                    EstPrincipale = ordre == 1
-                });
-            }
-
-            // 3. Déclarer les photos auprès de l'API
-            if (photosADclarer.Count > 0)
-            {
-                await _annonceService.AddPhotosAsync(annonceId, photosADclarer);
-            }
+            throw new InvalidOperationException(
+                "Impossible d'obtenir la signature d'upload. "
+                + (_annonceService.DerniereErreur ?? "Vérifiez votre connexion et reconnectez-vous."));
         }
-        catch (Exception ex)
+
+        // 2. Uploader chaque image sur Cloudinary
+        var photosADclarer = new List<PhotoCreateDto>();
+        int ordre = 0;
+
+        using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(60) };
+
+        foreach (var file in _fichiersSelectionnes)
         {
-            System.Diagnostics.Debug.WriteLine($"[PublierViewModel] Erreur upload photos: {ex.Message}");
+            using var stream = await file.OpenReadAsync();
+            using var content = new MultipartFormDataContent();
+
+            content.Add(new StreamContent(stream), "file", file.FileName ?? "image.jpg");
+            content.Add(new StringContent(signature.Timestamp.ToString()), "timestamp");
+            content.Add(new StringContent(signature.Folder), "folder");
+            content.Add(new StringContent(signature.ApiKey), "api_key");
+
+            // Ne jamais envoyer un preset vide : Cloudinary le refuserait.
+            if (!string.IsNullOrWhiteSpace(signature.UploadPreset))
+                content.Add(new StringContent(signature.UploadPreset), "upload_preset");
+
+            content.Add(new StringContent(signature.Signature), "signature");
+
+            var uploadUrl = $"https://api.cloudinary.com/v1_1/{signature.CloudName}/image/upload";
+            var uploadResponse = await httpClient.PostAsync(uploadUrl, content);
+
+            if (!uploadResponse.IsSuccessStatusCode)
+            {
+                var detail = await uploadResponse.Content.ReadAsStringAsync();
+                throw new InvalidOperationException(
+                    $"Échec de l'envoi d'une photo (HTTP {(int)uploadResponse.StatusCode}). {detail}");
+            }
+
+            var uploadResult = await uploadResponse.Content.ReadFromJsonAsync<CloudinaryUploadResult>();
+            if (uploadResult == null || string.IsNullOrWhiteSpace(uploadResult.SecureUrl))
+                throw new InvalidOperationException("Cloudinary n'a pas renvoyé d'URL valide pour la photo.");
+
+            photosADclarer.Add(new PhotoCreateDto
+            {
+                AnnonceId = annonceId,
+                UrlCloudinary = uploadResult.SecureUrl,
+                PublicId = uploadResult.PublicId,
+                Ordre = ordre++,
+                EstPrincipale = ordre == 1
+            });
+        }
+
+        // 3. Déclarer les photos auprès de l'API
+        if (photosADclarer.Count > 0 &&
+            !await _annonceService.AddPhotosAsync(annonceId, photosADclarer))
+        {
+            throw new InvalidOperationException(
+                "Les photos ont été envoyées mais n'ont pas pu être liées à l'annonce. "
+                + (_annonceService.DerniereErreur ?? string.Empty));
         }
     }
 
@@ -487,18 +489,34 @@ public partial class PublierViewModel : ObservableObject
 
             if (annonce == null)
             {
-                MessageErreur = "Impossible de publier l'annonce. Réessayez plus tard.";
+                var detail = _annonceService.DerniereErreur;
+                if (detail?.Contains("403") == true)
+                    MessageErreur = "Seuls les comptes Bailleur peuvent publier une annonce.";
+                else
+                    MessageErreur = "Impossible de publier l'annonce. " + (detail ?? "Réessayez plus tard.");
                 return;
             }
 
-            // Upload des photos sur Cloudinary puis déclaration auprès de l'API
-            await UploaderPhotosAsync(annonce.Id.ToString());
+            // Upload des photos sur Cloudinary puis déclaration auprès de l'API.
+            // L'annonce est déjà créée : un échec photo ne doit pas la faire perdre.
+            string? avertissementPhotos = null;
+            try
+            {
+                await UploaderPhotosAsync(annonce.Id.ToString());
+            }
+            catch (Exception exPhotos)
+            {
+                avertissementPhotos = exPhotos.Message;
+                System.Diagnostics.Debug.WriteLine($"[PublierViewModel] Photos non ajoutées: {exPhotos.Message}");
+            }
 
             AnnonceCreee = annonce;
             EtapeCourante = EtapePublier.Termine;
             NotifierEtapes();
 
-            MessageSucces = "Votre annonce a été publiée avec succès !";
+            MessageSucces = avertissementPhotos == null
+                ? "Votre annonce a été publiée avec succès !"
+                : "Annonce publiée, mais les photos n'ont pas pu être ajoutées : " + avertissementPhotos;
         }
         catch (Exception ex)
         {

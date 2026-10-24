@@ -44,7 +44,7 @@
             <Shadow Brush="#000000" Offset="0,-2" Radius="16" Opacity="0.06" />
         </Frame.Shadow>
 
-        <Grid ColumnDefinitions="*,*,*,*,*">
+        <Grid x:Name="GrilleOnglets" ColumnDefinitions="*,*,*,*,*">
 
             <!-- ============ ACCUEIL ============ -->
             <Grid Grid.Column="0" AutomationId="HomePage" InputTransparent="False">
@@ -91,8 +91,8 @@
                 <Label Grid.Row="1" x:Name="LabelFavoris" Text="Favoris" Style="{StaticResource NavLabel}" InputTransparent="True" />
             </Grid>
 
-            <!-- ============ PUBLIER ============ -->
-            <Grid Grid.Column="3" AutomationId="PublierPage" InputTransparent="False">
+            <!-- ============ PUBLIER (bailleurs uniquement) ============ -->
+            <Grid x:Name="OngletPublier" Grid.Column="3" AutomationId="PublierPage" InputTransparent="False">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="PublierPage" />
                 </Grid.GestureRecognizers>
@@ -107,7 +107,7 @@
             </Grid>
 
             <!-- ============ PROFIL ============ -->
-            <Grid Grid.Column="4" AutomationId="ProfilPage" InputTransparent="False">
+            <Grid x:Name="OngletProfil" Grid.Column="4" AutomationId="ProfilPage" InputTransparent="False">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnOngletTapped" CommandParameter="ProfilPage" />
                 </Grid.GestureRecognizers>
@@ -116,7 +116,20 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Frame Grid.Row="0" x:Name="PillProfil" Style="{StaticResource NavPill}" InputTransparent="True">
-                    <Label x:Name="IconeProfil" Text="&#xf007;" Style="{StaticResource NavIcone}" />
+                    <Grid HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="28" HeightRequest="28">
+                        <Label x:Name="IconeProfil" Text="&#xf007;" Style="{StaticResource NavIcone}"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                        <!-- Photo de profil affichée à la place de l'icône si elle existe -->
+                        <Image x:Name="PhotoProfilNav"
+                               IsVisible="False"
+                               Aspect="AspectFill"
+                               WidthRequest="26" HeightRequest="26"
+                               HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Clip>
+                                <EllipseGeometry RadiusX="13" RadiusY="13" Center="13,13" />
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
                 </Frame>
                 <Label Grid.Row="1" x:Name="LabelProfil" Text="Profil" Style="{StaticResource NavLabel}" InputTransparent="True" />
             </Grid>

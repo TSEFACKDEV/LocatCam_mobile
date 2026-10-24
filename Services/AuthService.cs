@@ -166,6 +166,38 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
+    /// Recharge le profil depuis le serveur (photo, rôle, téléphone...) puis
+    /// met à jour le cache local. Retourne null si le serveur est injoignable.
+    /// </summary>
+    public async Task<UserDto?> RafraichirProfilAsync()
+    {
+        try
+        {
+            var response = await _apiClient.Me();
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                // Token expiré : tenter un refresh puis réessayer une fois.
+                if (await RefreshTokenAsync())
+                    response = await _apiClient.Me();
+            }
+
+            if (!response.IsSuccessStatusCode || response.Content == null)
+                return await GetCurrentUserAsync();
+
+            var userJson = JsonSerializer.Serialize(response.Content);
+            await SecureStorage.SetAsync(UserKey, userJson);
+
+            return response.Content;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AuthService] RafraichirProfil: {ex.Message}");
+            return await GetCurrentUserAsync();
+        }
+    }
+
+    /// <summary>
     /// Renouvelle l'access token via le refresh token.
     /// Retourne true si le renouvellement a réussi, false sinon.
     /// </summary>
