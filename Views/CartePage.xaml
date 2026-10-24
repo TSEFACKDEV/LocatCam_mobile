@@ -124,7 +124,7 @@
                 <Label Text="&#xf015;" FontFamily="FASolid" FontSize="14"
                        TextColor="{AppThemeBinding Light={StaticResource Accent}, Dark={StaticResource AccentDark}}"
                        VerticalOptions="Center" />
-                <Label Text="{Binding AnnoncesCount, StringFormat='{0} logement(s) autour de vous'}"
+                <Label Text="{Binding AnnoncesCount, StringFormat='{0} logement(s) dans votre périmètre'}"
                        FontFamily="PlusJakartaSansBold"
                        FontSize="13"
                        TextColor="{AppThemeBinding Light={StaticResource InkPrimary}, Dark={StaticResource InkPrimaryDark}}"

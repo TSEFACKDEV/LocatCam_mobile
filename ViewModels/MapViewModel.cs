@@ -286,7 +286,7 @@ public partial class MapViewModel : ObservableObject
             LastAnnounces = enrichies;
 
             MarkersJson = BuildMarkersJson(enrichies);
-            AnnoncesCount = enrichies.Count(a => a.Latitude != 0 && a.Longitude != 0);
+            AnnoncesCount = CompterDansRayon(enrichies);
         }
         catch (Exception ex)
         {
@@ -330,7 +330,7 @@ public partial class MapViewModel : ObservableObject
 
             LastAnnounces = enrichies;
             MarkersJson = BuildMarkersJson(enrichies);
-            AnnoncesCount = enrichies.Count(a => a.Latitude != 0 && a.Longitude != 0);
+            AnnoncesCount = CompterDansRayon(enrichies);
         }
         catch (Exception ex)
         {
@@ -340,6 +340,17 @@ public partial class MapViewModel : ObservableObject
             ErrorMessage = "Carte indisponible hors-ligne";
             System.Diagnostics.Debug.WriteLine($"[MapViewModel] Erreur zone par défaut: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Compte uniquement les annonces réellement situées dans le périmètre
+    /// circulaire choisi (et non dans la bounding box carrée).
+    /// </summary>
+    private int CompterDansRayon(IEnumerable<CarteAnnonce> annonces)
+    {
+        return annonces.Count(a =>
+            a.Latitude != 0 && a.Longitude != 0 &&
+            (!a.DistanceMeters.HasValue || a.DistanceMeters.Value <= UserRadiusMeters));
     }
 
     /// <summary>Calcule la distance haversine entre l'utilisateur et l'annonce.</summary>

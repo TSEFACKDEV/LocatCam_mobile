@@ -5,53 +5,91 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<title>LocatCam — Carte interactive</title>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 	<style>
 		html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; }
-		#map { height: 100vh; width: 100vw; }
+		#map { height: 100vh; width: 100vw; background: #e9eef3; }
 		.leaflet-popup-content-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 		.leaflet-popup-content { margin: 10px; font-size: 13px; line-height: 1.4; }
 		.leaflet-popup-content strong { display: block; margin-bottom: 6px; font-size: 15px; }
 
-		/* Marqueur utilisateur : point bleu avec halo pulsant */
+		/* ---------- Marqueur utilisateur : point bleu avec halo pulsant ---------- */
 		.user-marker {
-			width: 28px;
-			height: 28px;
+			width: 24px;
+			height: 24px;
 			border-radius: 50%;
 			background: #1565C0;
-			border: 4px solid rgba(21, 101, 192, 0.35);
-			box-shadow: 0 0 12px rgba(21, 101, 192, 0.6);
+			border: 3px solid #fff;
+			box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.25), 0 0 14px rgba(21, 101, 192, 0.7);
 			position: relative;
+			z-index: 1000;
 		}
 		.user-marker::after {
 			content: "";
 			position: absolute;
 			top: 50%; left: 50%;
-			width: 40px; height: 40px;
-			margin-top: -20px; margin-left: -20px;
+			width: 100%; height: 100%;
+			margin-top: -50%; margin-left: -50%;
 			border-radius: 50%;
-			background: rgba(21, 101, 192, 0.15);
-			animation: locatcam-pulse 2.5s infinite;
+			background: rgba(21, 101, 192, 0.35);
+			animation: locatcam-user-pulse 2.4s ease-out infinite;
 			z-index: -1;
 		}
-		@keyframes locatcam-pulse {
-			0% { transform: scale(0.85); opacity: 0.7; }
-			70% { transform: scale(1.35); opacity: 0; }
-			100% { transform: scale(0.85); opacity: 0.7; }
+		@keyframes locatcam-user-pulse {
+			0%   { transform: scale(0.9); opacity: 0.8; }
+			70%  { transform: scale(3.2); opacity: 0; }
+			100% { transform: scale(3.2); opacity: 0; }
 		}
 
-		/* Cercle de rayon autour de l'utilisateur */
+		/* ---------- Cercle du périmètre ---------- */
 		.user-radius-circle {
-			fill: rgba(21, 101, 192, 0.12);
+			fill: rgba(21, 101, 192, 0.08);
 			stroke: #1565C0;
 			stroke-width: 2;
 			stroke-dasharray: 8 6;
-			stroke-opacity: 0.7;
-			fill-opacity: 0.12;
+			stroke-opacity: 0.75;
+			fill-opacity: 0.08;
 		}
 
-		/* Badge distance dans le popup */
+		/* ---------- Petits points clignotants des logements ---------- */
+		.lm-dot {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.lm-core {
+			width: 11px;
+			height: 11px;
+			border-radius: 50%;
+			background: var(--c);
+			border: 1.5px solid rgba(255, 255, 255, 0.95);
+			box-shadow: 0 0 7px var(--c), 0 0 14px var(--c), 0 1px 3px rgba(0, 0, 0, 0.35);
+			animation: lm-blink 1.9s ease-in-out infinite;
+			animation-delay: var(--d);
+		}
+		.lm-ring {
+			position: absolute;
+			width: 11px;
+			height: 11px;
+			border-radius: 50%;
+			border: 2px solid var(--c);
+			opacity: 0;
+			animation: lm-halo 1.9s ease-out infinite;
+			animation-delay: var(--d);
+		}
+		@keyframes lm-blink {
+			0%, 100% { opacity: 1; transform: scale(1); }
+			50%      { opacity: 0.5; transform: scale(0.78); }
+		}
+		@keyframes lm-halo {
+			0%   { transform: scale(0.83); opacity: 0.85; }
+			70%  { transform: scale(3.4); opacity: 0; }
+			100% { transform: scale(3.4); opacity: 0; }
+		}
+
+		/* ---------- Badge distance dans le popup ---------- */
 		.dist-badge {
 			display: inline-block;
 			margin-top: 6px;
@@ -65,15 +103,37 @@
 		.dist-mid { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
 		.dist-far { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-		.annonce-marker-close { background-color: #28a745; }
-		.annonce-marker-mid { background-color: #ffc107; }
-		.annonce-marker-far { background-color: #dc3545; }
+		/* ---------- Légende des couleurs ---------- */
+		.lm-legend {
+			position: absolute;
+			left: 10px;
+			bottom: 18px;
+			z-index: 900;
+			background: rgba(255, 255, 255, 0.94);
+			border-radius: 12px;
+			padding: 8px 10px;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			font-size: 11px;
+			color: #37474f;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+			line-height: 1.7;
+			pointer-events: none;
+		}
+		.lm-legend b { display: block; font-size: 10px; letter-spacing: 0.4px; color: #78909c; margin-bottom: 2px; }
+		.lm-legend span { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
 	</style>
 </head>
 <body>
 	<div id="map"></div>
+	<div class="lm-legend">
+		<b>PROXIMITÉ</b>
+		<div><span style="background:#00E676;box-shadow:0 0 6px #00E676"></span>≤ 300 m</div>
+		<div><span style="background:#00E5FF;box-shadow:0 0 6px #00E5FF"></span>≤ 800 m</div>
+		<div><span style="background:#FFD600;box-shadow:0 0 6px #FFD600"></span>≤ 1,5 km</div>
+		<div><span style="background:#FF9100;box-shadow:0 0 6px #FF9100"></span>≤ 3 km</div>
+		<div><span style="background:#FF1744;box-shadow:0 0 6px #FF1744"></span>&gt; 3 km</div>
+	</div>
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-	<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 	<script>
 		var map = L.map('map', {
 			zoomControl: true,
@@ -87,19 +147,14 @@
 			maxZoom: 19
 		}).addTo(map);
 
-		// Couches
-		var markersLayer = L.markerClusterGroup({
-			spiderfyOnMaxZoom: false,
-			showCoverageOnHover: false,
-			zoomToBoundsOnClick: true,
-			maxClusterRadius: 55
-		});
-		map.addLayer(markersLayer);
+		// Pas de clustering : on veut voir chaque petit point clignoter.
+		var markersLayer = L.layerGroup().addTo(map);
 
 		var userMarker = null;
 		var userCircle = null;
 		var userLatLng = null;
 		var currentRadiusMeters = 2000; // rayon par défaut 2 km
+		var annoncesData = [];          // données brutes conservées pour re-rendu
 
 		// --- API appelée depuis le C# (ma connexion) ---
 		window.setUserPosition = function (lat, lng) {
@@ -109,11 +164,12 @@
 				userMarker.setLatLng(userLatLng);
 			} else {
 				var icon = L.divIcon({
-					className: 'user-marker',
-					iconSize: [28, 28],
-					iconAnchor: [14, 14]
+					className: '',
+					html: '<div class="user-marker"></div>',
+					iconSize: [24, 24],
+					iconAnchor: [12, 12]
 				});
-				userMarker = L.marker(userLatLng, { icon: icon, interactive: false, title: 'Vous êtes ici' });
+				userMarker = L.marker(userLatLng, { icon: icon, interactive: false, title: 'Vous êtes ici', zIndexOffset: 5000 });
 				userMarker.addTo(map);
 			}
 
@@ -127,15 +183,19 @@
 
 			// Recentrer sur l'utilisateur au premier placement
 			if (!window.__userCentered) {
-				map.setView(userLatLng, 14);
+				map.setView(userLatLng, 15);
 				window.__userCentered = true;
 			}
 
+			// Les couleurs dépendent de la distance : on redessine tout.
+			renderMarkers();
 			map.invalidateSize();
 		};
 
 		window.setUserRadius = function (meters) {
+			var rayonChange = meters !== currentRadiusMeters;
 			currentRadiusMeters = meters;
+
 			if (userCircle && userLatLng) {
 				map.removeLayer(userCircle);
 				userCircle = L.circle(userLatLng, {
@@ -143,11 +203,19 @@
 					className: 'user-radius-circle'
 				}).addTo(map);
 			}
+
+			// Seuls les logements dans le périmètre restent affichés.
+			renderMarkers();
+
+			// Cadrer la carte sur le nouveau périmètre pour voir tous les points.
+			if (rayonChange && userLatLng && userCircle) {
+				map.fitBounds(userCircle.getBounds(), { padding: [28, 28], maxZoom: 16 });
+			}
 		};
 
 		window.centerOnUser = function () {
 			if (userLatLng) {
-				map.setView(userLatLng, 14);
+				map.setView(userLatLng, 15);
 			}
 		};
 
@@ -157,10 +225,10 @@
 			var rad = Math.PI / 180;
 			var dLat = (lat - userLatLng.lat) * rad;
 			var dLng = (lng - userLatLng.lng) * rad;
-			var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+			var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
 				Math.cos(userLatLng.lat * rad) * Math.cos(lat * rad) *
-				Math.sin(dLng/2) * Math.sin(dLng/2);
-			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+				Math.sin(dLng / 2) * Math.sin(dLng / 2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 			return R * c; // mètres
 		}
 
@@ -170,17 +238,14 @@
 			return 'dist-far';
 		}
 
-		function markerClass(meters) {
-			if (meters <= 800) return 'annonce-marker-close';
-			if (meters <= 2500) return 'annonce-marker-mid';
-			return 'annonce-marker-far';
-		}
-
-		function markerColor(meters) {
-			if (!meters) return '#6c757d';
-			if (meters <= 800) return '#28a745';
-			if (meters <= 2500) return '#ffc107';
-			return '#dc3545';
+		// Couleur + taille du point selon la proximité réelle.
+		function proximityStyle(meters) {
+			if (meters === null) return { color: '#78909C', size: 10 };
+			if (meters <= 300)  return { color: '#00E676', size: 14 }; // vert vif
+			if (meters <= 800)  return { color: '#00E5FF', size: 13 }; // cyan
+			if (meters <= 1500) return { color: '#FFD600', size: 12 }; // jaune
+			if (meters <= 3000) return { color: '#FF9100', size: 11 }; // orange
+			return { color: '#FF1744', size: 10 };                     // rouge
 		}
 
 		function formatDist(m) {
@@ -189,34 +254,86 @@
 		}
 
 		window.clearMarkers = function () {
+			annoncesData = [];
 			markersLayer.clearLayers();
 		};
 
-		window.addMarkers = function (annoncesJson) {
-			clearMarkers();
+		window.addMarkers = function (annonces) {
 			try {
-				var annonces = JSON.parse(annoncesJson || '[]');
+				// Selon la plateforme, la WebView peut recevoir soit la chaîne JSON,
+				// soit directement le tableau d'objets. On gère les deux cas.
+				if (typeof annonces === 'string') {
+					annoncesData = JSON.parse(annonces || '[]') || [];
+				} else {
+					annoncesData = annonces || [];
+				}
 			} catch (e) {
-				var annonces = [];
+				annoncesData = [];
 			}
-			annonces.forEach(function (a) {
+			renderMarkers();
+		};
+
+		// (Re)dessine les points visibles dans le périmètre courant.
+		function renderMarkers() {
+			markersLayer.clearLayers();
+
+			annoncesData.forEach(function (a, index) {
 				if (!a.latitude || !a.longitude) return;
 
 				var dist = distanceToUser(a.latitude, a.longitude);
-				var dClass = dist ? distClass(dist) : 'dist-mid';
-				var mClass = dist ? markerClass(dist) : '';
+				var dansPerimetre = dist === null || dist <= currentRadiusMeters;
+
+				// Hors périmètre : petit point gris discret (non clignotant).
+				if (!dansPerimetre) {
+					var gris = L.divIcon({
+						className: '',
+						html: '<div class="lm-dot"><span class="lm-core" style="width:7px;height:7px;background:#B0BEC5;' +
+							'box-shadow:0 1px 3px rgba(0,0,0,0.3);animation:none;opacity:0.55;"></span></div>',
+						iconSize: [18, 18],
+						iconAnchor: [9, 9]
+					});
+					var grisMarker = L.marker([a.latitude, a.longitude], { icon: gris, title: a.titre || '' });
+					var popupGris = L.popup({ className: 'locatcam-popup' })
+						.setContent('<strong>' + (a.titre || 'Annonce') + '</strong>' +
+							'<div style="font-size:12px;color:#555;margin-top:2px;">' +
+							(a.prix ? a.prix.toLocaleString('fr-CM') + ' FCFA / mois' : '') +
+							' • ' + (a.quartier || '') + ', ' + (a.ville || '') + '</div>' +
+							'<span class="dist-badge dist-far">Hors de votre périmètre</span>');
+					grisMarker.bindPopup(popupGris);
+					grisMarker.on('click', function () { window.onMarkerClick(a.id); });
+					markersLayer.addLayer(grisMarker);
+					return;
+				}
+
+				var style = proximityStyle(dist);
+				var delay = ((index % 8) * 0.22).toFixed(2) + 's';
+
+				var html =
+					'<div class="lm-dot" style="--c:' + style.color + ';--d:' + delay + ';">' +
+						'<span class="lm-ring"></span>' +
+						'<span class="lm-core" style="width:' + style.size + 'px;height:' + style.size + 'px;"></span>' +
+					'</div>';
+
+				var iconSize = Math.max(30, style.size + 18);
+				var icon = L.divIcon({
+					className: '',
+					html: html,
+					iconSize: [iconSize, iconSize],
+					iconAnchor: [iconSize / 2, iconSize / 2]
+				});
 
 				var marker = L.marker([a.latitude, a.longitude], {
 					title: a.titre || '',
-					icon: L.divIcon({
-						className: 'annonce-marker',
-						html: '<div style="width:14px;height:14px;border-radius:50%;background:' + markerColor(dist) + ';border:2px solid #fff;margin:1px;box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>',
-						iconSize: [26, 26],
-						iconAnchor: [13, 26]
-					})
+					icon: icon,
+					// Les plus proches passent au-dessus des plus lointains.
+					zIndexOffset: dist === null ? 0 : Math.max(0, 4000 - Math.round(dist))
 				});
-				marker.annonceId = a.id;
-				var distHtml = dist ? '<span class="dist-badge ' + dClass + '">À ' + formatDist(dist) + ' de vous</span>' : '';
+
+				var dClass = dist !== null ? distClass(dist) : 'dist-mid';
+				var distHtml = dist !== null
+					? '<span class="dist-badge ' + dClass + '">À ' + formatDist(dist) + ' de vous</span>'
+					: '';
+
 				var popup = L.popup({ className: 'locatcam-popup' })
 					.setContent('<strong>' + (a.titre || 'Annonce') + '</strong>' +
 						'<div style="font-size:12px;color:#555;margin-top:2px;">' +
@@ -229,7 +346,7 @@
 				});
 				markersLayer.addLayer(marker);
 			});
-		};
+		}
 
 		window.centerOn = function (lat, lng, zoom) {
 			map.setView([lat, lng], zoom || 13);
@@ -254,8 +371,11 @@
 			}, 600);
 		});
 
-		// Position initiale : Cameroun (sera overridée par la géolocalisation)
+		// Position initiale : Douala (sera overridée par la géolocalisation)
 		map.setView([4.0511, 9.7679], 13);
+
+		// La carte est prête : le C# peut injecter position, rayon et marqueurs.
+		window.location.href = 'locatcam://ready';
 	</script>
 </body>
 </html>

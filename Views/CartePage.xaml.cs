@@ -30,6 +30,18 @@ public partial class CartePage : ContentPage
                 await InjectUserPositionAsync();
                 await InjectUserRadiusAsync();
             }
+            else if (e.PropertyName == nameof(MapViewModel.UserRadiusMeters))
+            {
+                // Le périmètre change : la carte doit redessiner le cercle
+                // et filtrer/recolorer les points immédiatement.
+                await InjectUserRadiusAsync();
+            }
+            else if (e.PropertyName == nameof(MapViewModel.CurrentLatitude) ||
+                     e.PropertyName == nameof(MapViewModel.CurrentLongitude))
+            {
+                await InjectUserPositionAsync();
+                await InjectUserRadiusAsync();
+            }
         };
 
         _ = LoadMapHtmlAsync();
@@ -42,6 +54,7 @@ public partial class CartePage : ContentPage
     private async Task InitialiserCarteAsync()
     {
         await _vm.InitialiserPositionAsync();
+        await InjectMarkersAsync();
         await InjectUserPositionAsync();
         await InjectUserRadiusAsync();
     }
@@ -107,6 +120,11 @@ public partial class CartePage : ContentPage
             var id = url.Substring("locatcam://marker?id=".Length);
             _ = SelectAnnonceAsync(id);
         }
+        else if (url.StartsWith("locatcam://ready", StringComparison.OrdinalIgnoreCase))
+        {
+            // La carte Leaflet vient de finir de charger : on (ré)injecte tout.
+            _ = InitialiserCarteAsync();
+        }
         else if (url.StartsWith("locatcam://bounds?", StringComparison.OrdinalIgnoreCase))
         {
             _ = OnBoundsChanged(url);
@@ -132,6 +150,21 @@ public partial class CartePage : ContentPage
 
         if (minLat.HasValue && maxLat.HasValue && minLng.HasValue && maxLng.HasValue)
         {
+            // Étendre la zone chargée pour toujours couvrir tout le périmètre
+            // circulaire, même quand la carte est zoomée/déplacée.
+            if (_vm.HasLocation)
+            {
+                var latRad = _vm.CurrentLatitude * Math.PI / 180.0;
+                var metersPerDegreeLng = 111000.0 * Math.Cos(latRad);
+                var latDelta = _vm.UserRadiusMeters / 111000.0;
+                var lngDelta = _vm.UserRadiusMeters / metersPerDegreeLng;
+
+                minLat = Math.Min(minLat.Value, _vm.CurrentLatitude - latDelta);
+                maxLat = Math.Max(maxLat.Value, _vm.CurrentLatitude + latDelta);
+                minLng = Math.Min(minLng.Value, _vm.CurrentLongitude - lngDelta);
+                maxLng = Math.Max(maxLng.Value, _vm.CurrentLongitude + lngDelta);
+            }
+
             // Recharger les annonces dans la nouvelle bounding box, puis réinjecter
             // la position utilisateur et le rayon pour les conserver à l'écran
             await _vm.LoadAnnouncementsAsync(minLat.Value, maxLat.Value, minLng.Value, maxLng.Value);
